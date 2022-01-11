@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.o
+*.so
+*.a
+inst/doc
+docs/
+src/cppgoslin/cppgoslin/domain/ClassesEnum.h
+src/cppgoslin/cppgoslin/parser/KnownGrammars.h
+src/cppgoslin/src/domain/LipidClasses.cpp
+src/cppgoslin/writeGrammarsHeader
+src/cppgoslin/writeLipidEnums

@@ -1,0 +1,38 @@
+# Inspiration for this Makevars file from: https://cran.r-project.org/web/packages/Matrix/index.html
+$(info The name of the shared library to be created is: $(SHLIB))
+
+# libraries of this package (Rcpp files do not count for those)
+PKG_LIBS = $(SUBLIBS)
+CXX_STD = CXX11
+
+# include header locations to compile rgoslin.cpp against
+PKG_CPPFLAGS = -I"." -I"./cppgoslin" -I"./cppgoslin/cppgoslin" -I"./cppgoslin/cppgoslin/domain" -I"./cppgoslin/cppgoslin/parser"
+
+# space separated list of sublibrary directories
+SUBDIRS = cppgoslin/
+# pick up any (static) libraries of sub libraries
+SUBLIBS = $(addsuffix *.a,$(SUBDIRS))
+
+# ensure that sub libraries are build before the Rcpp objects (we generate some headers that are needed for compilation)
+all: sublibs $(SHLIB)
+# sublibs need to be built before package objects
+$(SHLIB): $(OBJECTS)
+
+# shamelessly copied from the Matrix package
+sublibs: subclean sublibraries
+
+sublibraries: subclean
+	@for d in $(SUBDIRS); do \
+		(cd $${d} && $(MAKE) static "CC=$(CXX)" "opt=$(CXXFLAGS)" "AR=$(AR)") || exit 1; \
+	done
+
+clean: subclean
+	@-rm -f *.o ${SHLIB}
+
+subclean:
+	@-rm -rf *.a
+	@-rm -rf *.so
+	@-rm -f *.exe
+	@for d in $(SUBDIRS); do \
+		(cd $${d} && $(MAKE) clean) || exit 1; \
+	done
