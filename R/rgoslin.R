@@ -163,7 +163,6 @@ parseLipidNamesWithGrammar <- function(lipidNames, grammar) {
         }
         return(do.call(rbind, namesList))
     }, error = function(err) {
-        browser()
         message(
             "Could not parse the provided lipid names",
             paste0(lipidNames, collapse=","),
