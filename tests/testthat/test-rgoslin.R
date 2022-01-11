@@ -59,6 +59,7 @@ test_that("multiple lipid names parsing with grammar works", {
   originalNames <- c("PC 32:1","LPC 34:1","TAG 18:1_18:0_16:1")
   df <- rgoslin::parseLipidNamesWithGrammar(originalNames, "Goslin")
   expect_equal(is.data.frame(df), TRUE)
+  expect_equal(tibble::is_tibble(df), FALSE)
   expect_equal(nrow(df), 3)
   expect_equal(as.character(df[1, "Original.Name"]), originalNames[[1]])
   expect_equal(as.character(df[2, "Original.Name"]), originalNames[[2]])
@@ -72,6 +73,7 @@ test_that("lipid name with adduct parsing with grammar works", {
   originalName <- "PC 34:1 [M+H]1+"
   df <- rgoslin::parseLipidNameWithGrammar(originalName, "Goslin")
   expect_equal(is.data.frame(df), TRUE)
+  expect_equal(tibble::is_tibble(df), FALSE)
   expect_equal(df[["Original.Name"]], originalName)
   expect_equal(df[["Grammar"]], "Goslin")
   expect_equal(df[["Normalized.Name"]], "PC 34:1")
@@ -87,6 +89,7 @@ test_that("lipid name with adduct parsing with grammar works", {
   originalName <- "PC 32:1[M+H]+"
   df <- rgoslin::parseLipidNameWithGrammar(originalName, "Goslin")
   expect_equal(is.data.frame(df), TRUE)
+  expect_equal(tibble::is_tibble(df), FALSE)
   expect_equal(df[["Original.Name"]], originalName)
   expect_equal(df[["Normalized.Name"]], "PC 32:1")
   expect_equal(df[["Adduct"]], "[M+H]1+")
@@ -152,11 +155,14 @@ test_that("parsing many lipid names works", {
   for(i in 1:length(lipidNames)) {
     df <- rgoslin::parseLipidName(lipidNames[[i]])
     expect_equal(is.data.frame(df), TRUE)
+    expect_equal(tibble::is_tibble(df), FALSE)
     expect_equal(as.character(df[1, "Original.Name"]), lipidNames[[i]])
     expect_true(!is.na(df[1, "Normalized.Name"]))
   }
   df2 <- rgoslin::parseLipidNames(lipidNames)
   expect_equal(46, nrow(df2))
+  expect_equal(is.data.frame(df2), TRUE)
+  expect_equal(tibble::is_tibble(df2), FALSE)
   expect_equal(0, sum(is.na(df2[, "Message"])))
   expect_equal(0, sum(is.na(df2[, "Normalized.Name"])))
 })

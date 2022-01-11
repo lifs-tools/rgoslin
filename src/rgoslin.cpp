@@ -157,6 +157,7 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
     lipidDetails.push_back(NA_INTEGER, "LCB.OH");
     lipidDetails.push_back(NA_INTEGER, "LCB.DB");
     lipidDetails.push_back(chr_na, "LCB.Bond.Type");
+    lipidDetails.push_back(chr_na, "LCB.DB.Positions");
     lipidDetails.push_back(NA_INTEGER, "FA3.Position");
     lipidDetails.push_back(NA_INTEGER, "FA3.C");
     lipidDetails.push_back(NA_INTEGER, "FA3.OH");
