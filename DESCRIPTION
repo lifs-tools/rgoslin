@@ -22,7 +22,8 @@ Suggests:
     rmarkdown,
     kableExtra,
     dplyr,
-    BiocManager
+    BiocManager,
+    tibble
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 VignetteBuilder: knitr
