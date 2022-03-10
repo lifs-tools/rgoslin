@@ -18,7 +18,7 @@ jobs:
           #        - { name: "macOS Latest Clang", artifact: "macOS.tar.xz", os: macos-latest, build_type: "Release", cc: "clang", cxx: "clang++" }
         - { name: "MacOS Latest Clang", artifact: "MacOS-clang.tar.xz", os: macos-latest, build_type: "Release", cc: "clang", cxx: "clang++" }
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: make
       run: make CC=${{ matrix.config.cxx }} clean
     - name: make 
