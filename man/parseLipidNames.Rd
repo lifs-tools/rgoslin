@@ -4,10 +4,18 @@
 \alias{parseLipidNames}
 \title{Parse multiple lipid names and return a data frame with the results.}
 \usage{
-parseLipidNames(lipidNames)
+parseLipidNames(lipidNames, grammar = NULL)
 }
 \arguments{
 \item{lipidNames}{The vector of lipid names to parse.}
+
+\item{grammar}{The grammar to use. One of "Goslin", "GoslinFragments",
+"SwissLipids", "LipidMaps", "HMDB", "FattyAcids". Call
+\code{listAvailableGrammars()} for a complete list of available grammars.
+If \code{grammar} is omitted or \code{NULL} is passed as a parameter, all
+available grammars / parsers will be tested. The first successful one will
+win. If all parsers fail, the "Messages" column in the returned data frame
+will contain the last parsers message.}
 }
 \value{
 Data frame where each row reports the parsing result of each element
@@ -22,4 +30,5 @@ empty data frame.
 }
 \examples{
 parseLipidNames(c("PC 32:1","LPC 34:1","TG(18:1_18:0_16:1)"))
+parseLipidNames(c("Cer(d18:1(8Z)/24:0)", grammar = "LipidMaps"))
 }

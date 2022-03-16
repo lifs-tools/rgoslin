@@ -34,9 +34,38 @@ Here, rgoslin 2.0 uses the Goslin grammars and the cppgoslin parser to support t
 - Parser implementations have been updated to reflect the latest lipid shorthand nomenclature changes. Please see the [Goslin repository](https://github.com/lifs-tools/goslin) for more details.
 - Exceptions in the C++ part of the library are captured as warnings in R. However, if you parse multiple lipid names, exceptions will not stop the parsing process.
 
-## Installation ##
+## Installation
 
-### Prerequisites
+rgoslin is available as a Bioconductor package. You can install it as follows:
+
+```R
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("rgoslin")
+```
+
+## Usage
+
+To load the package, start an R session and type
+
+```R
+  library(rgoslin)
+```
+
+Type the following to see the package vignette / tutorial:
+
+```R
+  vignette('introduction', package = 'rgoslin')
+```
+
+## Getting help & support
+If you find any issues with the library, would like to have other functionality included, require help or would like to contribute, please contact us via our [GitHub Project](https://github.com/lifs-tools/rgoslin) or via the [LIFS support page](https://lifs-tools.org/support.html).
+
+## Instructions for development
+
+### Installation From GitHub (for development versions)
+
 Install the `devtools` package with the following command.
 ```R
 if(!require(devtools)) { install.packages("devtools") }
@@ -63,7 +92,7 @@ MAKE = make -j4
 
 Please note that these settings will apply to *all* R packages that require compilation from this point on! Also, `-O3` may have detrimental influence on some code. You can also replace it with R's default `-O2`.
 
-### Installing rgoslin
+### Installing rgoslin development versions from GitHub
 
 Run
 
@@ -107,21 +136,10 @@ library(devtools)
 test()
 ```
 
-### Usage
-
-To load the package, start an R session and type
-
-```R
-  library(rgoslin)
-```
-
-Type the following to see the package vignette / tutorial:
-
-```R
-  vignette('introduction', package = 'rgoslin')
-```
-
 ## Adding cppgoslin as a Git subtree
+
+cppgoslin is an integral component of rgoslin, it implements the parsers for the Goslin grammars in C++.
+It usually is already available in the rgoslin Git repository, so you only need to apply the following steps if you intend to update the cppgoslin version used by rgoslin.
 
 In the root of your git project, run the git subtree command, with `<PREFIX>` replaced by the subdirectory path where you want the subtree to live (`src/cppgoslin/`):
 

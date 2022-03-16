@@ -2,10 +2,7 @@
 
 export(isValidLipidName)
 export(listAvailableGrammars)
-export(parseLipidName)
-export(parseLipidNameWithGrammar)
 export(parseLipidNames)
-export(parseLipidNamesWithGrammar)
 importFrom(Rcpp,evalCpp)
 importFrom(Rcpp,sourceCpp)
 useDynLib(rgoslin, .registration = TRUE)
