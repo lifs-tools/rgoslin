@@ -66,6 +66,7 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
     Headgroup *headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
     
     if (use_head_group) return headgroup;
+    head_group = headgroup->get_class_name();
     int true_fa = 0;
     for (auto fa : *fa_list){
         true_fa += fa->num_carbon > 0 || fa->double_bonds->get_num() > 0;
@@ -101,6 +102,12 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
     }
         
     else if (true_fa != poss_fa && (is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE | STRUCTURE_DEFINED))){
+        string hg_name = headgroup->headgroup;
+        delete headgroup;
+        throw ConstraintViolationException("Number of described fatty acyl chains (" + std::to_string(true_fa) + ") not allowed for lipid class '" + hg_name + "' (having " + std::to_string(poss_fa) + " fatty aycl chains).");
+    }
+    
+    else if (contains_val(LipidClasses::get_instance().lipid_classes.at(Headgroup::get_class(head_group)).special_cases, "Lyso") && true_fa > poss_fa){
         string hg_name = headgroup->headgroup;
         delete headgroup;
         throw ConstraintViolationException("Number of described fatty acyl chains (" + std::to_string(true_fa) + ") not allowed for lipid class '" + hg_name + "' (having " + std::to_string(poss_fa) + " fatty aycl chains).");
