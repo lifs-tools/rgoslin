@@ -1,21 +1,22 @@
 ---
-title: "Using R Goslin to parse and normalize lipid nomenclature"
+title: "Using rgoslin to parse and normalize lipid nomenclature"
+shorttitle: "Using rgoslin"
 author: 
 - name: Nils Hoffmann
-  affiliation: Bielefeld University, Center for Biotechnology, Bielefeld, Germany
-date: 17 December 2021
+  affiliation: Forschungszentrum Jülich, Institute for Bio- and Geosciences, IBG-5, Bielefeld, Germany
+date: 16 March 2022
 output:
-    html_document
-  # BiocStyle::html_document:
+    #html_document
+    BiocStyle::html_document:
     # toc_float: true
   # BiocStyle::pdf_document: default
-# package: BiocStyle    
+package: rgoslin
 vignette: >
     %\VignetteIndexEntry{Using R Goslin to parse and normalize lipid nomenclature}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
-# Prerequisites
+# Introduction
 
 This project is a parser, validator and normalizer implementation for shorthand lipid nomenclatures, base on the Grammar of Succinct Lipid Nomenclatures project.
 
@@ -51,6 +52,7 @@ library(dplyr)
 library(knitr)
 library(kableExtra)
 })
+scrollBoxWidth <- "650px"
 ```
 ## Supported nomenclatures
 
@@ -65,10 +67,21 @@ library(kableExtra)
 - The fragment grammar parser has been removed but may be re-added in the future. Please use our [GitHub Issues](https://github.com/lifs-tools/goslin/issues) if you need this parser.
 - The column names of the R implementation have been changed to contain "." instead of " " (space). This makes handling and access easier, since quoting is no longer necessary.
 
+# Installation
+
+The package can be installed with the `BiocManager` package as follows:
+
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("rgoslin")
+```
+
 # Using the library
 
-In order to use the provided translation functions of rgoslin, you first need to load the library.
-```{r}
+In order to use the provided translation functions of rgoslin, you first need to load the library. If rgoslin is not yet available, please follow the instructions in the previous section on "Installation".
+```{r, message = FALSE}
 library(rgoslin)
 ```
 
@@ -84,80 +97,96 @@ isValidLipidName("PC 32:1")
 
 ## Parsing a single lipid name
 
-Using `parseLipidName` with a lipid name returns a data frame of properties of the parsed lipid name as columns.
+Using `parseLipidNames` with a lipid name returns a data frame of properties of the parsed lipid name as columns.
 ```{r}
-df <- parseLipidName("PC 32:1")
+df <- parseLipidNames("PC 32:1")
 ```
 
 
 ```{r echo = FALSE, results = 'asis'}
-kable(df %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "200px")
+kable(df %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, FA and LCB columns omitted, since they are unpopulated (`NA`) on the lipid species level.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "150px")
 ```
 
-```{r echo = FALSE, results = 'asis'}
-kable(df %>% select(Normalized.Name, starts_with("FA"),starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1 with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "200px")
-```
-
-If you want to set the grammar to parse against manually, this is also possible:
+If you want to set the grammar to parse against manually, this is also possible as the second argument:
 
 ```{r}
 originalName <- "TG(16:1(5E)/18:0/20:2(3Z,6Z))"
-tagDf <- rgoslin::parseLipidNameWithGrammar(originalName, "LipidMaps")
+tagDf <- parseLipidNames(originalName, grammar = "LipidMaps")
 ```
 
 ```{r echo = FALSE, results = 'asis'}
-kable(tagDf %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for TG isomeric subspecies, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "200px")
+kable(tagDf %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for TG isomeric subspecies, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "200px")
 ```
 
 ```{r echo = FALSE, results = 'asis'}
-kable(tagDf %>% select(Normalized.Name, starts_with("FA"),starts_with("LCB")), caption = "Lipid name parsing results for TG isomeric subspecies with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "200px")
+kable(tagDf %>% select(Normalized.Name, starts_with("FA"),starts_with("LCB")), caption = "Lipid name parsing results for TG isomeric subspecies with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "200px")
 ```
 
 ## Parsing multiple lipid names
 
 If you want to parse multiple lipid names, use the `parseLipidNames` method with a vector of lipid names. This returns a data frame of properties of the parsed lipid names with one row per lipid.
 
+> **_NOTE:_** Omitting the grammar argument will test all available parsers, the first one to successfully parse the name  wins. This will consequently take longer than explicitly setting the grammar to select the parser for.
+
 ```{r}
 multipleLipidNamesDf <- parseLipidNames(c("PC 32:1","LPC 34:1","TG(18:1_18:0_16:1)"))
-
 ```
 
 ```{r echo = FALSE, results = 'asis'}
-kable(multipleLipidNamesDf %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, LPC 34:1, TG(18:1_18:0_16:1), FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "300px")
+kable(multipleLipidNamesDf %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, LPC 34:1, TG(18:1_18:0_16:1), FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
 ```{r echo = FALSE, results = 'asis'}
-kable(multipleLipidNamesDf %>% select(Normalized.Name, starts_with("FA"), starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, LPC 34:1, TG(18:1_18:0_16:1) with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "300px")
+kable(multipleLipidNamesDf %>% select(Normalized.Name, starts_with("FA"), starts_with("LCB")), caption = "Lipid name parsing results for PC 32:1, LPC 34:1, TG(18:1_18:0_16:1) with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
 
-Finally, if you want to parse multiple lipid names and want to use one particular grammar:
+Finally, if you want to parse multiple lipid names and want to use one particular grammar, simply add its name as the "grammar" argument.
 
 ```{r}
 originalNames <- c("PC 32:1","LPC 34:1","TAG 18:1_18:0_16:1")
-multipleLipidNamesWithGrammar <- parseLipidNamesWithGrammar(originalNames, "Goslin")
+multipleLipidNamesWithGrammar <- parseLipidNames(originalNames, grammar = "Goslin")
 ```
 
 ```{r echo = FALSE, results = 'asis'}
-kable(multipleLipidNamesWithGrammar %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1, LPC 34:1, TG(18:1_18:0_16:1), FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "300px")
+kable(multipleLipidNamesWithGrammar %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1, LPC 34:1, TG(18:1_18:0_16:1), FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
 
 ```{r echo = FALSE, results = 'asis'}
-kable(multipleLipidNamesWithGrammar %>% select(Normalized.Name, starts_with("FA"), starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1, LPC 34:1, TG(18:1_18:0_16:1) with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "300px")
+kable(multipleLipidNamesWithGrammar %>% select(Normalized.Name, starts_with("FA"), starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1, LPC 34:1, TG(18:1_18:0_16:1) with FA and LCB columns.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
 
-# Parsing Adducts
+## Parsing IUPAC-compliant Fatty Acid Names
+
+LIPID MAPS has a number of fatty acids that use names following the IUPAC-IUB Fatty Acids nomenclature. These can now also be parsed and converted to the updated lipid shorthand nomenclature. We are using [LMFA01020216](https://www.lipidmaps.org/databases/lmsd/LMFA01020216) and [LMFA08040030](https://www.lipidmaps.org/databases/lmsd/LMFA08040030) as examples here:
+
+```{r}
+originalNames <- c("LMFA01020216"="5-methyl-octadecanoic acid", "LMFA08040030"="N-((+/-)-8,9-dihydroxy-5Z,11Z,14Z-eicosatrienoyl)-ethanolamine")
+normalizedFattyAcidsNames <- parseLipidNames(originalNames, "FattyAcids")
+```
+
+```{r echo = FALSE, results = 'asis'}
+kable(normalizedFattyAcidsNames %>% select(-starts_with(c("LCB","FA2","FA3","FA4","Adduct", "Adduct.Charge"))), caption = "Lipid name parsing results for Goslin grammar and fatty acids 5-methyl-octadecanoic acid N-((+/-)-8,9-dihydroxy-5Z,11Z,14Z-eicosatrienoyl)-ethanolamine, some columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
+```
+
+## Parsing Adducts
 
 The Goslin parser also support reading of lipid shorthand names with adducts:
 
 ```{r}
 originalNames <- c("PC 32:1[M+H]1+", "PC 32:1 [M+H]+","PC 32:1")
-lipidNamesWithAdduct <- parseLipidNamesWithGrammar(originalNames, "Goslin")
+lipidNamesWithAdduct <- parseLipidNames(originalNames, "Goslin")
 ```
 
 This will populate the columns "Adduct" and "AdductCharge" with the respective values. Please note that we recommend to use the adduct and its charge in full IUPAC recommended nomenclature: 
 
 ```{r echo = FALSE, results = 'asis'}
-kable(lipidNamesWithAdduct %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1[M+H]1+, PC 32:1 [M+H]+ and PC 32:1, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = "800px", height = "300px")
+kable(lipidNamesWithAdduct %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1[M+H]1+, PC 32:1 [M+H]+ and PC 32:1, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
+
+# Using rgoslin with other Bioconductor packages
+
+## lipidr
+
+## xcms
 
 # Getting help & support
 If you find any issues with the library, would like to have other functionality included, require help or would like to contribute, please contact us via our [GitHub Project](https://github.com/lifs-tools/rgoslin) or via the [LIFS support page](https://lifs-tools.org/support.html).
