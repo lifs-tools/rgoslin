@@ -47,6 +47,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r include=FALSE, echo=FALSE, results="hide", warning=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("lipidr")
 suppressPackageStartupMessages({
 library(dplyr)
 library(knitr)
