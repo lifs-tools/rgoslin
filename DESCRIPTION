@@ -15,13 +15,14 @@ Description: The R implementation for the Grammar of Succint Lipid Nomenclature
 License: MIT + file LICENSE
 Imports: Rcpp (>= 1.0.3)
 LinkingTo: Rcpp, testthat
+Requires:
+    dplyr
 Suggests:
     testthat (>= 2.1.0),
     BiocStyle,
     knitr,
     rmarkdown,
     kableExtra,
-    dplyr,
     BiocManager,
     tibble
 RoxygenNote: 7.1.2

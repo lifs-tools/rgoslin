@@ -41,6 +41,9 @@ test_that("lipid name parsing with grammar works", {
   
   originalName <- "GalNAcβ1-4(Galβ1-4GlcNAcβ1-3)Galβ1-4Glcβ-Cer(d18:1/24:1(15Z))"
   df <- rgoslin::parseLipidNames(originalName, "LipidMaps")
+  # Lipid Maps Species name is currently "Hex(3)-HexNAc(2)-Cer 42:2;O2"
+  expect_equal(df[["Species.Name"]], "GalGalGalNAcGlcGlcNAcCer 42:2;O2") 
+  expect_equal(df[["Mass"]], 1539.9388, 4)
 })
 
 test_that("multiple lipid names parsing works", {
@@ -184,38 +187,38 @@ test_that("getting the list of supported parsers/grammars works", {
 })
 
 test_that("lipid level works", {
-  l = rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH[R],8OH;3oxo", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH[R],8OH;3oxo", "Shorthand2020")[1,]
   expect_equal("COMPLETE_STRUCTURE", l[["Level"]])
   
-  l = rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH,8OH;3oxo", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH,8OH;3oxo", "Shorthand2020")[1,]
   expect_equal("FULL_STRUCTURE", l[["Level"]])
   
-  l = rgoslin::parseLipidNames("PE 16:1(6)/16:0;(OH)2;oxo", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 16:1(6)/16:0;(OH)2;oxo", "Shorthand2020")[1,]
   expect_equal("STRUCTURE_DEFINED", l[["Level"]])
   
-  l = rgoslin::parseLipidNames("PE 16:1/16:1;O3", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 16:1/16:1;O3", "Shorthand2020")[1,]
   expect_equal("SN_POSITION", l[["Level"]])
   
-  l = rgoslin::parseLipidNames("PE 16:1_16:1;O3", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 16:1_16:1;O3", "Shorthand2020")[1,]
   expect_equal("MOLECULAR_SPECIES", l[["Level"]])
   
-  l = rgoslin::parseLipidNames("PE 32:1;O3", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("PE 32:1;O3", "Shorthand2020")[1,]
   expect_equal("SPECIES", l[["Level"]])
 })
 
 test_that("cyclopropane works", {
-  l = rgoslin::parseLipidNames("FA 19:0;[11-13cy3:0]", "Shorthand2020")[1,]
+  l <- rgoslin::parseLipidNames("FA 19:0;[11-13cy3:0]", "Shorthand2020")[1,]
   expect_equal("FULL_STRUCTURE", l[["Level"]])
 })
 
 test_that("DB count for Fa is correct", {
-  l = rgoslin::parseLipidNames("CAR 18:1")[1,]
+  l <- rgoslin::parseLipidNames("CAR 18:1")[1,]
   expect_equal(1, l[["FA1.DB"]])
-  expect_equal(425.3505, l[["Mass"]], tolerance = 1e-06)
+  expect_equal(425.3505, l[["Mass"]], tolerance <- 1e-06)
 })
 
 test_that("LCB and FAs are distinguished", {
-  l = rgoslin::parseLipidNames("Cer d18:1/24:0")[1,]
+  l <- rgoslin::parseLipidNames("Cer d18:1/24:0")[1,]
   expect_equal(1, l[["LCB.Position"]])
   expect_equal(18, l[["LCB.C"]])
   expect_equal(1, l[["LCB.DB"]])
@@ -227,31 +230,38 @@ test_that("LCB and FAs are distinguished", {
 })
 
 test_that("Hydroxyl group counts are proper", {
-  l = rgoslin::parseLipidNames("Cer 36:1;2")[1,]
+  l <- rgoslin::parseLipidNames("Cer 36:1;2")[1,]
   expect_equal(2, l[["Total.OH"]])
-  l = rgoslin::parseLipidNames("Cer d36:1")[1,]
+  l <- rgoslin::parseLipidNames("Cer d36:1")[1,]
   expect_equal(2, l[["Total.OH"]])
-  l = rgoslin::parseLipidNames("Cer 18:1;2/18:0")[1,]
+  l <- rgoslin::parseLipidNames("Cer 18:1;2/18:0")[1,]
   expect_equal(2, l[["Total.OH"]])
-  l = rgoslin::parseLipidNames("Cer d18:1/18:0")[1,]
+  l <- rgoslin::parseLipidNames("Cer d18:1/18:0")[1,]
   expect_equal(2, l[["Total.OH"]])
-  l = rgoslin::parseLipidNames("Cer 18:1;(OH)2/18:0")[1,]
+  l <- rgoslin::parseLipidNames("Cer 18:1;(OH)2/18:0")[1,]
   expect_equal(2, l[["Total.OH"]])
 })
 
 test_that("IUPAC Fatty Acid Names are parsed correct", {
-  l = rgoslin::parseLipidNames("5-methyl-octadecanoic acid")[1,]
+  l <- rgoslin::parseLipidNames("5-methyl-octadecanoic acid")[1,]
   expect_equal("FA 18:0;5Me", l[["Normalized.Name"]])
-  l = rgoslin::parseLipidNames("2-docosyl-3-hydroxy-28,29-epoxy-30-methyl-pentacontanoic acid")[1,]
+  l <- rgoslin::parseLipidNames("2-docosyl-3-hydroxy-28,29-epoxy-30-methyl-pentacontanoic acid")[1,]
   expect_equal("FA 50:0;2(22:0);28Ep;30Me;3OH", l[["Normalized.Name"]])
-  l = rgoslin::parseLipidNames("11R-hydroxy-9,15-dioxo-2,3,4,5-tetranor-prostan-1,20-dioic acid")[1,]
+  l <- rgoslin::parseLipidNames("11R-hydroxy-9,15-dioxo-2,3,4,5-tetranor-prostan-1,20-dioic acid")[1,]
   expect_equal("FA 15:0;15COOH;[4-8cy5:0;7OH;5oxo];11oxo", l[["Normalized.Name"]])
-  l = rgoslin::parseLipidNames("N-((+/-)-8,9-dihydroxy-5Z,11Z,14Z-eicosatrienoyl)-ethanolamine", "FattyAcids")[1,]
+  l <- rgoslin::parseLipidNames("N-((+/-)-8,9-dihydroxy-5Z,11Z,14Z-eicosatrienoyl)-ethanolamine", "FattyAcids")[1,]
   expect_equal("NAE 20:3(5Z,11Z,14Z);8OH,9OH", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("N-ethyl-5Z,8Z,11Z,14Z-eicosatetraenoyl amine", "FattyAcids")[1,]
+  expect_equal("NA 2:0/20:4(5Z,8Z,11Z,14Z)", l[["Normalized.Name"]])
+  expect_equal("NA 2:0/20:4(5,8,11,14)", l[["Structure.Defined.Name"]])
+  expect_equal("NA 2:0/20:4", l[["Sn.Position.Name"]])
+  l <- rgoslin::parseLipidNames(l[["Sn.Position.Name"]], "Shorthand2020")[1,]
+  expect_equal("NA 2:0_20:4", l[["Molecular.Species.Name"]])
+  expect_equal("NA 22:4", l[["Species.Name"]])
 })
 
 test_that("Sterols work", {
-  l = rgoslin::parseLipidNames("Desmosterol", "Goslin")
+  l <- rgoslin::parseLipidNames("Desmosterol", "Goslin")
   expect_equal("ST 27:2;O", l[["Normalized.Name"]])
 })
 
@@ -259,7 +269,19 @@ test_that("isValidLipidName creates warning on invalid name",{
   expect_warning(rgoslin::isValidLipidName("PX 40:1"), "Parsing of lipid name 'PX 40:1' caused an exception: Lipid not found")
 })
 
-test_that("weird input creates warnings", {
-  expect_warning(rgoslin::parseLipidNames(c("A","")), "caused an exception: Lipid not found")
-  expect_warning(rgoslin::parseLipidNames(c(1,2)), "caused an exception: Lipid not found")
+test_that("weird input creates messages", {
+  expect_message(rgoslin::parseLipidNames(c("A")), "Encountered an error while parsing 'A': Expecting a single string value: ")
+  expect_message(rgoslin::parseLipidNames(c("")), "Encountered an error while parsing '': Expecting a single string value: ")
+  # try to parse a) with wrong grammar, b) with invalid input
+  l <- rgoslin::parseLipidNames(c("Cer 36:1;2", 5), "Shorthand2020")
+  expect_equal(nrow(l), 2)
+  expect_true(is.na(l[1,"Normalized.Name"]))
+  expect_true(is.na(l[2,"Normalized.Name"]))
+  expect_equal("NOT_PARSEABLE", l[1,"Grammar"])
+  expect_equal("NOT_PARSEABLE", l[2,"Grammar"])
+  l2 <- rgoslin::parseLipidNames(c("Cer 36:1;2", 5))
+  expect_equal(nrow(l2), 2)
+  expect_equal("NOT_PARSEABLE", l[2,"Grammar"])
+  expect_true(is.na(l[2,"Normalized.Name"]))
+  testthat::expect_error(rgoslin::parseLipidNames(c(1,2)), "lipidNames must not contain numbers only!")
 })
