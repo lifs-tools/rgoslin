@@ -297,17 +297,23 @@ SEXP rcpp_parse_lipid_name_with_grammar(std::string lipid_name, std::string targ
     LipidAdduct* lipidAdduct = NULL;
     for (auto parser : lipid_parser->parser_list) {
         try {
-            if(target_grammar.compare(parser->grammar_name)==0) {
+            if (target_grammar.compare(parser->grammar_name)==0) {
                 lipidAdduct = parser->parse(lipid_name, false);
-                if (lipidAdduct){
-                    return handle_lipid(lipidAdduct, lipid_name, parser->grammar_name, chr_na);
-                }
+                return handle_lipid(lipidAdduct, lipid_name, parser->grammar_name, chr_na);
             }
         } catch (LipidException &e){
-            warning("Parsing of lipid name '" +lipid_name+"' with grammar '" +target_grammar+ "' caused an exception: "+ e.what());
+            CharacterVector message = CharacterVector::create();
+            message.push_back("Parsing of lipid name '");
+            message.push_back(lipid_name);
+            message.push_back("' with grammar '");
+            message.push_back(target_grammar);
+            message.push_back("' caused an exception: ");
+            message.push_back(e.what());
+            message(Rcpp::as<std::string>(message));
+            return handle_lipid(lipidAdduct, lipid_name, parser->grammar_name, chr_na);
         }
     }
-    return List::create();
+    return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
 }
 
 /**
@@ -341,7 +347,13 @@ SEXP rcpp_parse_lipid_name(std::string lipid_name) {
         lipidAdduct = lipid_parser->parse_parallel(lipid_name);
         return handle_lipid(lipidAdduct, lipid_name, (lipidAdduct != 0) ? String(lipid_parser->lastSuccessfulParser->grammar_name) : chr_na, chr_na);
     } catch(LipidException &e) {
-        warning("Parsing of lipid name '" +lipid_name+"' caused an exception: "+ e.what());
-        return List::create();
+        CharacterVector message = CharacterVector::create();
+        message.push_back("Parsing of lipid name '");
+        message.push_back(lipid_name);
+        message.push_back("' caused an exception: ");
+        message.push_back(e.what());
+        message(Rcpp::as<std::string>(message));
+        return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
     }
+    return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
 }

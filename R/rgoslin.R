@@ -8,7 +8,8 @@ NULL
 #' \code{isValidLipidName} checks the provided lipid name against the built-in
 #' grammars.
 #' Will return FALSE if none of the parsers was able to parse the provided name
-#' successfully or if any error was raised.
+#' successfully. Will stop execution via \code{stop} if non character input is 
+#' detected.
 #' @param lipidName The lipid name to check.
 #' @examples
 #' isValidLipidName("PC 32:1")
@@ -18,8 +19,7 @@ NULL
 #' @export
 isValidLipidName <- function(lipidName) {
     if(!is.character(lipidName)) {
-        warning("'lipidName' must be a string")
-        return(FALSE)
+        stop("'lipidName' must be a string")
     }
     tryCatch({
         return(rcpp_is_valid_lipid_name(lipidName))
@@ -31,8 +31,9 @@ isValidLipidName <- function(lipidName) {
 #' \code{parseLipidNames} reads the provided lipid names vector and returns
 #' structural information as a data frame. Will return a cell with the
 #' "Grammar" column set to "NOT_PARSEABLE" if none of the parsers was able to
-#' parse the provided name successfully. If any error was raised, returns an
-#' empty data frame.
+#' parse the provided name successfully. Will stop execution via \code{stop} if 
+#' invalid non character input is detected or fatal errors are encountered 
+#' during parsing.
 #' @param lipidNames The vector of lipid names to parse.
 #' @param grammar The grammar to use. One of "Goslin", "GoslinFragments",
 #' "SwissLipids", "LipidMaps", "HMDB", "FattyAcids". Call
@@ -49,31 +50,76 @@ isValidLipidName <- function(lipidName) {
 #' @export
 parseLipidNames <- function(lipidNames, grammar = NULL) {
     namesList <- list()
-    for (i in seq_along(lipidNames)) {
-        if (!is.character(lipidNames[[i]])) {
-            warning(paste("lipidNames[[",i,"]]='",lipidNames[[i]],"' must be a string!"))
-        }
-        if (is.null(grammar)) {
-            tryCatch({
-                namesList[[i]] <-
-                    as.data.frame(
-                        rcpp_parse_lipid_name(
-                            as.character(lipidNames[[i]])
-                        )
-                    )
-            })
-        } else {
-            tryCatch({
-                namesList[[i]] <-
-                    as.data.frame(
-                        rcpp_parse_lipid_name_with_grammar(
-                            as.character(lipidNames[[i]]), grammar
-                        )
-                    )
-            })
-        }
+    if (is.numeric(lipidNames)) {
+        stop(paste("lipidNames must not contain numbers only!"))
     }
-    return(do.call(rbind, namesList))
+    for (i in seq_along(lipidNames)) {
+        df <- tryCatch({
+            if (is.null(grammar)) {
+                as.data.frame(
+                    rcpp_parse_lipid_name(
+                        as.character(lipidNames[[i]])
+                    )
+                )
+            } else {
+                as.data.frame(
+                    rcpp_parse_lipid_name_with_grammar(
+                        as.character(lipidNames[[i]]), grammar
+                    )
+                )
+            }
+        }, warning = function(warn) {
+            grammarStr <- ifelse(
+                is.null(grammar),
+                "",
+                paste0(
+                    " with grammar '",
+                    grammar,
+                    "'"
+                )
+            )
+            message(
+                "Encountered a warning while parsing '",
+                lipidNames[[i]],
+                "'",
+                grammarStr,
+                ": ",
+                warn$message
+            )
+            data.frame(
+                "Normalized.Name" = NA,
+                "Original.Name" = as.character(lipidNames[[i]]),
+                "Grammar" = "NOT_PARSEABLE",
+                "Message" = warn$message
+            )
+        }, error = function(err) {
+            grammarStr <- ifelse(
+                is.null(grammar),
+                "",
+                paste0(
+                    " with grammar '",
+                    grammar,
+                    "'"
+                )
+            )
+            message(
+                "Encountered an error while parsing '",
+                lipidNames[[i]],
+                "'",
+                grammarStr,
+                ": ",
+                err$message
+            )
+            data.frame(
+                "Normalized.Name" = NA,
+                "Original.Name" = as.character(lipidNames[[i]]),
+                "Grammar" = "NOT_PARSEABLE",
+                "Message" = err$message
+            )
+        })
+        namesList[[i]] <- df
+    }
+    return(dplyr::bind_rows(namesList))
 }
 
 #' Return the list of grammars supported by goslin.
