@@ -13,10 +13,10 @@ Description: The R implementation for the Grammar of Succint Lipid Nomenclature
     Category and Class information. Also, the structural level and further structural
     details about the head group, fatty acyls and functional groups are returned, where applicable.
 License: MIT + file LICENSE
-Imports: Rcpp (>= 1.0.3)
-LinkingTo: Rcpp, testthat
-Requires:
+Imports: 
+    Rcpp (>= 1.0.3),
     dplyr
+LinkingTo: Rcpp, testthat
 Suggests:
     testthat (>= 2.1.0),
     BiocStyle,
