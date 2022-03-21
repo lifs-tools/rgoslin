@@ -1,0 +1,24 @@
+citHeader("To cite rgoslin in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Goslin: A Grammar of Succinct Lipid Nomenclature",
+  author   = personList(
+              as.person("Dominik Kopczynski"),
+              as.person("Nils Hoffmann"),
+              as.person("Bing Peng"),
+              as.person("Robert Ahrends")
+             ),
+  journal  = "Analytical Chemistry",
+  year     = "2020",
+  volume   = "92",
+  number   = "16",
+  pages    = "10957-10960",
+  url      = "https://pubs.acs.org/doi/10.1021/acs.analchem.0c01690",
+  textVersion = paste(
+    "Goslin: A Grammar of Succinct Lipid Nomenclature",
+    "Dominik Kopczynski, Nils Hoffmann, Bing Peng, and Robert Ahrends",
+    "Analytical Chemistry 2020 92 (16), 10957-10960",
+    "DOI: 10.1021/acs.analchem.0c01690"
+  )
+)

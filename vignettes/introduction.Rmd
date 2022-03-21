@@ -78,7 +78,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("rgoslin")
 ```
 
-# Using the library
+# Example use cases
 
 In order to use the provided translation functions of rgoslin, you first need to load the library. If rgoslin is not yet available, please follow the instructions in the previous section on "Installation".
 ```{r, message = FALSE}
@@ -182,11 +182,33 @@ This will populate the columns "Adduct" and "AdductCharge" with the respective v
 kable(lipidNamesWithAdduct %>% select(-starts_with("FA"),-starts_with("LCB")), caption = "Lipid name parsing results for Goslin grammar and lipids PC 32:1[M+H]1+, PC 32:1 [M+H]+ and PC 32:1, FA and LCB columns omitted for brevity.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
 
-# Using rgoslin with other Bioconductor packages
+## Using rgoslin with lipidr
 
-## lipidr
+[lipidr](https://bioconductor.org/packages/release/bioc/html/lipidr.html) is a Bioconductor package with specific support for QC checking, uni- and multivariate analysis and visualization of lipidomics data acquired with Skyline or from metabolomics workbench. It uses a custom implementation for lipid name handling that does not yet support the updated shorthand nomenclature.
 
-## xcms
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("lipidr")
+```
+
+After installation of lipidr, we need to load the library:
+
+```{r, message = FALSE}
+library(lipidr)
+```
+
+We will use [lipidr's workflow example](https://bioconductor.org/packages/release/bioc/vignettes/lipidr/inst/doc/workflow.html) to illustrate how to apply rgoslin in such a use-case. We read in an example dataset exported from Skyline based on a targeted lipidomics experiment:
+
+```{r}
+datadir = system.file("extdata", package="lipidr")
+filelist = list.files(datadir, "data.csv", full.names = TRUE) # all csv files
+d = read_skyline(filelist)
+clinical_file = system.file("extdata", "clin.csv", package="lipidr")
+d = add_sample_annotation(d, clinical_file)
+```
+## Using rgoslin with xcms
 
 # Getting help & support
 If you find any issues with the library, would like to have other functionality included, require help or would like to contribute, please contact us via our [GitHub Project](https://github.com/lifs-tools/rgoslin) or via the [LIFS support page](https://lifs-tools.org/support.html).

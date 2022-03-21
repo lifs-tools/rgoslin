@@ -23,7 +23,7 @@ test_that("lipid name parsing with grammar works", {
   expect_equal(df[["Structure.Defined.Name"]], "NA")
   expect_equal(df[["Full.Structure.Name"]], "NA")
   expect_equal(df[["Lipid.Maps.Category"]], "GP")
-
+  
   originalName <- "TG(16:1(5E)/18:0/20:2(3Z,6Z))"
   df <- rgoslin::parseLipidNames(originalName, "LipidMaps")
   expect_equal(is.data.frame(df), TRUE)
@@ -38,6 +38,9 @@ test_that("lipid name parsing with grammar works", {
   expect_equal(df[["FA1.DB.Positions"]], "[5E]")
   expect_equal(df[["FA2.DB.Positions"]], "[]")
   expect_equal(df[["FA3.DB.Positions"]], "[3Z, 6Z]")
+  
+  originalName <- "GalNAcβ1-4(Galβ1-4GlcNAcβ1-3)Galβ1-4Glcβ-Cer(d18:1/24:1(15Z))"
+  df <- rgoslin::parseLipidNames(originalName, "LipidMaps")
 })
 
 test_that("multiple lipid names parsing works", {
@@ -183,19 +186,19 @@ test_that("getting the list of supported parsers/grammars works", {
 test_that("lipid level works", {
   l = rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH[R],8OH;3oxo", "Shorthand2020")[1,]
   expect_equal("COMPLETE_STRUCTURE", l[["Level"]])
-
+  
   l = rgoslin::parseLipidNames("PE 16:1(6Z)/16:0;5OH,8OH;3oxo", "Shorthand2020")[1,]
   expect_equal("FULL_STRUCTURE", l[["Level"]])
-
+  
   l = rgoslin::parseLipidNames("PE 16:1(6)/16:0;(OH)2;oxo", "Shorthand2020")[1,]
   expect_equal("STRUCTURE_DEFINED", l[["Level"]])
-
+  
   l = rgoslin::parseLipidNames("PE 16:1/16:1;O3", "Shorthand2020")[1,]
   expect_equal("SN_POSITION", l[["Level"]])
-
+  
   l = rgoslin::parseLipidNames("PE 16:1_16:1;O3", "Shorthand2020")[1,]
   expect_equal("MOLECULAR_SPECIES", l[["Level"]])
-
+  
   l = rgoslin::parseLipidNames("PE 32:1;O3", "Shorthand2020")[1,]
   expect_equal("SPECIES", l[["Level"]])
 })
@@ -252,7 +255,11 @@ test_that("Sterols work", {
   expect_equal("ST 27:2;O", l[["Normalized.Name"]])
 })
 
-test_that("isValidLipidName throws creates message",{
-  # l = rgoslin::isValidLipidName("PX 40:1")
+test_that("isValidLipidName creates warning on invalid name",{
   expect_warning(rgoslin::isValidLipidName("PX 40:1"), "Parsing of lipid name 'PX 40:1' caused an exception: Lipid not found")
+})
+
+test_that("weird input creates warnings", {
+  expect_warning(rgoslin::parseLipidNames(c("A","")), "caused an exception: Lipid not found")
+  expect_warning(rgoslin::parseLipidNames(c(1,2)), "caused an exception: Lipid not found")
 })

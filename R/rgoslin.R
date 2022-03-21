@@ -17,6 +17,10 @@ NULL
 #' @return TRUE if the lipidName could be parsed, FALSE otherwise.
 #' @export
 isValidLipidName <- function(lipidName) {
+    if(!is.character(lipidName)) {
+        warning("'lipidName' must be a string")
+        return(FALSE)
+    }
     tryCatch({
         return(rcpp_is_valid_lipid_name(lipidName))
     })
@@ -46,14 +50,17 @@ isValidLipidName <- function(lipidName) {
 parseLipidNames <- function(lipidNames, grammar = NULL) {
     namesList <- list()
     for (i in seq_along(lipidNames)) {
+        if (!is.character(lipidNames[[i]])) {
+            warning(paste("lipidNames[[",i,"]]='",lipidNames[[i]],"' must be a string!"))
+        }
         if (is.null(grammar)) {
             tryCatch({
-            namesList[[i]] <-
-                as.data.frame(
-                    rcpp_parse_lipid_name(
-                        as.character(lipidNames[[i]])
+                namesList[[i]] <-
+                    as.data.frame(
+                        rcpp_parse_lipid_name(
+                            as.character(lipidNames[[i]])
+                        )
                     )
-                )
             })
         } else {
             tryCatch({
