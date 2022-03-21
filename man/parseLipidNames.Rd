@@ -25,8 +25,9 @@ in lipidNames.
 \code{parseLipidNames} reads the provided lipid names vector and returns
 structural information as a data frame. Will return a cell with the
 "Grammar" column set to "NOT_PARSEABLE" if none of the parsers was able to
-parse the provided name successfully. If any error was raised, returns an
-empty data frame.
+parse the provided name successfully. Will stop execution via \code{stop} if 
+invalid non character input is detected or fatal errors are encountered 
+during parsing.
 }
 \examples{
 parseLipidNames(c("PC 32:1","LPC 34:1","TG(18:1_18:0_16:1)"))

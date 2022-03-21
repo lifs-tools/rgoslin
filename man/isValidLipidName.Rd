@@ -16,7 +16,8 @@ TRUE if the lipidName could be parsed, FALSE otherwise.
 \code{isValidLipidName} checks the provided lipid name against the built-in
 grammars.
 Will return FALSE if none of the parsers was able to parse the provided name
-successfully or if any error was raised.
+successfully. Will stop execution via \code{stop} if non character input is 
+detected.
 }
 \examples{
 isValidLipidName("PC 32:1")
