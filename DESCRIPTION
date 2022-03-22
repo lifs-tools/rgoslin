@@ -25,7 +25,7 @@ Suggests:
     kableExtra,
     BiocManager,
     stringr,
-    ggplot,
+    ggplot2,
     tibble,
     lipidr
 RoxygenNote: 7.1.2
