@@ -51,7 +51,7 @@ isValidLipidName <- function(lipidName) {
 parseLipidNames <- function(lipidNames, grammar = NULL) {
     namesList <- list()
     if (is.numeric(lipidNames)) {
-        stop(paste("lipidNames must not contain numbers only!"))
+        stop("lipidNames must not contain numbers only!")
     }
     for (i in seq_along(lipidNames)) {
         df <- tryCatch({

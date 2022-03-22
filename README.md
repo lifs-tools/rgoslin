@@ -45,6 +45,14 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("rgoslin")
 ```
 
+## Installing RTools
+
+rgoslin uses C++ source code of cppgoslin as its backend. This requires compilation during installation. If you do not have RTools installed already, please follow the instructions for your operating system:
+
+- Windows: https://cran.r-project.org/bin/windows/Rtools/
+- Mac OSX: https://mac.r-project.org/tools/
+- Linux: Install packages `r-devel` or `r-base-dev`, depending on your Linux distribution.
+
 ## Usage
 
 To load the package, start an R session and type
