@@ -74,7 +74,7 @@ bool rcpp_is_valid_lipid_name(std::string lipid_name) {
         lipidAdduct = lipid_parser->parse(lipid_name);
         /* checking if parsing was successful, otherwise lipid reference remains NULL */
         bool isValidLipidName = lipidAdduct != NULL;
-        if(lipidAdduct) {
+        if (lipidAdduct) {
             delete lipidAdduct;
         }
         return isValidLipidName;
@@ -89,12 +89,12 @@ bool rcpp_is_valid_lipid_name(std::string lipid_name) {
  */
 std::string get_lipid_name_for_level_with_warnings(LipidAdduct* lipidAdduct, LipidLevel level, bool withWarning) {
     String chr_na = NA_STRING;
-    if(lipidAdduct) {
+    if (lipidAdduct) {
         LipidSpeciesInfo *info = lipidAdduct->lipid->info;
         try {
             return lipidAdduct->get_lipid_string(level);
         } catch(LipidException &e) {
-            if(withWarning) {
+            if (withWarning) {
                 warning("Lipid '"+lipidAdduct->get_lipid_string(info->level)+"' with native level '"+get_lipid_level_str(info->level) + "' can not generate name for more specific level '" +get_lipid_level_str(level)+"'!");
             }
             return chr_na;
@@ -172,7 +172,6 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
     lipidDetails.push_back(chr_na, "FA4.DB.Positions");
 
     if (lipidAdduct){
-        // grammar = parser->grammar_name;
         std::string originalName = chr_na;
         std::string nativeLevelName = chr_na;
         std::string adductString = chr_na;
@@ -194,10 +193,10 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
         lipidMapsMainClass = lipidAdduct->lipid->get_lipid_string(CLASS);
         species = lipidAdduct->lipid->get_lipid_string(SPECIES);
         LipidSpecies* lipid = lipidAdduct->lipid;
-        if(lipid) {
+        if (lipid) {
             LipidSpeciesInfo *info = lipid->info;
             nativeLevelName = lipidAdduct->lipid->get_lipid_string(info->level);
-            if(adduct) {
+            if (adduct) {
                 adductString = lipidAdduct->adduct->get_lipid_string();
                 adductCharge = lipidAdduct->adduct->get_charge();
             }
@@ -234,7 +233,7 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
             lipidDetails["Mass"] = mass;
             lipidDetails["Sum.Formula"] = formula;
             int faCnt = 1;
-            for(FattyAcid* fap : lipid->get_fa_list()) {
+            for (FattyAcid* fap : lipid->get_fa_list()) {
                 string prefix = "";
                 if (fap->lipid_FA_bond_type == LCB_EXCEPTION || fap->lipid_FA_bond_type == LCB_REGULAR){
                     prefix = "LCB.";
@@ -277,7 +276,6 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
         lipidDetails["Original.Name"] = lipid_name;
         lipidDetails["Grammar"] = "NOT_PARSEABLE";
         lipidDetails["Message"] = message;
-            //"Could not find matching parser for grammar '" +grammar+"'! Valid ones are " + rcpp_list_available_grammars());
     }
     return lipidDetails;
 }
@@ -297,11 +295,13 @@ SEXP rcpp_parse_lipid_name_with_grammar(std::string lipid_name, std::string targ
     LipidAdduct* lipidAdduct = NULL;
     for (auto parser : lipid_parser->parser_list) {
         try {
+            /* select the matching lipid parser for the given target_grammar */
             if (target_grammar.compare(parser->grammar_name)==0) {
-                lipidAdduct = parser->parse(lipid_name, false);
+                lipidAdduct = parser->parse(lipid_name, true);
                 return handle_lipid(lipidAdduct, lipid_name, parser->grammar_name, chr_na);
             }
         } catch (LipidException &e){
+            /* create a message detailing the cause and return an empty data frame */
             CharacterVector message = CharacterVector::create();
             message.push_back("Parsing of lipid name '");
             message.push_back(lipid_name);
@@ -313,6 +313,7 @@ SEXP rcpp_parse_lipid_name_with_grammar(std::string lipid_name, std::string targ
             return handle_lipid(lipidAdduct, lipid_name, parser->grammar_name, chr_na);
         }
     }
+    /* return an empty data frame in any other case */
     return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
 }
 
@@ -347,6 +348,7 @@ SEXP rcpp_parse_lipid_name(std::string lipid_name) {
         lipidAdduct = lipid_parser->parse_parallel(lipid_name);
         return handle_lipid(lipidAdduct, lipid_name, (lipidAdduct != 0) ? String(lipid_parser->lastSuccessfulParser->grammar_name) : chr_na, chr_na);
     } catch(LipidException &e) {
+        /* create a message detailing the cause and return an empty data frame */
         CharacterVector message = CharacterVector::create();
         message.push_back("Parsing of lipid name '");
         message.push_back(lipid_name);
@@ -355,5 +357,6 @@ SEXP rcpp_parse_lipid_name(std::string lipid_name) {
         message(Rcpp::as<std::string>(message));
         return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
     }
+    /* return an empty data frame in any other case */
     return handle_lipid(lipidAdduct, lipid_name, chr_na, chr_na);
 }
