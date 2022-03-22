@@ -68,30 +68,6 @@ parseLipidNames <- function(lipidNames, grammar = NULL) {
                     )
                 )
             }
-        }, warning = function(warn) {
-            grammarStr <- ifelse(
-                is.null(grammar),
-                "",
-                paste0(
-                    " with grammar '",
-                    grammar,
-                    "'"
-                )
-            )
-            message(
-                "Encountered a warning while parsing '",
-                lipidNames[[i]],
-                "'",
-                grammarStr,
-                ": ",
-                warn$message
-            )
-            data.frame(
-                "Normalized.Name" = NA,
-                "Original.Name" = as.character(lipidNames[[i]]),
-                "Grammar" = "NOT_PARSEABLE",
-                "Message" = warn$message
-            )
         }, error = function(err) {
             grammarStr <- ifelse(
                 is.null(grammar),

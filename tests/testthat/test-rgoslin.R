@@ -269,9 +269,14 @@ test_that("isValidLipidName creates warning on invalid name",{
   expect_warning(rgoslin::isValidLipidName("PX 40:1"), "Parsing of lipid name 'PX 40:1' caused an exception: Lipid not found")
 })
 
+test_that("isValidLipidName stops on invalid input",{
+  expect_error(rgoslin::isValidLipidName(c(1)),"'lipidName' must be a string")
+})
+
 test_that("weird input creates messages", {
   expect_message(rgoslin::parseLipidNames(c("A")), "Encountered an error while parsing 'A': Expecting a single string value: ")
   expect_message(rgoslin::parseLipidNames(c("")), "Encountered an error while parsing '': Expecting a single string value: ")
+  expect_message(rgoslin::parseLipidNames(c(""), "LipidMaps"), "Encountered an error while parsing '' with grammar 'LipidMaps': Expecting a single string value: ")
   # try to parse a) with wrong grammar, b) with invalid input
   l <- rgoslin::parseLipidNames(c("Cer 36:1;2", 5), "Shorthand2020")
   expect_equal(nrow(l), 2)
