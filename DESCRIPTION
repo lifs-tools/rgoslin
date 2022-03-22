@@ -1,7 +1,7 @@
 Package: rgoslin
 Type: Package
 Title: Lipid Shorthand Name Parsing and Normalization
-Version: 0.99.8
+Version: 0.99.9
 Date: 2022-03-22
 Authors@R: c(
     person("Nils", "Hoffmann", email = "nils.hoffmann@cebitec.uni-bielefeld.de", role=c("aut","cre"), comment = c(ORCID = "0000-0002-6540-6875")),
