@@ -24,6 +24,8 @@ Suggests:
     rmarkdown,
     kableExtra,
     BiocManager,
+    stringr,
+    ggplot,
     tibble,
     lipidr
 RoxygenNote: 7.1.2
