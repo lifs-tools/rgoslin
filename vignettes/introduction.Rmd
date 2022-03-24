@@ -4,14 +4,14 @@ shorttitle: "Using rgoslin"
 author: 
 - name: Nils Hoffmann
   affiliation: Forschungszentrum Jülich, Institute for Bio- and Geosciences, IBG-5, Bielefeld, Germany
-date: 16 March 2022
+date: 24 March 2022
 output:
     BiocStyle::html_document:
 package: rgoslin
 vignette: >
     %\VignetteIndexEntry{Using R Goslin to parse and normalize lipid nomenclature}
-    %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
+    %\VignetteEngine{knitr::rmarkdown}
 ---
 # Introduction
 
@@ -38,16 +38,15 @@ Here, rgoslin 2.0 uses the Goslin grammars and the cppgoslin parser to support t
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-    collapse = TRUE,
-    comment = "#>"
+  collapse = TRUE,
+  comment = "#>"
 )
 ```
 
 ```{r include=FALSE, echo=FALSE, results="hide", warning=FALSE}
 suppressPackageStartupMessages({
+library(rgoslin)
 library(dplyr)
-library(stringr)
-library(ggplot2)
 library(knitr)
 library(kableExtra)
 })
@@ -77,18 +76,10 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("rgoslin")
 ```
 
-## Installing RTools
-
-rgoslin uses C++ source code of cppgoslin as its backend. This requires compilation during installation. If you do not have RTools installed already, please follow the instructions for your operating system:
-
-- Windows: https://cran.r-project.org/bin/windows/Rtools/
-- Mac OSX: https://mac.r-project.org/tools/
-- Linux: Install packages `r-devel` or `r-base-dev`, depending on your Linux distribution.
-
 # Example use cases
 
 In order to use the provided translation functions of rgoslin, you first need to load the library. If rgoslin is not yet available, please follow the instructions in the previous section on "Installation".
-```{r, message = FALSE}
+```{r, eval = FALSE}
 library(rgoslin)
 ```
 
@@ -193,21 +184,26 @@ kable(lipidNamesWithAdduct %>% select(-starts_with("FA"),-starts_with("LCB")), c
 
 [lipidr](https://bioconductor.org/packages/release/bioc/html/lipidr.html) is a Bioconductor package with specific support for QC checking, uni- and multivariate analysis and visualization of lipidomics data acquired with Skyline or from metabolomics workbench. It uses a custom implementation for lipid name handling that does not yet support the updated shorthand nomenclature.
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 BiocManager::install("lipidr")
 ```
 
-After installation of lipidr, we need to load the library:
+After installation of lipidr, we need to load the following libraries for this example:
 
 ```{r, eval = FALSE}
+library(rgoslin)
 library(lipidr)
+library(stringr)
+library(ggplot2)
 ```
 ```{r include=FALSE, echo=FALSE, results="hide", warning=FALSE}
 suppressPackageStartupMessages({
 library(lipidr)
+library(stringr)
+library(ggplot2)
 })
 ```
 We will use [lipidr's workflow example](https://bioconductor.org/packages/release/bioc/vignettes/lipidr/inst/doc/workflow.html) to illustrate how to apply rgoslin in such a use-case. We read in an example dataset exported from Skyline based on a targeted lipidomics experiment:
@@ -225,13 +221,17 @@ This dataset contains the lipid names in the `Molecule` column and the name prep
 ```{r echo = FALSE, results = 'asis'}
 kable(rowData(d[1:10, 1:10]), caption = "Subset of first ten rows of row data.") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", font_size = 7)) %>% scroll_box(width = scrollBoxWidth, height = "300px")
 ```
-Now, let's try to parse the clean lipid names to enrich the data table:
+Now, let's try to parse the clean lipid names to enrich the data table.
+
+> **_Note_**: In this case, we expect to see error messages, since some lipid names use a) unsupported head group names or b) unsupported suffixes to indicate isotopically labeled lipids.
 
 ```{r}
 lipidNames <- parseLipidNames(rowData(d)$clean_name)
 ```
+
 We see that lipidr's example dataset uses the `(d9)` suffix to indicate isotopically labeled lipids (d=Deuterium) that are used as internal standards for quantification. 
 We need to convert `Sa1P`, sphinganine-1-phosphate, to `SPBP`, as well as `So1P`, sphingosine-1-phosphate to align with recent nomenclature updates. 
+
 ```{r}
 # lipidr stores original lipid names in the Molecule column
 old_names <- rowData(d)$Molecule
@@ -239,14 +239,18 @@ old_names <- rowData(d)$Molecule
 new_names <- rowData(d)$clean_name %>% str_match(pattern="([\\w :-]+)(\\(\\w+\\))?")
 # extract the first match group (the original word is at column index 1)
 normalized_new_names <- new_names[,2] %>% str_replace_all(c("Sa1P"="SPBP","So1P"="SPBP")) %>% parseLipidNames(.)
-# we will receive a number of warnings, since lipidr currently checks lipid class names against a predefined, 
-# internal list that does not contain the updated class names according to the new shorthand nomenclature
-# the updated Molecule names will however appear in downstream visualizations etc.
+```
+
+We will receive a number of warnings in the next step, since lipidr currently checks lipid class names against a predefined, internal list that does not contain the updated class names according to the new shorthand nomenclature. The updated Molecule names will however appear in downstream visualizations.
+
+```{r}
 updated <- update_molecule_names(d, old_names, normalized_new_names$Normalized.Name)
 ```
+
 We can augment the class column using rgoslin's LipidMaps main class, since row order in rgoslin's output is the same as in its input. 
 Additionally, further information may be interesting to include, such as the mass and sum formula of the uncharged lipids. 
 We will select the same lipid classes as in the lipidr targeted lipidomics vignette: Ceramides (Cer), Lyso-Phosphatidylcholines (LPC) and Phosphatidylcholines (PC).
+
 ```{r}
 rowData(updated)$Class <- normalized_new_names$Lipid.Maps.Main.Class
 rowData(updated)$Category <- normalized_new_names$Lipid.Maps.Category
@@ -265,8 +269,8 @@ In the next step, we use a non-exported method provided by lipidr to convert the
 ddf <- lipidr:::to_long_format(d)
 ggplot(data=ddf, mapping=aes(x=Molecule, y=Area, fill=Class)) + geom_boxplot() + facet_wrap(~filename, scales = "free_y") + scale_y_log10() + coord_flip()
 ```
-In the same manner, other columns of lipidr's `rowData` can be updated with columns from rgoslin's output data frame. Further downstream processing is then possible with lipidr's own functions.
 
+In the same manner, other columns of lipidr's `rowData` can be updated with columns from rgoslin's output data frame. Further downstream processing is then possible with lipidr's own functions.
 
 # Getting help & support
 If you find any issues with the library, would like to have other functionality included, require help or would like to contribute, please contact us via our [GitHub Project](https://github.com/lifs-tools/rgoslin) or via the [LIFS support page](https://lifs-tools.org/support.html).

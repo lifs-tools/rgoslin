@@ -47,6 +47,8 @@ BiocManager::install("rgoslin")
 
 ## Installing RTools
 
+> **_NOTE:_** The following instructions are only necessary if you want to compile the package from source. Regular installation via Bioconductor does not require the installation of RTools.
+
 rgoslin uses C++ source code of cppgoslin as its backend. This requires compilation during installation. If you do not have RTools installed already, please follow the instructions for your operating system:
 
 - Windows: https://cran.r-project.org/bin/windows/Rtools/
