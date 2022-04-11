@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    antlr "org.antlr:antlr4:4.9.2"
+    antlr "org.antlr:antlr4:4.10"
 }
 // grammars to include for checking
 ext {
