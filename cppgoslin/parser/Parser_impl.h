@@ -743,9 +743,14 @@ T Parser<T>::parse(string text_to_parse, bool throw_error){
     parser_event_handler->error_message = "";
     parser_event_handler->word_in_grammar = false;
     
-    parse_regular(text_to_parse);
-    if (throw_error && !parser_event_handler->word_in_grammar){
-        throw LipidParsingException("Lipid '" + old_lipid + "' can not be parsed by grammar '" + grammar_name + "'");
+    try {
+        parse_regular(text_to_parse);
+        if (throw_error && !parser_event_handler->word_in_grammar){
+            throw LipidParsingException("Lipid '" + old_lipid + "' can not be parsed by grammar '" + grammar_name + "'");
+        }
+    }
+    catch (RuntimeException &re){
+        if (throw_error) throw re;
     }
     
     return parser_event_handler->content;
@@ -769,17 +774,25 @@ T Parser<T>::parse_parallel(string text_to_parse, bool throw_error, BaseParserEv
     bpeh->content = 0;
     bpeh->word_in_grammar = false;
     bpeh->error_message = "";
-    
-    TreeNode* pt = parse_regular(text_to_parse, bpeh);
-    if (throw_error && pt == 0){
-        delete bpeh;
-        throw LipidParsingException("Lipid '" + old_lipid + "' can not be parsed by grammar '" + grammar_name + "'");
+    TreeNode* pt = 0;
+    try {
+        pt = parse_regular(text_to_parse, bpeh);
+        if (throw_error && pt == 0){
+            delete bpeh;
+            throw LipidParsingException("Lipid '" + old_lipid + "' can not be parsed by grammar '" + grammar_name + "'");
+        }
+        if (pt){
+            raise_events_parallel(pt, bpeh);
+            delete pt;
+        }
     }
-    else {
-        
+    catch(RuntimeException &re){
+        if (pt) delete pt;
+        if (throw_error){
+            delete bpeh;
+            throw re;
+        }
     }
-    raise_events_parallel(pt, bpeh);
-    delete pt;
     
     return bpeh->content;
 }

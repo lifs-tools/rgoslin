@@ -393,6 +393,7 @@ void LipidMapsParserEventHandler::build_lipid(TreeNode* node){
         db->double_bond_positions.insert({9, "Z"});
         db->double_bond_positions.insert({12, "Z"});
         fa_list->back()->functional_groups->at("acyl").push_back(new AcylAlkylGroup(new FattyAcid("FA", 18, db)));
+        head_group = "Cer";
     }
     
     Headgroup* headgroup = prepare_headgroup_and_checks();

@@ -100,8 +100,10 @@ int main(int argc, char** argv){
     assert_true(lipid->get_lipid_string(SPECIES), "EPC 38:3;O3");
     assert_true(lipid->get_sum_formula(), "C40H77N2O7P");
     delete lipid;
-    
-    
+
+    lipid = parser.parse("GalNAcβ1-4(Galβ1-4GlcNAcβ1-3)Galβ1-4Glcβ-Cer(d18:1/24:1(15Z))");
+    assert_true(lipid->get_lipid_string(SPECIES), "GalGalGalNAcGlcGlcNAcCer 42:2;O2");
+    delete lipid;
     
     // test several more lipid names
     vector<string> lipid_names_income;

@@ -108,15 +108,12 @@ void LipidSpecies::sort_fatty_acyl_chains(){
 
 
 string LipidSpecies::get_extended_class(){
-    bool special_case = (info->num_carbon > 0) ? (headgroup->lipid_category == GP) : false;
+    LipidClassMeta &meta = LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class);
+    bool special_case = (info->num_carbon > 0) ? contains_val(meta.special_cases, "Ether") : false;
     string class_name = headgroup->get_class_name();
     if (class_name == "UNDEFINED") return class_name;
-    if (special_case && (info->extended_class == ETHER_PLASMANYL || info->extended_class == ETHER_UNSPECIFIED)){
+    if (special_case && (info->extended_class == ETHER_PLASMANYL || info->extended_class == ETHER_UNSPECIFIED || info->extended_class == ETHER_PLASMENYL)){
         return class_name + "-O";
-    }
-    
-    else if (special_case && info->extended_class == ETHER_PLASMENYL){
-        return class_name + "-P";
     }
     
     return class_name;
