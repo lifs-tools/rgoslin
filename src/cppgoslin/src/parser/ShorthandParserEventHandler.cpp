@@ -661,6 +661,10 @@ void ShorthandParserEventHandler::add_functional_group(TreeNode *node){
         set_lipid_level(STRUCTURE_DEFINED);
     }
     
+    if (fg_cnt <= 0){
+        return;
+    }
+    
     FunctionalGroup *functional_group = 0;
     try {
         functional_group = KnownFunctionalGroups::get_functional_group(fg_name);

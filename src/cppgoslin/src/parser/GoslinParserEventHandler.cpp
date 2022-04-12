@@ -589,8 +589,8 @@ void GoslinParserEventHandler::add_carbon(TreeNode *node) {
 
 void GoslinParserEventHandler::add_hydroxyl(TreeNode *node) {
     int num_h = atoi(node->get_text().c_str());
-
     if (sp_regular_lcb()) num_h -= 1;
+    if (num_h <= 0) return;
     
     FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
     functional_group->count = num_h;
