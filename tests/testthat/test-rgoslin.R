@@ -242,6 +242,27 @@ test_that("Hydroxyl group counts are proper", {
   expect_equal(2, l[["Total.OH"]])
 })
 
+test_that("Empty hydroxylations are not counted", {
+  l <- rgoslin::parseLipidNames("PC O-16:1;0/16:0;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("PC O-16:1/16:0", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("PC O-16:0;0/16:0;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("PC O-16:0/16:0", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("CE 16:1;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("SE 27:1/16:1", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("CE 16:0;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("SE 27:1/16:0", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("CE 14:0;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("SE 27:1/14:0", l[["Normalized.Name"]])
+  l <- rgoslin::parseLipidNames("CE 17:0;0")[1,]
+  expect_equal(0, l[["Total.OH"]])
+  expect_equal("SE 27:1/17:0", l[["Normalized.Name"]])
+})
+
 test_that("IUPAC Fatty Acid Names are parsed correct", {
   l <- rgoslin::parseLipidNames("5-methyl-octadecanoic acid")[1,]
   expect_equal("FA 18:0;5Me", l[["Normalized.Name"]])
