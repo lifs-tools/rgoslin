@@ -2,7 +2,7 @@
 [![R-CMD-check](https://github.com/lifs-tools/rgoslin/actions/workflows/check-cran.yaml/badge.svg)](https://github.com/lifs-tools/rgoslin/actions/workflows/check-cran.yaml)
 [![R-CMD-check-bioc](https://github.com/lifs-tools/rgoslin/actions/workflows/check-bioc.yaml/badge.svg)](https://github.com/lifs-tools/rgoslin/actions/workflows/check-bioc.yaml)
 [![codecov (master)](https://codecov.io/gh/lifs-tools/rgoslin/branch/master/graph/badge.svg)](https://codecov.io/gh/lifs-tools/rgoslin)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3757672.svg)](https://doi.org/10.5281/zenodo.3757672)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6451276.svg)](https://doi.org/10.5281/zenodo.6451276)
 
 This project is a parser, validator and normalizer implementation for shorthand lipid nomenclatures, based on the Grammar of Succinct Lipid Nomenclatures project.
 
