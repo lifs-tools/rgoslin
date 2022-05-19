@@ -311,3 +311,21 @@ test_that("weird input creates messages", {
   expect_true(is.na(l[2,"Normalized.Name"]))
   testthat::expect_error(rgoslin::parseLipidNames(c(1,2)), "lipidNames must not contain numbers only!")
 })
+
+test_that("GSL Classes are working", {
+  l <- rgoslin::parseLipidNames("GM1 36:1;2")[1,]
+  expect_false(is.na(l[1,"Normalized.Name"]))
+  expect_equal("GM1 36:1;O2",l[1,"Normalized.Name"])
+  l <- rgoslin::parseLipidNames("GM2 36:1;2")[1,]
+  expect_false(is.na(l[1,"Normalized.Name"]))
+  expect_equal("GM2 36:1;O2",l[1,"Normalized.Name"])
+  l <- rgoslin::parseLipidNames("GT1 36:1;2")[1,]
+  expect_false(is.na(l[1,"Normalized.Name"]))
+  expect_equal("GT1 36:1;O2",l[1,"Normalized.Name"])
+  l <- rgoslin::parseLipidNames("GT2 36:1;2")[1,]
+  expect_false(is.na(l[1,"Normalized.Name"]))
+  expect_equal("GT2 36:1;O2",l[1,"Normalized.Name"])
+  l <- rgoslin::parseLipidNames("GT3 36:1;2")[1,]
+  expect_false(is.na(l[1,"Normalized.Name"]))
+  expect_equal("GT3 36:1;O2",l[1,"Normalized.Name"])
+})
