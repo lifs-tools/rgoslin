@@ -664,6 +664,9 @@ void FattyAcidParserEventHandler::add_functional_group(TreeNode *node) {
         t = func_groups.at(t);
         if (t.length() == 0) return;
         fg = KnownFunctionalGroups::get_functional_group(t);
+        if (fg == 0) {
+            throw LipidException("Functional group not registered: '" + t + "'");
+        }
     }
     else {
         fg = new AcylAlkylGroup(new FattyAcid("O", 2));
@@ -683,6 +686,7 @@ void FattyAcidParserEventHandler::add_functional_group(TreeNode *node) {
                 num_pos += gl->get_int(i) < pos;
             }
         }
+        
         FunctionalGroup* fg_insert = fg->copy();
         fg_insert->position = pos - num_pos;
         fa->functional_groups->at(t).push_back(fg_insert);

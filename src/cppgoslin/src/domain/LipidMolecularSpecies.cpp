@@ -125,8 +125,12 @@ ElementTable* LipidMolecularSpecies::get_elements(){
 
 
 void LipidMolecularSpecies::sort_fatty_acyl_chains(){
-    if (info->level != MOLECULAR_SPECIES) return;
+    if (info->level != MOLECULAR_SPECIES && fa_list.size() < 2) return;
     sort(fa_list.begin(), fa_list.end(), [] (FattyAcid *fa1, FattyAcid *fa2) {
+        // treat empty fatty acids individually
+        if (fa1->num_carbon == 0) return false;
+        if (fa2->num_carbon == 0) return true;
+        
         if (fa1->lipid_FA_bond_type != fa2->lipid_FA_bond_type) return fa1->lipid_FA_bond_type < fa2->lipid_FA_bond_type;
         if (fa1->num_carbon != fa2->num_carbon) return fa1->num_carbon < fa2->num_carbon;
         int db1 = fa1->get_double_bonds();
