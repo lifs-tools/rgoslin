@@ -79,6 +79,7 @@ public:
     void add_ether(TreeNode* node);
     void set_sphingoxine(TreeNode* node);
     void add_hydroxyl(TreeNode* node);
+    void add_dihydroxyl(TreeNode* node);
     void add_double_bonds(TreeNode* node);
     void add_carbon(TreeNode* node);
     void build_lipid(TreeNode* node);
