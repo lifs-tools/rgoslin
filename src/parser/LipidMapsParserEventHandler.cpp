@@ -82,6 +82,7 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     
     reg("ether_pre_event", add_ether);
     reg("hydroxyl_pre_event", add_hydroxyl);
+    reg("lcb_pure_fa_pre_event", add_dihydroxyl);
     reg("hydroxyl_lcb_pre_event", add_hydroxyl_lcb);
     reg("db_count_pre_event", add_double_bonds);
     reg("carbon_pre_event", add_carbon);
@@ -335,6 +336,19 @@ void LipidMapsParserEventHandler::add_ether(TreeNode* node){
     
 void LipidMapsParserEventHandler::add_hydroxyl(TreeNode* node){
     int num_h = atoi(node->get_text().c_str());
+    
+    if (sp_regular_lcb()) num_h -= 1;
+    
+    FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
+    functional_group->count = num_h;
+    if (uncontains_val_p(current_fa->functional_groups, "OH")) current_fa->functional_groups->insert({"OH", vector<FunctionalGroup*>()});
+    current_fa->functional_groups->at("OH").push_back(functional_group);
+}
+    
+    
+    
+void LipidMapsParserEventHandler::add_dihydroxyl(TreeNode* node){
+    int num_h = 2;
     
     if (sp_regular_lcb()) num_h -= 1;
     
