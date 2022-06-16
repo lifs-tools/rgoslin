@@ -77,7 +77,8 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("carbohydrate_isomeric_pre_event", set_carbohydrate_isomeric);
     
     // fatty acyl events
-    reg("lcb_post_event", set_lcb);
+    reg("lcb_pre_event", new_lcb);
+    reg("lcb_post_event", add_fatty_acyl_chain);
     reg("fatty_acyl_chain_pre_event", new_fatty_acyl_chain);
     reg("fatty_acyl_chain_post_event", add_fatty_acyl_chain);
     reg("carbon_pre_event", set_carbon);
@@ -97,6 +98,7 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("func_group_count_pre_event", set_functional_group_count);
     reg("stereo_type_fg_pre_event", set_functional_group_stereo);
     reg("molecular_func_group_name_pre_event", set_sn_position_func_group);
+    reg("fa_db_only_post_event", add_dihydroxyl);
     
     // set cycle events
     reg("func_group_cycle_pre_event", set_cycle);
@@ -294,16 +296,22 @@ void ShorthandParserEventHandler::set_ring_stereo(TreeNode *node){
 
 
 
-void ShorthandParserEventHandler::set_lcb(TreeNode *node){
-        fa_list->back()->set_type(LCB_REGULAR);
-        fa_list->back()->name = "LCB";
-}
-
-
-
 void ShorthandParserEventHandler::set_fatty_acyl_stereo(TreeNode *node){
     current_fas.back()->stereochemistry = node->get_text();
     contains_stereo_information = true;
+}
+
+
+void ShorthandParserEventHandler::add_dihydroxyl(TreeNode* node){
+    if (uncontains_val(LCB_STATES, ((FattyAcid*)current_fas.back())->lipid_FA_bond_type)) return;
+    
+    int num_h = 1;
+    if (contains_val(SP_EXCEPTION_CLASSES, head_group) && headgroup_decorators->size() == 0) num_h += 1;
+    
+    FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
+    functional_group->count = num_h;
+    if (uncontains_val_p(current_fas.back()->functional_groups, "OH")) current_fas.back()->functional_groups->insert({"OH", vector<FunctionalGroup*>()});
+    current_fas.back()->functional_groups->at("OH").push_back(functional_group);
 }
 
 
@@ -321,6 +329,14 @@ void ShorthandParserEventHandler::add_pl_species_data(TreeNode *node){
 void ShorthandParserEventHandler::new_fatty_acyl_chain(TreeNode *node){
     current_fas.push_back(new FattyAcid("FA"));
     tmp.set_dictionary(FA_I, new GenericDictionary());
+}
+
+
+
+void ShorthandParserEventHandler::new_lcb(TreeNode *node){
+    new_fatty_acyl_chain(node);
+    ((FattyAcid*)current_fas.back())->set_type(LCB_REGULAR);
+    current_fas.back()->name = "LCB";
 }
 
 
