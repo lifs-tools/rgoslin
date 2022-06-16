@@ -80,7 +80,8 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("db_position_number_pre_event", add_db_position_number);
     reg("cistrans_pre_event", add_cistrans);
     
-    reg("ether_pre_event", add_ether);
+    reg("ether_prefix_pre_event", add_ether);
+    reg("ether_suffix_pre_event", add_ether);
     reg("hydroxyl_pre_event", add_hydroxyl);
     reg("lcb_pure_fa_pre_event", add_dihydroxyl);
     reg("hydroxyl_lcb_pre_event", add_hydroxyl_lcb);
@@ -328,8 +329,8 @@ void LipidMapsParserEventHandler::append_fa(TreeNode *node) {
     
 void LipidMapsParserEventHandler::add_ether(TreeNode* node){
     string ether = node->get_text();
-    if (ether == "O-") current_fa->lipid_FA_bond_type = ETHER_PLASMANYL;
-    else if (ether == "P-") current_fa->lipid_FA_bond_type = ETHER_PLASMENYL;
+    if (ether == "O-" || ether == "e") current_fa->lipid_FA_bond_type = ETHER_PLASMANYL;
+    else if (ether == "P-" || ether == "p") current_fa->lipid_FA_bond_type = ETHER_PLASMENYL;
 }
     
     
