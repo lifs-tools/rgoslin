@@ -168,13 +168,19 @@ void GoslinParserEventHandler::add_mediator_function(TreeNode *node){
         if (mediator_function_positions.size() > 0) functional_group->position = mediator_function_positions[0];
     }
         
+    else if (mediator_function == "Hp"){
+        functional_group = KnownFunctionalGroups::get_functional_group("OOH");
+        fg = "OOH";
+        if (mediator_function_positions.size() > 0) functional_group->position = mediator_function_positions[0];
+    }
+        
     else if (mediator_function == "E" || mediator_function == "Ep"){
         functional_group = KnownFunctionalGroups::get_functional_group("Ep");
         fg = "Ep";
         if (mediator_function_positions.size() > 0) functional_group->position = mediator_function_positions[0];
     }
         
-    else if (mediator_function == "DH" || mediator_function == "DiH"){
+    else if (mediator_function == "DH" || mediator_function == "DiH" || mediator_function == "diH"){
         functional_group = KnownFunctionalGroups::get_functional_group("OH");
         fg = "OH";
         if (mediator_function_positions.size() > 0){
