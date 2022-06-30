@@ -250,10 +250,8 @@ void LipidMapsParserEventHandler::set_mod_num(TreeNode* node){
     
 void LipidMapsParserEventHandler::add_functional_group(TreeNode* node){
     if (mod_text != "Cp"){
-        if (contains_val(LCB_STATES, current_fa->lipid_FA_bond_type) && mod_text == "OH"){
-            if (contains_val_p(current_fa->functional_groups, "OH") && current_fa->functional_groups->at("OH").size() > 0){
-                current_fa->functional_groups->at("OH").back()->position = mod_pos;
-            }
+        if (contains_val(LCB_STATES, current_fa->lipid_FA_bond_type) && mod_text == "OH" && contains_val_p(current_fa->functional_groups, "OH") && current_fa->functional_groups->at("OH").size() > 0){
+            current_fa->functional_groups->at("OH").back()->position = mod_pos;
         }
         else {
             FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group(mod_text);
