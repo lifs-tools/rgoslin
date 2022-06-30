@@ -250,12 +250,19 @@ void LipidMapsParserEventHandler::set_mod_num(TreeNode* node){
     
 void LipidMapsParserEventHandler::add_functional_group(TreeNode* node){
     if (mod_text != "Cp"){
-        FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group(mod_text);
-        functional_group->position = mod_pos;
-        functional_group->count = mod_num;
-        string fg_name = functional_group->name;
-        if (uncontains_val_p(current_fa->functional_groups, fg_name)) current_fa->functional_groups->insert({fg_name, vector<FunctionalGroup*>()});
-        current_fa->functional_groups->at(fg_name).push_back(functional_group);
+        if (contains_val(LCB_STATES, current_fa->lipid_FA_bond_type) && mod_text == "OH"){
+            if (contains_val_p(current_fa->functional_groups, "OH") && current_fa->functional_groups->at("OH").size() > 0){
+                current_fa->functional_groups->at("OH").back()->position = mod_pos;
+            }
+        }
+        else {
+            FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group(mod_text);
+            functional_group->position = mod_pos;
+            functional_group->count = mod_num;
+            string fg_name = functional_group->name;
+            if (uncontains_val_p(current_fa->functional_groups, fg_name)) current_fa->functional_groups->insert({fg_name, vector<FunctionalGroup*>()});
+            current_fa->functional_groups->at(fg_name).push_back(functional_group);
+        }
     }
     else {
         current_fa->num_carbon += 1;
@@ -293,7 +300,6 @@ void LipidMapsParserEventHandler::new_lcb(TreeNode *node) {
     lcb = new FattyAcid("LCB");
     lcb->set_type(LCB_REGULAR);
     current_fa = lcb;
-    set_lipid_level(STRUCTURE_DEFINED);
 }
         
         
@@ -304,6 +310,14 @@ void LipidMapsParserEventHandler::clean_lcb(TreeNode *node) {
     }
     if (current_fa->double_bonds->double_bond_positions.size() == 0 && current_fa->double_bonds->get_num() > 0){
         set_lipid_level(SN_POSITION);
+    }
+    if (contains_val_p(current_fa->functional_groups, "OH")){
+        for (auto fg : current_fa->functional_groups->at("OH")){
+            if (fg->position < 1){
+                set_structural_subspecies_level(node);
+                break;
+            }
+        }
     }
     current_fa = NULL;
 }
@@ -349,31 +363,55 @@ void LipidMapsParserEventHandler::add_hydroxyl(TreeNode* node){
     
     
 void LipidMapsParserEventHandler::add_dihydroxyl(TreeNode* node){
-    int num_h = 2;
-    
-    if (sp_regular_lcb()) num_h -= 1;
-    
-    FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
-    functional_group->count = num_h;
     if (uncontains_val_p(current_fa->functional_groups, "OH")) current_fa->functional_groups->insert({"OH", vector<FunctionalGroup*>()});
-    current_fa->functional_groups->at("OH").push_back(functional_group);
+    
+    FunctionalGroup* functional_group_p3 = KnownFunctionalGroups::get_functional_group("OH");
+    functional_group_p3->position = 3;
+    current_fa->functional_groups->at("OH").push_back(functional_group_p3);
+
+    if (!sp_regular_lcb()){
+        FunctionalGroup* functional_group_p1 = KnownFunctionalGroups::get_functional_group("OH");
+        functional_group_p1->position = 1;
+        current_fa->functional_groups->at("OH").push_back(functional_group_p1);
+    }
 }
 
 
     
 void LipidMapsParserEventHandler::add_hydroxyl_lcb(TreeNode* node){
-    string hydroxyl = node->get_text();
-    int num_h = 0;
-    if (hydroxyl == "m") num_h = 1;
-    else if (hydroxyl == "d") num_h = 2;
-    else if (hydroxyl == "t") num_h = 3;
-    
-    if (sp_regular_lcb()) num_h -= 1;
-    
-    FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
-    functional_group->count = num_h;
     if (uncontains_val_p(current_fa->functional_groups, "OH")) current_fa->functional_groups->insert({"OH", vector<FunctionalGroup*>()});
-    current_fa->functional_groups->at("OH").push_back(functional_group);
+    
+    string hydroxyl = node->get_text();
+    if (hydroxyl == "m"){
+        FunctionalGroup* functional_group_p3 = KnownFunctionalGroups::get_functional_group("OH");
+        functional_group_p3->position = 3;
+        current_fa->functional_groups->at("OH").push_back(functional_group_p3);
+    }
+    else if (hydroxyl == "d"){
+        if (!sp_regular_lcb()){
+            FunctionalGroup* functional_group_p1 = KnownFunctionalGroups::get_functional_group("OH");
+            functional_group_p1->position = 1;
+            current_fa->functional_groups->at("OH").push_back(functional_group_p1);
+        }
+        
+        FunctionalGroup* functional_group_p3 = KnownFunctionalGroups::get_functional_group("OH");
+        functional_group_p3->position = 3;
+        current_fa->functional_groups->at("OH").push_back(functional_group_p3);
+    }
+    else if (hydroxyl == "t"){
+        if (!sp_regular_lcb()){
+            FunctionalGroup* functional_group_p1 = KnownFunctionalGroups::get_functional_group("OH");
+            functional_group_p1->position = 1;
+            current_fa->functional_groups->at("OH").push_back(functional_group_p1);
+        }
+        
+        FunctionalGroup* functional_group_p3 = KnownFunctionalGroups::get_functional_group("OH");
+        functional_group_p3->position = 3;
+        current_fa->functional_groups->at("OH").push_back(functional_group_p3);
+        
+        FunctionalGroup* functional_group_t = KnownFunctionalGroups::get_functional_group("OH");
+        current_fa->functional_groups->at("OH").push_back(functional_group_t);
+    }
 }
     
     
@@ -394,7 +432,6 @@ void LipidMapsParserEventHandler::build_lipid(TreeNode* node){
     }
     
     if (lcb != NULL){
-        set_lipid_level(STRUCTURE_DEFINED);
         fa_list->insert(fa_list->begin(), lcb);
     }
     
