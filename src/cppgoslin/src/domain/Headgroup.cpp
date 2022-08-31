@@ -37,6 +37,16 @@ Headgroup::Headgroup(string _headgroup, vector<HeadgroupDecorator*>* _decorators
     sp_exception = lipid_category == SP && contains_val(LipidClasses::get_instance().lipid_classes.at(lipid_class).special_cases, "SP_Exception") && decorators->size() == 0;
     
 }
+    
+Headgroup::Headgroup(Headgroup *h){
+    headgroup = h->headgroup;
+    lipid_category = h->lipid_category;
+    lipid_class = h->lipid_class;
+    use_headgroup = h->use_headgroup;
+    decorators = new vector<HeadgroupDecorator*>();
+    for (auto hgd : *(h->decorators)) decorators->push_back(hgd->copy());
+    sp_exception = h->sp_exception;
+}
 
 
 Headgroup::~Headgroup(){

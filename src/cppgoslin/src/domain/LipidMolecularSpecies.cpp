@@ -48,6 +48,7 @@ LipidMolecularSpecies::LipidMolecularSpecies (Headgroup* _headgroup, vector<Fatt
 }
 
 
+
 string LipidMolecularSpecies::build_lipid_subspecies_name(LipidLevel level){
     if (level == NO_LEVEL) level = MOLECULAR_SPECIES;
     

@@ -30,7 +30,6 @@ SOFTWARE.
 #include "cppgoslin/domain/LipidExceptions.h"
 #include "cppgoslin/domain/Element.h"
 #include "cppgoslin/domain/StringFunctions.h"
-//#include "cppgoslin/parser/SumFormulaParser.h"
 #include <sstream>
 #include <map>
 
@@ -52,6 +51,7 @@ public:
     static const map<string, int> adduct_charges;
     
     Adduct(string _sum_formula, string _adduct_string, int _charge = 1, int _sign = 1);
+    Adduct(Adduct *a);
     void set_charge_sign(int sign);
     string get_lipid_string();
     ElementTable* get_elements();

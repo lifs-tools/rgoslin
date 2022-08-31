@@ -32,6 +32,11 @@ SOFTWARE.
 #include "cppgoslin/domain/LipidExceptions.h"
 #include "cppgoslin/domain/LipidEnums.h"
 #include "cppgoslin/domain/Element.h"
+#include "cppgoslin/domain/LipidCompleteStructure.h"
+#include "cppgoslin/domain/LipidFullStructure.h"
+#include "cppgoslin/domain/LipidStructureDefined.h"
+#include "cppgoslin/domain/LipidSnPosition.h"
+#include "cppgoslin/domain/LipidMolecularSpecies.h"
 #include "cppgoslin/domain/LipidSpecies.h"
 #include "cppgoslin/domain/Adduct.h"
 #include <sstream>
@@ -46,6 +51,7 @@ public:
     string sum_formula;
     
     LipidAdduct();
+    LipidAdduct(LipidAdduct *lipid_adduct);
     ~LipidAdduct();
     string get_lipid_string(LipidLevel level = NO_LEVEL);
     string get_lipid_fragment_string(LipidLevel level = NO_LEVEL);
