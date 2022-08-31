@@ -36,6 +36,40 @@ LipidAdduct::~LipidAdduct(){
     if (lipid) delete lipid;
     if (adduct) delete adduct;
 }
+
+
+LipidAdduct::LipidAdduct(LipidAdduct *la){
+    if (la == 0){
+        lipid = NULL;
+        adduct = NULL;
+        sum_formula = "";
+        return;
+    }
+    if (la->lipid != 0 && la->lipid->info != 0 && la->lipid->info->level >= SPECIES){
+        vector<FattyAcid*> fa_list;
+        for (auto fa : la->lipid->fa_list){
+            FattyAcid *fa_copy = fa->copy();
+            fa_copy->position = 0;
+            fa_list.push_back(fa_copy);
+        }
+        Headgroup *headgroup = new Headgroup(la->lipid->headgroup);
+        
+        switch (la->lipid->info->level){
+            case COMPLETE_STRUCTURE: lipid = new LipidCompleteStructure(headgroup, &fa_list); break;
+            case FULL_STRUCTURE: lipid = new LipidFullStructure(headgroup, &fa_list); break;
+            case STRUCTURE_DEFINED: lipid = new LipidStructureDefined(headgroup, &fa_list); break;
+            case SN_POSITION: lipid = new LipidSnPosition(headgroup, &fa_list); break;
+            case MOLECULAR_SPECIES: lipid = new LipidMolecularSpecies(headgroup, &fa_list); break;
+            case SPECIES: lipid = new LipidSpecies(headgroup, &fa_list); break;
+            default: break;
+        }
+    }
+    else {
+        lipid = 0;
+    }
+    adduct = (la->adduct != 0) ? new Adduct(la->adduct) : 0;
+    sum_formula = la->sum_formula;
+}
     
     
 string LipidAdduct::get_lipid_string(LipidLevel level){

@@ -46,7 +46,14 @@ KnownAdducts::KnownAdducts(){
 }
 
 
-
+Adduct::Adduct(Adduct *a){
+    if (a != 0){
+        sum_formula = a->sum_formula;
+        adduct_string = a->adduct_string;
+        charge = a->charge;
+        charge_sign = a->charge_sign;
+    }
+}
 
     
 Adduct::Adduct(string _sum_formula, string _adduct_string, int _charge, int _sign){

@@ -27,7 +27,6 @@ SOFTWARE.
 
 LipidFullStructure::LipidFullStructure(Headgroup* _headgroup, vector<FattyAcid*> *_fa) : LipidStructureDefined(_headgroup, _fa) {            
     info->level = FULL_STRUCTURE;
-    
 }
 
 

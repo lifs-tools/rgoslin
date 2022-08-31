@@ -39,10 +39,6 @@ FattyAcid::FattyAcid(string _name, int _num_carbon, DoubleBonds* _double_bonds, 
         throw ConstraintViolationException("FattyAcid must have at least 2 carbons! Got " + std::to_string(num_carbon));
     }
     
-    if (position < 0){
-        throw ConstraintViolationException("FattyAcid position must be greater or equal to 0! Got " + std::to_string(position));
-    }
-    
     if (double_bonds->get_num() < 0){
         throw ConstraintViolationException("FattyAcid must have at least 0 double bonds! Got " + std::to_string(double_bonds->get_num()));
     }
