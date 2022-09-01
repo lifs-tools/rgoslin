@@ -241,6 +241,7 @@ void Parser<T>::read_grammar(string grammar){
     }
     delete rules;
     
+    
     // adding all rule names into the event handler
     for (auto rule_name : ruleToNT) parser_event_handler->rule_names.insert(rule_name.first);
         
@@ -254,7 +255,6 @@ void Parser<T>::read_grammar(string grammar){
             break;
         }
     }
-    
     
     // creating substitution dictionary for adding single rule chains into the parsing tree
     set<uint64_t> visited;
@@ -340,22 +340,6 @@ void Parser<T>::read_grammar(string grammar){
     for (auto& kvp : NTtoNT){
         if (kvp.first <= MASK) continue;
         right_pair.at(kvp.first >> SHIFT)->insert(kvp.first & MASK);
-    }
-    
-    
-    newNTsize = ceil(log((double)next_free_rule_index) / log(2.));
-    if (newNTsize <= 12){
-        newNTtoNT.resize((1 << (newNTsize << 1)) + 1);
-        for (auto kv : NTtoNT){
-            uint64_t key1 = kv.first >> SHIFT;
-            uint64_t key2 = kv.first & MASK;
-            
-            newNTtoNT[(key1 << newNTsize) | key2] = kv.second;
-        }
-        newShift = newNTsize;
-    }
-    else {
-        newShift = SHIFT;
     }
 }
 
@@ -858,13 +842,11 @@ TreeNode* Parser<T>::parse_regular(string text_to_parse, BaseParserEventHandler<
                             for (auto index_pair_2 : *DP[jpok][im1mk]){
                                 
                                 if (b->find(index_pair_2.first)){
-                                    uint64_t key = (index_pair_1.first << newShift) | index_pair_2.first;
-                                    //uint64_t key = (index_pair_1.first << SHIFT) | index_pair_2.first;
+                                    uint64_t key = (index_pair_1.first << SHIFT) | index_pair_2.first;
                                     
                                     DPNode *content = new DPNode(index_pair_1.first, index_pair_2.first, index_pair_1.second, index_pair_2.second);
                                     DPnodes.push_back(content);
-                                    //for (auto rule_index : NTtoNT.at(key)){
-                                    for (auto rule_index : ((newNTsize <= 12) ? newNTtoNT[key] : NTtoNT.at(key))){
+                                    for (auto rule_index : NTtoNT.at(key)){
                                         DPji->insert({rule_index, content});
                                     }
                                 }
