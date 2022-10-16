@@ -1,7 +1,37 @@
-# rgoslin 0.99
+# rgoslin 1.1.0 
 
 Please note that this Bioconductor version is based on Goslin version 2.0.0.
 See the [Goslin repository](https://github.com/lifs-tools/goslin) for more details.
+
+## Changes in 1.1.0
+
+### Improvements
+
+- Reduced memory consumption.
+- Added 'ChE' abbreviation.
+- Added FG hydroperoxy to mediator nomenclature, refinement of mediators.
+- Added more sphingosine and sphinganine synonyms.
+- Added more ether dialects to LipidMaps grammar.
+- Improved handling for SP without explicit OH description.
+- Added Sa So support.
+- Updated old SP shortcuts.
+- Added CholE as abbreviation for cholesterol esters.
+- Modifications and improvements for Windows.
+- Added column of elements to functional group list and class.
+- Added 'ChoE'.
+- Added functional group butylperoxy -> BOO.
+
+### Bug Fixes
+
+- Fixed handling of LIPID MAPS SP notation.
+- Fixed critical bug when parsing LIPID MAPS names.
+- Fixed implicit hydroxy count.
+- Fixed ACer rule for species level.
+- Fixed lcb rule in LipidMaps grammar.
+- Fixed S1P and Sa1P handling.
+- Fixed gangliosides in Goslin grammar.
+- Fixed correct handling of dummy FAs during sorting.
+- Fixed segmentation fault in FA parser event handler.
 
 ## Changes in 0.99.1
 
