@@ -48,12 +48,11 @@ public:
     DoubleBonds* double_bonds;
     bool is_atomic;
     ElementTable* elements;
-    int num_atoms_and_bonds;
     map<string, vector<FunctionalGroup*>>* functional_groups;
     static bool position_sort_function(FunctionalGroup* f1, FunctionalGroup *f2);
     static bool lower_name_sort_function(string s1, string s2);
     
-    FunctionalGroup(string _name, int _position = -1, int _count = 1, DoubleBonds* _double_bonds = 0, bool _is_atomic = false, string _stereochemistry = "", ElementTable* _elements = 0, map<string, vector<FunctionalGroup*>>* _functional_groups = 0, int _num_atoms_and_bonds = 0);
+    FunctionalGroup(string _name, int _position = -1, int _count = 1, DoubleBonds* _double_bonds = 0, bool _is_atomic = false, string _stereochemistry = "", ElementTable* _elements = 0, map<string, vector<FunctionalGroup*>>* _functional_groups = 0);
     virtual ~FunctionalGroup();
     virtual FunctionalGroup* copy();
     virtual ElementTable* get_elements();

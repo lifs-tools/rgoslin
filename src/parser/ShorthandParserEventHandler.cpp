@@ -56,7 +56,8 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("med_hg_triple_pre_event", set_headgroup_name);
     reg("gl_hg_single_pre_event", set_headgroup_name);
     reg("gl_hg_double_pre_event", set_headgroup_name);
-    reg("gl_hg_true_double_pre_event", set_headgroup_name);
+    reg("gl_hg_glycosyl_single_pre_event", set_headgroup_name);
+    reg("gl_hg_glycosyl_double_pre_event", set_headgroup_name);
     reg("gl_hg_triple_pre_event", set_headgroup_name);
     reg("pl_hg_single_pre_event", set_headgroup_name);
     reg("pl_hg_double_pre_event", set_headgroup_name);

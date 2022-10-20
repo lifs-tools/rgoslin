@@ -126,7 +126,7 @@ ElementTable* LipidMolecularSpecies::get_elements(){
 
 
 void LipidMolecularSpecies::sort_fatty_acyl_chains(){
-    if (info->level != MOLECULAR_SPECIES && fa_list.size() < 2) return;
+    if (info->level > MOLECULAR_SPECIES || fa_list.size() < 2) return;
     sort(fa_list.begin(), fa_list.end(), [] (FattyAcid *fa1, FattyAcid *fa2) {
         // treat empty fatty acids individually
         if (fa1->num_carbon == 0) return false;
