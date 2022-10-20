@@ -26,11 +26,10 @@ SOFTWARE.
 
 #include "cppgoslin/domain/FunctionalGroup.h"
 
-FunctionalGroup::FunctionalGroup(string _name, int _position, int _count, DoubleBonds* _double_bonds, bool _is_atomic, string _stereochemistry, ElementTable* _elements, map<string, vector<FunctionalGroup*>>* _functional_groups, int _num_atoms_and_bonds){
+FunctionalGroup::FunctionalGroup(string _name, int _position, int _count, DoubleBonds* _double_bonds, bool _is_atomic, string _stereochemistry, ElementTable* _elements, map<string, vector<FunctionalGroup*>>* _functional_groups){
     name = _name;
     position = _position;
     count = _count;
-    num_atoms_and_bonds = _num_atoms_and_bonds;
     stereochemistry = _stereochemistry;
     ring_stereo = "";
     double_bonds = (_double_bonds != 0) ? _double_bonds : new DoubleBonds(0);
@@ -54,7 +53,7 @@ FunctionalGroup* FunctionalGroup::copy(){
         e->at(kv.first) = kv.second;
     }
     
-    FunctionalGroup* func_group = new FunctionalGroup(name, position, count, db, is_atomic, stereochemistry, e, fg, num_atoms_and_bonds);
+    FunctionalGroup* func_group = new FunctionalGroup(name, position, count, db, is_atomic, stereochemistry, e, fg);
     func_group->ring_stereo = ring_stereo;
     return func_group;
 }
