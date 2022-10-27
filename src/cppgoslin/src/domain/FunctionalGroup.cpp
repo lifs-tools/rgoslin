@@ -230,7 +230,7 @@ HeadgroupDecorator* HeadgroupDecorator::copy(){
 
 
 string HeadgroupDecorator::to_string(LipidLevel level){
-    if (!suffix) return name;
+    if (!suffix) return name + (count > 1 ? std::to_string(count) : "");
 
     string decorator_string = "";
     if (lowest_visible_level == NO_LEVEL || lowest_visible_level <= level){

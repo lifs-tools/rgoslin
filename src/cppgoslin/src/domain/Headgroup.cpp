@@ -149,12 +149,23 @@ string Headgroup::get_lipid_string(LipidLevel level){
             
     // adding prefixes to the headgroup
     if (!is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE | STRUCTURE_DEFINED)){
-        vector<string> prefixes;
+        vector<HeadgroupDecorator*> decorators_tmp;
         for (auto hgd : *decorators){
-            if (!hgd->suffix) prefixes.push_back(hgd->to_string(level));
+            if (!hgd->suffix) decorators_tmp.push_back(hgd->copy());
         }
-        sort (prefixes.begin(), prefixes.end());
-        for (auto prefix : prefixes) headgoup_string << prefix;
+        for (int i = decorators_tmp.size() - 1; i > 0; --i){
+            HeadgroupDecorator* hge = decorators_tmp[i];
+            HeadgroupDecorator* hge_before = decorators_tmp[i - 1];
+            if (hge->name == hge_before->name){
+                hge_before->count += 1;
+                delete hge;
+                decorators_tmp.erase(decorators_tmp.begin() + i);
+            }
+        }
+        for (auto hge : decorators_tmp){
+            headgoup_string << hge->to_string(level);
+            delete hge;
+        }
     }
     else {
         for (auto hgd : *decorators){
