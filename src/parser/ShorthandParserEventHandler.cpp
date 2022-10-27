@@ -28,6 +28,28 @@ SOFTWARE.
 #define reg(x, y) BaseParserEventHandler<LipidAdduct*>::registered_events->insert({x, bind(&ShorthandParserEventHandler::y, this, placeholders::_1)})
 #define FA_I ("fa" + std::to_string(current_fas.size()))
 
+
+
+const map<string, vector<string> > ShorthandParserEventHandler::glyco_table{{"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
+               {"ga2", {"GalNAc", "Gal", "Glc"}},
+               {"gb3", {"Gal", "Gal", "Glc"}},
+               {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
+               {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
+               {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm3", {"NeuAc", "Gal", "Glc"}},
+               {"gm4", {"NeuAc", "Gal"}},
+               {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
+               
+               
+
 ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEventHandler() {
     
     reg("lipid_pre_event", reset_lipid);
@@ -63,6 +85,7 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("pl_hg_double_pre_event", set_headgroup_name);
     reg("pl_hg_quadro_pre_event", set_headgroup_name);
     reg("sl_hg_single_pre_event", set_headgroup_name);
+    reg("sl_hg_glyco_pre_event", set_headgroup_name);
     reg("pl_hg_double_fa_hg_pre_event", set_headgroup_name);
     reg("sl_hg_double_name_pre_event", set_headgroup_name);
     reg("st_hg_pre_event", set_headgroup_name);
@@ -71,6 +94,8 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("hg_pip_pure_d_pre_event", set_headgroup_name);
     reg("hg_pip_pure_t_pre_event", set_headgroup_name);
     reg("hg_PE_PS_pre_event", set_headgroup_name);
+    reg("glyco_sphingo_lipid_pre_event", set_glyco_sphingo_lipid);
+    reg("carbohydrate_number_pre_event", set_carbohydrate_number);
 
     // set head group headgroup_decorators
     reg("carbohydrate_pre_event", set_carbohydrate);
@@ -169,6 +194,40 @@ void ShorthandParserEventHandler::set_sterol_definition(TreeNode *node){
     head_group += " " + node->get_text();
     fa_list->erase(fa_list->begin());
 }
+
+
+
+void ShorthandParserEventHandler::set_carbohydrate_number(TreeNode *node){
+    int carbohydrate_num = node->get_int();
+    if (!headgroup_decorators->empty() && carbohydrate_num > 0){
+        headgroup_decorators->back()->count += (carbohydrate_num - 1);
+    }
+}
+            
+            
+
+void ShorthandParserEventHandler::set_glyco_sphingo_lipid(TreeNode *node){
+    string hg = to_lower(head_group);
+    if (!contains_val(glyco_table, hg)){
+        throw LipidParsingException("Unknown glyco sphingolipid'" + head_group + "'"); 
+    }
+    
+    for (auto carbohydrate : glyco_table.at(hg)){
+        FunctionalGroup* functional_group = 0;
+        try {
+            functional_group = KnownFunctionalGroups::get_functional_group(carbohydrate);
+        }
+        catch (const std::exception& e){
+            throw LipidParsingException("Carbohydrate '" + carbohydrate + "' unknown");
+        }
+        
+        functional_group->elements->at(ELEMENT_O) -= 1;
+        headgroup_decorators->push_back((HeadgroupDecorator*)functional_group);
+    }
+    head_group = "Cer";
+    
+}
+
 
 void ShorthandParserEventHandler::build_lipid(TreeNode *node) {
     if (acer_species) fa_list->at(0)->num_carbon -= 2;

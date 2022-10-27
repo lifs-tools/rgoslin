@@ -54,6 +54,7 @@ public:
     static const set<string> special_types;
     bool acer_species;
     bool contains_stereo_information;
+    static const map<string, vector<string> > glyco_table;
         
     ShorthandParserEventHandler();
     ~ShorthandParserEventHandler();
@@ -123,8 +124,11 @@ public:
     void set_acer(TreeNode *node);
     void set_acer_species(TreeNode *node);
     void set_sterol_definition(TreeNode *node);
+    void set_carbohydrate_number(TreeNode *node);
+    void set_glyco_sphingo_lipid(TreeNode *node);
     
 };
+
 
 
 #endif /* SHORTHAND_PARSER_EVENT_HANDLER_H */
