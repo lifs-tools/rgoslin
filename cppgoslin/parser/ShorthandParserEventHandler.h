@@ -54,7 +54,6 @@ public:
     static const set<string> special_types;
     bool acer_species;
     bool contains_stereo_information;
-    static const map<string, vector<string> > glyco_table;
         
     ShorthandParserEventHandler();
     ~ShorthandParserEventHandler();

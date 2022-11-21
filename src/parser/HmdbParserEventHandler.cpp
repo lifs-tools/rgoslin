@@ -98,6 +98,7 @@ void HmdbParserEventHandler::reset_lipid(TreeNode *node) {
     db_cistrans = "";
     adduct = 0;
     furan.remove_all();
+    headgroup_decorators->clear();
 }
 
 
