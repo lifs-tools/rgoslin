@@ -57,6 +57,7 @@ public:
     bool use_head_group;
     static const set<string> SP_EXCEPTION_CLASSES;
     Adduct* adduct;
+    static const map<string, vector<string> > glyco_table;
         
     LipidBaseParserEventHandler();
     ~LipidBaseParserEventHandler();

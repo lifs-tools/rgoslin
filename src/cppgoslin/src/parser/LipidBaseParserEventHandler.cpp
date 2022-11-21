@@ -25,6 +25,24 @@ SOFTWARE.
 
 #include "cppgoslin/parser/LipidBaseParserEventHandler.h"
 
+const map<string, vector<string> > LipidBaseParserEventHandler::glyco_table{{"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
+               {"ga2", {"GalNAc", "Gal", "Glc"}},
+               {"gb3", {"Gal", "Gal", "Glc"}},
+               {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
+               {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
+               {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm3", {"NeuAc", "Gal", "Glc"}},
+               {"gm4", {"NeuAc", "Gal"}},
+               {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
+
 
 LipidBaseParserEventHandler::LipidBaseParserEventHandler() : BaseParserEventHandler<LipidAdduct*>() {
     fa_list = new vector<FattyAcid*>();
@@ -63,6 +81,26 @@ bool LipidBaseParserEventHandler::sp_regular_lcb(){
 
 
 Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
+    
+    string hg = to_lower(head_group);
+    if (contains_val(glyco_table, hg)){
+    
+        for (auto carbohydrate : glyco_table.at(hg)){
+            FunctionalGroup* functional_group = 0;
+            try {
+                functional_group = KnownFunctionalGroups::get_functional_group(carbohydrate);
+            }
+            catch (const std::exception& e){
+                throw LipidParsingException("Carbohydrate '" + carbohydrate + "' unknown");
+            }
+            
+            functional_group->elements->at(ELEMENT_O) -= 1;
+            headgroup_decorators->push_back((HeadgroupDecorator*)functional_group);
+        }
+        head_group = "Cer";
+    }
+    
+    
     Headgroup *headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
     
     if (use_head_group) return headgroup;

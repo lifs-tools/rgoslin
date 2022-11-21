@@ -43,6 +43,7 @@ public:
     string name;
     int position;
     int count;
+    int num_atoms;
     string stereochemistry;
     string ring_stereo;
     DoubleBonds* double_bonds;

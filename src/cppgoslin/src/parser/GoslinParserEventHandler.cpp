@@ -431,6 +431,7 @@ void GoslinParserEventHandler::reset_lipid(TreeNode *node) {
     mediator_function_positions.clear();
     mediator_suffix = false;
     use_head_group = false;
+    headgroup_decorators->clear();
 }
 
 

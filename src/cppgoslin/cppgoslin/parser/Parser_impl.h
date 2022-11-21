@@ -736,7 +736,6 @@ T Parser<T>::parse(string text_to_parse, bool throw_error){
     catch (RuntimeException &re){
         if (throw_error) throw re;
     }
-    
     return parser_event_handler->content;
 }
 

@@ -34,7 +34,15 @@ FunctionalGroup::FunctionalGroup(string _name, int _position, int _count, Double
     ring_stereo = "";
     double_bonds = (_double_bonds != 0) ? _double_bonds : new DoubleBonds(0);
     is_atomic = _is_atomic;
-    elements = (_elements != 0) ? _elements : create_empty_table();
+    num_atoms = 0;
+    if (_elements != 0){
+        elements = _elements;
+        for (auto kv : *elements) num_atoms += kv.second;
+        num_atoms = max(0, num_atoms);
+    }
+    else {
+        elements = create_empty_table();
+    }
     functional_groups = (_functional_groups != 0) ? _functional_groups : (new map<string, vector<FunctionalGroup*>>());
 }
 
@@ -55,6 +63,7 @@ FunctionalGroup* FunctionalGroup::copy(){
     
     FunctionalGroup* func_group = new FunctionalGroup(name, position, count, db, is_atomic, stereochemistry, e, fg);
     func_group->ring_stereo = ring_stereo;
+    func_group->num_atoms = num_atoms;
     return func_group;
 }
 
