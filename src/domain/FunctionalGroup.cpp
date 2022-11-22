@@ -26,11 +26,12 @@ SOFTWARE.
 
 #include "cppgoslin/domain/FunctionalGroup.h"
 
-FunctionalGroup::FunctionalGroup(string _name, int _position, int _count, DoubleBonds* _double_bonds, bool _is_atomic, string _stereochemistry, ElementTable* _elements, map<string, vector<FunctionalGroup*>>* _functional_groups){
+FunctionalGroup::FunctionalGroup(string _name, int _position, int _count, DoubleBonds* _double_bonds, bool _is_atomic, string _stereochemistry, bool _stereo_bound, ElementTable* _elements, map<string, vector<FunctionalGroup*>>* _functional_groups){
     name = _name;
     position = _position;
     count = _count;
     stereochemistry = _stereochemistry;
+    stereo_bound = _stereo_bound;
     ring_stereo = "";
     double_bonds = (_double_bonds != 0) ? _double_bonds : new DoubleBonds(0);
     is_atomic = _is_atomic;
@@ -61,7 +62,7 @@ FunctionalGroup* FunctionalGroup::copy(){
         e->at(kv.first) = kv.second;
     }
     
-    FunctionalGroup* func_group = new FunctionalGroup(name, position, count, db, is_atomic, stereochemistry, e, fg);
+    FunctionalGroup* func_group = new FunctionalGroup(name, position, count, db, is_atomic, stereochemistry, stereo_bound, e, fg);
     func_group->ring_stereo = ring_stereo;
     func_group->num_atoms = num_atoms;
     return func_group;
@@ -76,6 +77,18 @@ bool FunctionalGroup::position_sort_function (FunctionalGroup* f1, FunctionalGro
 
 bool FunctionalGroup::lower_name_sort_function (string s1, string s2) {
     return (to_lower(s1) < to_lower(s2));
+}
+
+
+bool FunctionalGroup::stereo_information_missing(){
+    bool missing = stereo_bound && stereochemistry == "";
+    for (auto &kv : *functional_groups){
+        for (auto &fg : kv.second){
+            missing |= fg->stereo_information_missing();
+        }
+    }
+            
+    return missing;
 }
 
 
@@ -213,17 +226,15 @@ KnownFunctionalGroups::~KnownFunctionalGroups(){
 KnownFunctionalGroups KnownFunctionalGroups::k;
 
 FunctionalGroup* KnownFunctionalGroups::get_functional_group(string fg_name){
-    //static KnownFunctionalGroups k;
     if(contains_val(k.known_functional_groups, fg_name)){
         return k.known_functional_groups.at(fg_name)->copy();
     }
-    return 0;
     throw RuntimeException("Name '" + fg_name + "' not registered in functional group list");
 }
 
 
 
-HeadgroupDecorator::HeadgroupDecorator(string _name, int _position, int _count, ElementTable* _elements, bool _suffix, LipidLevel _level) : FunctionalGroup(_name, _position, _count, 0, false, "", _elements){
+HeadgroupDecorator::HeadgroupDecorator(string _name, int _position, int _count, ElementTable* _elements, bool _suffix, LipidLevel _level) : FunctionalGroup(_name, _position, _count, 0, false, "", 0, _elements){
     suffix = _suffix;
     lowest_visible_level = _level;
 }

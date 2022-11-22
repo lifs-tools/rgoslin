@@ -176,6 +176,14 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
     
         
 LipidSpecies* LipidBaseParserEventHandler::assemble_lipid(Headgroup *headgroup){
+    
+    for (auto fa : *fa_list){
+        if (fa->stereo_information_missing()){
+            set_lipid_level(FULL_STRUCTURE);
+            break;
+        }
+    }
+    
     LipidSpecies *ls = NULL;
     switch (level){
         case COMPLETE_STRUCTURE: ls = new LipidCompleteStructure(headgroup, fa_list); break;
