@@ -159,11 +159,12 @@ string Headgroup::get_lipid_string(LipidLevel level){
             if (!hgd->suffix) decorators_tmp.push_back(hgd->copy());
         }
         sort (decorators_tmp.begin(), decorators_tmp.end(), decorator_sorting);
+        
         for (int i = decorators_tmp.size() - 1; i > 0; --i){
             HeadgroupDecorator* hge = decorators_tmp[i];
             HeadgroupDecorator* hge_before = decorators_tmp[i - 1];
             if (hge->name == hge_before->name){
-                hge_before->count += 1;
+                hge_before->count += hge->count;
                 delete hge;
                 decorators_tmp.erase(decorators_tmp.begin() + i);
             }
