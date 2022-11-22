@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include "cppgoslin/domain/Cycle.h"
 
-Cycle::Cycle(int _cycle, int _start, int _end, DoubleBonds* _double_bonds, map<string, vector<FunctionalGroup*> >* _functional_groups, vector<Element>* _bridge_chain) : FunctionalGroup("cy", -1, 1, _double_bonds, false, "", 0, _functional_groups){
+Cycle::Cycle(int _cycle, int _start, int _end, DoubleBonds* _double_bonds, map<string, vector<FunctionalGroup*> >* _functional_groups, vector<Element>* _bridge_chain) : FunctionalGroup("cy", -1, 1, _double_bonds, false, "", false, 0, _functional_groups){
     count = 1;
     cycle = _cycle;
     position = _start;

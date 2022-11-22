@@ -243,12 +243,12 @@ void writeLipidEnum(string ofFileName){
         if (cnt++ == 0) continue;
         
         row->push_back(row->at(1));
-        for (int i = 6; i < (int)row->size(); ++i){
+        for (int i = 7; i < (int)row->size(); ++i){
             if (row->at(i) == "") continue;
             
-            offile << "    // " << row->at(5) << endl;
+            offile << "    // " << row->at(6) << endl;
             if (row->at(0) == "FG"){
-                offile << "    known_functional_groups.insert({\"" << row->at(i) << "\", new FunctionalGroup(\"" << row->at(1) << "\", -1, 1, new DoubleBonds(" << row->at(3) << "), " << row->at(4) << ", \"\", new ElementTable{";
+                offile << "    known_functional_groups.insert({\"" << row->at(i) << "\", new FunctionalGroup(\"" << row->at(1) << "\", -1, 1, new DoubleBonds(" << row->at(3) << "), " << row->at(4) << ", \"\", " << row->at(5) << ", new ElementTable{";
                 
                 // add element table
                 ElementTable* table = row->at(2).length() > 0 ? parser.parse(row->at(2)) : create_empty_table();
