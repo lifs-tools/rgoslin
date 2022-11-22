@@ -102,7 +102,7 @@ int main(int argc, char** argv){
     delete lipid;
 
     lipid = parser.parse("GalNAcβ1-4(Galβ1-4GlcNAcβ1-3)Galβ1-4Glcβ-Cer(d18:1/24:1(15Z))");
-    assert_true(lipid->get_lipid_string(SPECIES), "GalNAcGalGlcNAcGalGlcCer 42:2;O2");
+    assert_true(lipid->get_lipid_string(SPECIES), "Gal2GalNAcGlcGlcNAcCer 42:2;O2");
     delete lipid;
     
     // test several more lipid names

@@ -131,7 +131,12 @@ string Headgroup::get_class_name(){
 
 string Headgroup::get_category_string(LipidCategory _lipid_category){
     return CategoryString.at(_lipid_category);
-}        
+}
+
+
+bool Headgroup::decorator_sorting (HeadgroupDecorator* hi, HeadgroupDecorator* hj){
+    return hi->name < hj->name;
+}
         
         
 string Headgroup::get_lipid_string(LipidLevel level){
@@ -153,6 +158,7 @@ string Headgroup::get_lipid_string(LipidLevel level){
         for (auto hgd : *decorators){
             if (!hgd->suffix) decorators_tmp.push_back(hgd->copy());
         }
+        sort (decorators_tmp.begin(), decorators_tmp.end(), decorator_sorting);
         for (int i = decorators_tmp.size() - 1; i > 0; --i){
             HeadgroupDecorator* hge = decorators_tmp[i];
             HeadgroupDecorator* hge_before = decorators_tmp[i - 1];
