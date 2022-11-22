@@ -196,12 +196,6 @@ void ShorthandParserEventHandler::build_lipid(TreeNode *node) {
     if (acer_species) fa_list->at(0)->num_carbon -= 2;
     Headgroup *headgroup = prepare_headgroup_and_checks();
     
-    /*
-    if (level == FULL_STRUCTURE && contains_stereo_information){
-        level = COMPLETE_STRUCTURE;
-    }
-    */
-    
     // add count numbers for fatty acyl chains
     int fa_it = !fa_list->empty() && (fa_list->front()->lipid_FA_bond_type == LCB_REGULAR || fa_list->front()->lipid_FA_bond_type == LCB_EXCEPTION);
     for (int it = fa_it; it < (int)fa_list->size(); ++it){
