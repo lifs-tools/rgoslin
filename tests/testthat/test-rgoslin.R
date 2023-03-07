@@ -42,7 +42,7 @@ test_that("lipid name parsing with grammar works", {
   originalName <- "GalNAcβ1-4(Galβ1-4GlcNAcβ1-3)Galβ1-4Glcβ-Cer(d18:1/24:1(15Z))"
   df <- rgoslin::parseLipidNames(originalName, "LipidMaps")
   # Lipid Maps Species name is currently "Hex(3)-HexNAc(2)-Cer 42:2;O2"
-  expect_equal(df[["Species.Name"]], "GalNAcGalGlcNAcGalGlcCer 42:2;O2") 
+  expect_equal(df[["Species.Name"]], "Gal2GalNAcGlcGlcNAcCer 42:2;O2") 
   expect_equal(df[["Mass"]], 1539.9388, 4)
 })
 
@@ -315,17 +315,17 @@ test_that("weird input creates messages", {
 test_that("GSL Classes are working", {
   l <- rgoslin::parseLipidNames("GM1 36:1;2")[1,]
   expect_false(is.na(l[1,"Normalized.Name"]))
-  expect_equal("GalGalNAcNeuAcGalGlcCer 36:1;O2",l[1,"Normalized.Name"])
+  expect_equal("Gal2GalNAcGlcNeuAcCer 36:1;O2",l[1,"Normalized.Name"])
   l <- rgoslin::parseLipidNames("GM2 36:1;2")[1,]
   expect_false(is.na(l[1,"Normalized.Name"]))
-  expect_equal("GalNAcNeuAcGalGlcCer 36:1;O2",l[1,"Normalized.Name"])
+  expect_equal("GalGalNAcGlcNeuAcCer 36:1;O2",l[1,"Normalized.Name"])
   l <- rgoslin::parseLipidNames("GT1 36:1;2")[1,]
   expect_false(is.na(l[1,"Normalized.Name"]))
-  expect_equal("GalGalNAcNeuAc2GalGlcCer 36:1;O2",l[1,"Normalized.Name"])
+  expect_equal("Gal2GalNAcGlcNeuAc3Cer 36:1;O2",l[1,"Normalized.Name"])
   l <- rgoslin::parseLipidNames("GT2 36:1;2")[1,]
   expect_false(is.na(l[1,"Normalized.Name"]))
-  expect_equal("GalNAcNeuAc2GalGlcCer 36:1;O2",l[1,"Normalized.Name"])
+  expect_equal("GalGalNAcGlcNeuAc3Cer 36:1;O2",l[1,"Normalized.Name"])
   l <- rgoslin::parseLipidNames("GT3 36:1;2")[1,]
   expect_false(is.na(l[1,"Normalized.Name"]))
-  expect_equal("NeuAc2GalGlcCer 36:1;O2",l[1,"Normalized.Name"])
+  expect_equal("GalGlcNeuAc3Cer 36:1;O2",l[1,"Normalized.Name"])
 })
