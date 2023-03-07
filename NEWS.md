@@ -1,9 +1,18 @@
-# rgoslin 1.1.0 
+# rgoslin 1.3.0 
 
 Please note that this Bioconductor version is based on Goslin version 2.0.0.
-See the [Goslin repository](https://github.com/lifs-tools/goslin) for more details.
+See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
 
-## Changes in 1.1.0
+## Changes in 1.3.1
+
+## BioConductor 3.17 - Changes in 1.3.0
+
+
+## BioConductor 3.16 - Changes in 1.2.0
+
+## BioConductor 3.15 - Changes in 1.1.0
+
+## BioConductor 3.14 - Changes in 1.0.0
 
 ### Improvements
 
