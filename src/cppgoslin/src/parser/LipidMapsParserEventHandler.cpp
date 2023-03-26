@@ -48,6 +48,7 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("hg_lbpa_pre_event", set_molecular_subspecies_level);
 
     reg("fa_no_hg_pre_event", pure_fa);
+    reg("additional_modifier_pre_event", add_additional_modifier);
     
     reg("hg_sgl_pre_event", set_head_group_name);
     reg("hg_gl_pre_event", set_head_group_name);
@@ -102,6 +103,10 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("charge_pre_event", add_charge);
     reg("charge_sign_pre_event", add_charge_sign);
     
+    reg("isotope_pair_pre_event", new_adduct);
+    reg("isotope_element_pre_event", set_heavy_element);
+    reg("isotope_number_pre_event", set_heavy_number);
+    
     debug = "";
 } 
 
@@ -127,6 +132,8 @@ void LipidMapsParserEventHandler::reset_lipid(TreeNode* node){
     mod_text = "";
     headgroup_decorators->clear();
     add_omega_linoleoyloxy_Cer = false;
+    heavy_number = 0;
+    heavy_element = ELEMENT_C;
 }
     
 void LipidMapsParserEventHandler::set_molecular_subspecies_level(TreeNode* node){
@@ -135,6 +142,29 @@ void LipidMapsParserEventHandler::set_molecular_subspecies_level(TreeNode* node)
 
 void LipidMapsParserEventHandler::pure_fa(TreeNode* node){
     head_group = "FA";
+}
+
+
+void LipidMapsParserEventHandler::set_heavy_element(TreeNode* node){
+    adduct->heavy_elements.at(ELEMENT_H2) = 0;
+}
+
+
+void LipidMapsParserEventHandler::add_additional_modifier(TreeNode* node){
+    string modifier = node->get_text();
+    if (modifier == "h"){
+        FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("OH");
+        string fg_name = functional_group->name;
+        if (uncontains_val_p(current_fa->functional_groups, fg_name)) current_fa->functional_groups->insert({fg_name, vector<FunctionalGroup*>()});
+        current_fa->functional_groups->at(fg_name).push_back(functional_group);
+        set_lipid_level(STRUCTURE_DEFINED);
+    }
+}
+
+
+
+void LipidMapsParserEventHandler::set_heavy_number(TreeNode* node){
+    adduct->heavy_elements.at(ELEMENT_H2) = node->get_int();
 }
 
     
