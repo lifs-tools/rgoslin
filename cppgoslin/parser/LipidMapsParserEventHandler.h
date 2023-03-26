@@ -96,9 +96,13 @@ public:
     void add_adduct(TreeNode *node);
     void add_charge(TreeNode *node);
     void add_charge_sign(TreeNode *node);
+    void add_additional_modifier(TreeNode *node);
+    void set_heavy_element(TreeNode *node);
+    void set_heavy_number(TreeNode *node);
     
     static const map<string, int> acer_heads;
-        
+    int heavy_number;
+    Element heavy_element;
 };
 
 

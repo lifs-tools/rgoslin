@@ -9,7 +9,7 @@ else
 endif
 install_dir = /usr
 ifeq ($(origin CC),default)
-CC  = g++
+CC = g++
 endif
 #CC = g++ -std=c++11
 #CC = clang++-10
@@ -34,7 +34,8 @@ ifeq ($(OS),Windows_NT)
   flags = -fopenmp
 endif
 
-opt = -std=c++11 -O3 ${MARCH} -Wvla -Wall ${flags} -D_FORTIFY_SOURCE=2
+opt = -std=c++11 -O3 ${flags} -D_FORTIFY_SOURCE=2
+# -Wvla -Wall ${MARCH}
 
 main: ${bin}
 

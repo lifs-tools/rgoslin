@@ -151,7 +151,7 @@ string Headgroup::get_lipid_string(LipidLevel level){
     }
     
     stringstream headgoup_string;
-            
+         
     // adding prefixes to the headgroup
     if (!is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE | STRUCTURE_DEFINED)){
         vector<HeadgroupDecorator*> decorators_tmp;
@@ -182,10 +182,9 @@ string Headgroup::get_lipid_string(LipidLevel level){
     
     // adding headgroup
     headgoup_string << hgs;
-    
     // ading suffixes to the headgroup
     for (auto hgd : *decorators){
-        if (hgd->suffix){
+        if (hgd != 0 && hgd->suffix){
             headgoup_string << hgd->to_string(level);
         }
     }

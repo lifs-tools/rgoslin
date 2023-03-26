@@ -52,6 +52,7 @@ Adduct::Adduct(Adduct *a){
         adduct_string = a->adduct_string;
         charge = a->charge;
         charge_sign = a->charge_sign;
+        for (auto e : element_order) heavy_elements.insert({e, a->heavy_elements.at(e)});
     }
 }
 
@@ -61,7 +62,7 @@ Adduct::Adduct(string _sum_formula, string _adduct_string, int _charge, int _sig
     adduct_string = _adduct_string;
     charge = _charge;
     set_charge_sign(_sign);
-    
+    for (auto &e : element_order) heavy_elements.insert({e, 0});
 }
 
 const map<string, int> Adduct::adduct_charges {
@@ -71,6 +72,15 @@ const map<string, int> Adduct::adduct_charges {
 };
 
 
+string Adduct::get_heavy_isotope_string(){
+    stringstream ss;
+    for (auto e : element_order){
+        if (heavy_elements[e] > 0){
+            ss << heavy_elements[e] << heavy_shortcut.at(e);
+        }
+    }
+    return ss.str();
+}
 
 void Adduct::set_charge_sign(int sign){
     if (-1 <= sign && sign <= 1){
@@ -84,10 +94,10 @@ void Adduct::set_charge_sign(int sign){
         
 string Adduct::get_lipid_string(){
     if (charge == 0){
-        return "[M]";
+        return "[M" + get_heavy_isotope_string() + "]";
     }
     stringstream stst;
-    stst << "[M" << sum_formula << adduct_string << "]" << charge << ((charge_sign > 0) ? "+" : "-");
+    stst << "[M" << get_heavy_isotope_string() << sum_formula << adduct_string << "]" << charge << ((charge_sign > 0) ? "+" : "-");
     
     return stst.str();
 }
@@ -95,16 +105,25 @@ string Adduct::get_lipid_string(){
 ElementTable* Adduct::get_elements(){
     ElementTable* elements = create_empty_table();
     
-    if (contains_val(adduct_charges, adduct_string)){
-        if (adduct_charges.at(adduct_string) != get_charge()){
-            throw ConstraintViolationException("Provided charge '" + std::to_string(get_charge()) + "' in contradiction to adduct '" + adduct_string + "' charge '" + std::to_string(adduct_charges.at(adduct_string)) + "'.");
-        }
-        for (auto kv : KnownAdducts::get_instance().known_adducts.at(adduct_string)){
+    for (auto &kv : heavy_elements){
+        if (kv.second > 0){
+            elements->at(heavy_to_regular.at(kv.first)) -= kv.second;
             elements->at(kv.first) += kv.second;
         }
     }
-    else {
-        throw ConstraintViolationException("Adduct '" + adduct_string + "' is unknown.");
+    
+    if (adduct_string.length() > 0){
+        if (contains_val(adduct_charges, adduct_string)){
+            if (adduct_charges.at(adduct_string) != get_charge()){
+                throw ConstraintViolationException("Provided charge '" + std::to_string(get_charge()) + "' in contradiction to adduct '" + adduct_string + "' charge '" + std::to_string(adduct_charges.at(adduct_string)) + "'.");
+            }
+            for (auto kv : KnownAdducts::get_instance().known_adducts.at(adduct_string)){
+                elements->at(kv.first) += kv.second;
+            }
+        }
+        else {
+            throw ConstraintViolationException("Adduct '" + adduct_string + "' is unknown.");
+        }
     }
     
     return elements;

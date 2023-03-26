@@ -47,15 +47,17 @@ public:
     string adduct_string;
     int charge;
     int charge_sign;
+    ElementTable heavy_elements;
     
     static const map<string, int> adduct_charges;
     
-    Adduct(string _sum_formula, string _adduct_string, int _charge = 1, int _sign = 1);
+    Adduct(string _sum_formula, string _adduct_string, int _charge = 0, int _sign = 1);
     Adduct(Adduct *a);
     void set_charge_sign(int sign);
     string get_lipid_string();
     ElementTable* get_elements();
     int get_charge();
+    string get_heavy_isotope_string();
 };
 
 
