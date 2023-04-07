@@ -25,6 +25,7 @@ Suggests:
     kableExtra,
     BiocManager,
     stringr,
+    stringi,
     ggplot2,
     tibble,
     lipidr
