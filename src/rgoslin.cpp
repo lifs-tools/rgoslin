@@ -128,6 +128,7 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
     lipidDetails.push_back(chr_na, "Lipid.Maps.Category");
     lipidDetails.push_back(chr_na, "Lipid.Maps.Main.Class");
     lipidDetails.push_back(chr_na, "Species.Name");
+    lipidDetails.push_back(chr_na, "Extended.Species.Name");
     lipidDetails.push_back(chr_na, "Molecular.Species.Name");
     lipidDetails.push_back(chr_na, "Sn.Position.Name");
     lipidDetails.push_back(chr_na, "Structure.Defined.Name");
@@ -221,6 +222,7 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
             lipidDetails["Lipid.Maps.Category"] = lipidMapsCategory;
             lipidDetails["Lipid.Maps.Main.Class"] = lipidMapsMainClass;
             lipidDetails["Species.Name"] = species;
+            lipidDetails["Extended.Species.Name"] = lipidAdduct->get_extended_class();
             lipidDetails["Molecular.Species.Name"] = get_lipid_name_for_level(lipidAdduct, MOLECULAR_SPECIES);
             lipidDetails["Sn.Position.Name"] = get_lipid_name_for_level(lipidAdduct, SN_POSITION);
             lipidDetails["Structure.Defined.Name"] = get_lipid_name_for_level(lipidAdduct, STRUCTURE_DEFINED);
