@@ -53,13 +53,17 @@ const map<Element, double> element_masses = {{ELEMENT_C, 12.0},  {ELEMENT_H, 1.0
 
 const map<Element, string> element_shortcut = {{ELEMENT_C, "C"}, {ELEMENT_H, "H"}, {ELEMENT_N, "N"}, {ELEMENT_O, "O"}, {ELEMENT_P, "P"}, {ELEMENT_S, "S"}, {ELEMENT_F, "F"}, {ELEMENT_Cl, "Cl"}, {ELEMENT_Br, "Br"}, {ELEMENT_I, "I"}, {ELEMENT_As, "As"}, {ELEMENT_H2, "H'"}, {ELEMENT_C13, "C'"}, {ELEMENT_N15, "N'"}, {ELEMENT_O17, "O'"}, {ELEMENT_O18, "O''"}, {ELEMENT_P32, "P'"}, {ELEMENT_S33, "S'"}, {ELEMENT_S34, "S''"}};
 
-const map<Element, string> heavy_shortcut = {{ELEMENT_C, "C"}, {ELEMENT_H, "H"}, {ELEMENT_N, "N"}, {ELEMENT_O, "O"}, {ELEMENT_P, "P"}, {ELEMENT_S, "S"}, {ELEMENT_F, "F"}, {ELEMENT_I, "I"}, {ELEMENT_As, "As"}, {ELEMENT_Br, "Br"}, {ELEMENT_Cl, "Cl"}, {ELEMENT_H2, "H2"}, {ELEMENT_C13, "C13"}, {ELEMENT_N15, "N15"}, {ELEMENT_O17, "O17"}, {ELEMENT_O18, "O18"}, {ELEMENT_P32, "P32"}, {ELEMENT_S33, "S33"}, {ELEMENT_S34, "S34"}};
+const map<Element, string> heavy_shortcut = {{ELEMENT_C, "C"}, {ELEMENT_H, "H"}, {ELEMENT_N, "N"}, {ELEMENT_O, "O"}, {ELEMENT_P, "P"}, {ELEMENT_S, "S"}, {ELEMENT_F, "F"}, {ELEMENT_I, "I"}, {ELEMENT_As, "As"}, {ELEMENT_Br, "Br"}, {ELEMENT_Cl, "Cl"}, {ELEMENT_H2, "[2]H"}, {ELEMENT_C13, "[13]C"}, {ELEMENT_N15, "[15]N"}, {ELEMENT_O17, "[17]O"}, {ELEMENT_O18, "[18]O"}, {ELEMENT_P32, "[32]P"}, {ELEMENT_S33, "[33]S"}, {ELEMENT_S34, "[34]S"}};
 
 
 const map<Element, Element> heavy_to_regular = {{ELEMENT_H2, ELEMENT_H}, {ELEMENT_C13, ELEMENT_C}, {ELEMENT_N15, ELEMENT_N}, {ELEMENT_O17, ELEMENT_O}, {ELEMENT_O18, ELEMENT_O}, {ELEMENT_P32, ELEMENT_P}, {ELEMENT_S33, ELEMENT_S}, {ELEMENT_S34, ELEMENT_S}};
 
 
 const vector<Element> element_order = {ELEMENT_C, ELEMENT_H, ELEMENT_As, ELEMENT_Br, ELEMENT_Cl, ELEMENT_F, ELEMENT_I, ELEMENT_N, ELEMENT_O, ELEMENT_P, ELEMENT_S, ELEMENT_H2, ELEMENT_C13, ELEMENT_N15, ELEMENT_O17, ELEMENT_O18, ELEMENT_P32, ELEMENT_S33, ELEMENT_S34};
+
+
+const map<string, Element> heavy_element_table = {{"[2]H", ELEMENT_H2}, {"[13]C", ELEMENT_C13}, {"[15]N", ELEMENT_N15}, {"[17]O", ELEMENT_O17}, {"[18]O", ELEMENT_O18}, {"[32]P", ELEMENT_P32}, {"[33]S", ELEMENT_S33}, {"[34]S", ELEMENT_S34}};
+
 }
 
 

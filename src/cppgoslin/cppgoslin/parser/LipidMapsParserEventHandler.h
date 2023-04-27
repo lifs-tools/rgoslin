@@ -99,10 +99,23 @@ public:
     void add_additional_modifier(TreeNode *node);
     void set_heavy_element(TreeNode *node);
     void set_heavy_number(TreeNode *node);
+    void new_sphinga(TreeNode *node);
+    void add_phospho(TreeNode *node);
+    void sphinga_db_set(TreeNode *node);
+    void add_carbon_pre_len(TreeNode *node);
+    void set_hydro_pre_num(TreeNode *node);
+    void new_sphinga_pure(TreeNode *node);
+    
     
     static const map<string, int> acer_heads;
     int heavy_number;
     Element heavy_element;
+    bool sphinga_pure;
+    int lcb_carbon_pre_set;
+    int lcb_db_pre_set;
+    vector<FunctionalGroup*> lcb_hydro_pre_set;
+    string sphinga_prefix = "";
+    string sphinga_suffix = "";
 };
 
 

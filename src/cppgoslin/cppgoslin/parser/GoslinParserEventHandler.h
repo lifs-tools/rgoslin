@@ -55,6 +55,8 @@ public:
     string mediator_function;
     vector<int> mediator_function_positions;
     bool mediator_suffix;
+    Element heavy_element;
+    int heavy_element_number;
     
     static const map<string, int> mediator_FA;
     static const map<string, int> mediator_DB;
@@ -99,6 +101,12 @@ public:
     void add_mediator_suffix(TreeNode *node);
     void add_mediator(TreeNode *node);
     void set_mediator_tetranor(TreeNode *node);
+    
+    void set_heavy_d_element(TreeNode *node);
+    void set_heavy_d_number(TreeNode *node);
+    void set_heavy_element(TreeNode *node);
+    void set_heavy_number(TreeNode *node);
+    void add_heavy_component(TreeNode *node);
 };
 
 

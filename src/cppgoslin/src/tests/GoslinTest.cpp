@@ -147,6 +147,10 @@ int main(int argc, char** argv){
     assert_true(l->lipid->fa_list.at(2)->num_carbon, 16);
     assert_true(l->lipid->fa_list.at(2)->double_bonds->num_double_bonds, 0);
     
+    l = parser.parse("15S-HETE-d8");
+    assert_true(l->get_lipid_string(), "FA 20:4;OH[M[2]H8]");
+    assert_true(l->get_sum_formula(), "C20H24O3H'8");
+    
     // test several more lipid names
     vector<string> lipid_names;
     ifstream infile(test_file);

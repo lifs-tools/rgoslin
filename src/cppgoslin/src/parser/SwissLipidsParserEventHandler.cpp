@@ -299,7 +299,7 @@ void SwissLipidsParserEventHandler::set_species_fa(TreeNode *node){
     
 
 void SwissLipidsParserEventHandler::new_adduct(TreeNode *node) {
-    adduct = new Adduct("", "");
+    if (!adduct) adduct = new Adduct("", "");
 }
     
     
@@ -320,5 +320,6 @@ void SwissLipidsParserEventHandler::add_charge_sign(TreeNode *node) {
     string sign = node->get_text();
     if (sign == "+") adduct->set_charge_sign(1);
     else if (sign == "-") adduct->set_charge_sign(-1);
+    if (adduct->charge == 0) adduct->charge = 1;
 }
         

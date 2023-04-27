@@ -95,7 +95,7 @@ int main(int argc, char** argv){
     catch (LipidException &e){ }
 
     // glycerophospholipid
-    for (auto the_lipid_name : { "TAG 16:1-18:1-24:0", "PE 16:1/12:0", "DAG 16:1-12:0", "12-HETE", "HexCer 18:1;2/16:0"}){
+    for (auto the_lipid_name : { "TAG 16:1-18:1-24:0", "PE 16:1/12:0", "DAG 16:1-12:0", "12-HETE", "15S-HETE-d8", "HexCer 18:1;2/16:0"}){
         LipidAdduct* lipid = goslin_parser_pure.parse(the_lipid_name);
         assert (lipid);
         delete lipid;
@@ -472,7 +472,7 @@ int main(int argc, char** argv){
                         {"13R-HODE", "13R-HODE"},
                         {"CL(1'-[20:0/20:0],3'-[20:4(5Z,8Z,11Z,14Z)/18:2(9Z,12Z)])", "CL 20:0/20:0/20:4(5Z,8Z,11Z,14Z)/18:2(9Z,12Z)"},
                         {"PA(P-20:0/18:3(6Z,9Z,12Z))", "PA P-20:0/18:3(6Z,9Z,12Z)"},
-                        {"M(IP)2C(t18:0/20:0(2OH))", "M(IP)2C 18:0;(OH)2/20:0;OH"},
+                        {"M(IP)2C(t18:0/20:0(2OH))", "M(IP)2C(1) 18:0;3OH,4OH/20:0;2OH"},
                         {"Cer(d16:2(4E,6E)/22:0(2OH))", "Cer 16:2(4E,6E);1OH,3OH/22:0;2OH"},
                         {"MG(18:1(11E)/0:0/0:0)[rac]", "MG 18:1(11E)/0:0/0:0"},
                         {"PAT18(24:1(2E)(2Me,4Me[S],6Me[S])/25:1(2E)(2Me,4Me[S],6Me[S])/26:1(2E)(2Me,4Me[S],6Me[S])/24:1(2E)(2Me,4Me[S],6Me[S]))", "PAT18 24:1(2E);2Me,4Me,6Me/25:1(2E);2Me,4Me,6Me/26:1(2E);2Me,4Me,6Me/24:1(2E);2Me,4Me,6Me"},
