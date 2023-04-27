@@ -104,6 +104,15 @@ GoslinParserEventHandler::GoslinParserEventHandler() : LipidBaseParserEventHandl
     reg("mediator_functional_group_post_event", add_mediator_function);
     reg("mediator_suffix_pre_event", add_mediator_suffix);
     reg("mediator_tetranor_pre_event", set_mediator_tetranor);
+    
+    
+    reg("isotope_pair_pre_event", new_adduct);
+    reg("isotope_element_pre_event", set_heavy_d_element);
+    reg("isotope_number_pre_event", set_heavy_d_number);
+    reg("heavy_pre_event", new_adduct);
+    reg("adduct_heavy_element_pre_event", set_heavy_element);
+    reg("adduct_heavy_number_pre_event", set_heavy_number);
+    reg("adduct_heavy_component_post_event", add_heavy_component);
         
     debug = "";
 }
@@ -111,6 +120,28 @@ GoslinParserEventHandler::GoslinParserEventHandler() : LipidBaseParserEventHandl
 
 GoslinParserEventHandler::~GoslinParserEventHandler(){
 }
+
+
+void GoslinParserEventHandler::reset_lipid(TreeNode *node) {
+    level = FULL_STRUCTURE;
+    head_group = "";
+    lcb = NULL;
+    fa_list->clear();
+    current_fa = NULL;
+    adduct = NULL;
+    db_position = 0;
+    db_cistrans = "";
+    unspecified_ether = false;
+    plasmalogen = 0;
+    mediator_function = "";
+    mediator_function_positions.clear();
+    mediator_suffix = false;
+    use_head_group = false;
+    headgroup_decorators->clear();
+    heavy_element = ELEMENT_C;
+    heavy_element_number = 0;
+}
+
 
 
 void GoslinParserEventHandler::set_mediator(TreeNode *node){
@@ -136,6 +167,19 @@ void GoslinParserEventHandler::set_mediator_tetranor(TreeNode *node){
 void GoslinParserEventHandler::set_mediator_carbon(TreeNode *node){
     current_fa->num_carbon += GoslinParserEventHandler::mediator_FA.at(node->get_text());
 }
+        
+        
+        
+void GoslinParserEventHandler::set_heavy_d_element(TreeNode *node){
+    adduct->heavy_elements[ELEMENT_H2] = 1;
+}
+        
+        
+        
+void GoslinParserEventHandler::set_heavy_d_number(TreeNode *node){
+    adduct->heavy_elements[ELEMENT_H2] = node->get_int();
+}
+
     
 
 void GoslinParserEventHandler::set_mediator_db(TreeNode *node){
@@ -416,25 +460,6 @@ void GoslinParserEventHandler::add_mediator(TreeNode *node){
 }
 
 
-void GoslinParserEventHandler::reset_lipid(TreeNode *node) {
-    level = FULL_STRUCTURE;
-    head_group = "";
-    lcb = NULL;
-    fa_list->clear();
-    current_fa = NULL;
-    adduct = NULL;
-    db_position = 0;
-    db_cistrans = "";
-    unspecified_ether = false;
-    plasmalogen = 0;
-    mediator_function = "";
-    mediator_function_positions.clear();
-    mediator_suffix = false;
-    use_head_group = false;
-    headgroup_decorators->clear();
-}
-
-
 void GoslinParserEventHandler::set_plasmalogen(TreeNode *node) {
     plasmalogen = toupper(node->get_text()[0]);
 }
@@ -627,7 +652,7 @@ void GoslinParserEventHandler::add_hydroxyl(TreeNode *node) {
     
 
 void GoslinParserEventHandler::new_adduct(TreeNode *node) {
-    adduct = new Adduct("", "");
+    if (!adduct) adduct = new Adduct("", "");
 }
     
     
@@ -648,6 +673,24 @@ void GoslinParserEventHandler::add_charge_sign(TreeNode *node) {
     string sign = node->get_text();
     if (sign == "+") adduct->set_charge_sign(1);
     else if (sign == "-") adduct->set_charge_sign(-1);
+    if (adduct->charge == 0) adduct->charge = 1;
+}
+        
+        
+        
+void GoslinParserEventHandler::set_heavy_element(TreeNode *node) {
+    heavy_element = heavy_element_table.at(node->get_text());
+    heavy_element_number = 1;
+}
+        
+        
+void GoslinParserEventHandler::set_heavy_number(TreeNode *node) {
+    heavy_element_number = node->get_int();
+}
+        
+        
+void GoslinParserEventHandler::add_heavy_component(TreeNode *node) {
+    adduct->heavy_elements[heavy_element] += heavy_element_number;
 }
         
 

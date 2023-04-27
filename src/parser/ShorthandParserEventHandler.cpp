@@ -145,6 +145,9 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("acer_species_post_event", set_acer_species);
     
     reg("sterol_definition_post_event", set_sterol_definition);
+    reg("adduct_heavy_element_pre_event", set_heavy_element);
+    reg("adduct_heavy_number_pre_event", set_heavy_number);
+    reg("adduct_heavy_component_post_event", add_heavy_component);
     
     debug = "";
 }
@@ -168,6 +171,8 @@ void ShorthandParserEventHandler::reset_lipid(TreeNode *node) {
     tmp.remove_all();
     acer_species = false;
     contains_stereo_information = false;
+    heavy_element = ELEMENT_C;
+    heavy_element_number = 0;
 }
 
 
@@ -771,7 +776,7 @@ void ShorthandParserEventHandler::set_double_bond_count(TreeNode *node){
 
 
 void ShorthandParserEventHandler::new_adduct(TreeNode *node){
-    adduct = new Adduct("", "");
+    if (!adduct) adduct = new Adduct("", "");
 }
 
 
@@ -792,6 +797,25 @@ void ShorthandParserEventHandler::add_charge_sign(TreeNode *node){
     string sign = node->get_text();
     if (sign == "+") adduct->set_charge_sign(1);
     else adduct->set_charge_sign(-1);
+    if (adduct->charge == 0) adduct->charge = 1;
+}
+
+
+
+void ShorthandParserEventHandler::set_heavy_element(TreeNode *node){
+    heavy_element = heavy_element_table.at(node->get_text());
+}
+
+
+
+void ShorthandParserEventHandler::set_heavy_number(TreeNode *node){
+    heavy_element_number = node->get_int();
+}
+
+
+
+void ShorthandParserEventHandler::add_heavy_component(TreeNode *node){
+    adduct->heavy_elements[heavy_element] = heavy_element_number;
 }
 
 

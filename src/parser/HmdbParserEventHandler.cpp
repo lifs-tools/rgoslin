@@ -340,7 +340,7 @@ void HmdbParserEventHandler::lipid_suffix(TreeNode *node) {
     
 
 void HmdbParserEventHandler::new_adduct(TreeNode *node) {
-    adduct = new Adduct("", "");
+    if (!adduct) adduct = new Adduct("", "");
 }
     
     
@@ -361,6 +361,7 @@ void HmdbParserEventHandler::add_charge_sign(TreeNode *node) {
     string sign = node->get_text();
     if (sign == "+") adduct->set_charge_sign(1);
     else if (sign == "-") adduct->set_charge_sign(-1);
+    if (adduct->charge == 0) adduct->charge = 1;
 }
 
         
