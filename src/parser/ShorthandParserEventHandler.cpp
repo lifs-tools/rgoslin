@@ -79,6 +79,7 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
 
     // set head group headgroup_decorators
     reg("carbohydrate_pre_event", set_carbohydrate);
+    reg("carbohydrate_sulfo_pre_event", set_carbohydrate);
     reg("carbohydrate_structural_pre_event", set_carbohydrate_structural);
     reg("carbohydrate_isomeric_pre_event", set_carbohydrate_isomeric);
     
