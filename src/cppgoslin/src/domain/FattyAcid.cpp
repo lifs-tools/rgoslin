@@ -24,8 +24,10 @@ SOFTWARE.
 
 
 #include "cppgoslin/domain/FattyAcid.h"
+#include <cassert>
 
 FattyAcid::FattyAcid(string _name, int _num_carbon, DoubleBonds* _double_bonds, map<string, vector<FunctionalGroup*> >* _functional_groups, LipidFaBondType _lipid_FA_bond_type, int _position) : FunctionalGroup(_name, _position, 1, _double_bonds, false, "", false, 0, _functional_groups) {
+    assert(contains_val(BondTypeString, _lipid_FA_bond_type));
     
     num_carbon = _num_carbon;
     lipid_FA_bond_type = _lipid_FA_bond_type;
@@ -102,6 +104,13 @@ bool FattyAcid::lipid_FA_bond_type_prefix(LipidFaBondType lipid_FA_bond_type){
     return (lipid_FA_bond_type == ETHER_PLASMANYL) || (lipid_FA_bond_type == ETHER_PLASMENYL) || (lipid_FA_bond_type == ETHER_UNSPECIFIED); 
 }
 
+
+int FattyAcid::num_oxygens(){
+    ElementTable* e = get_functional_group_elements();
+    int number_oxygens = e->at(ELEMENT_O);
+    delete e;
+    return number_oxygens;
+}
 
 
 string FattyAcid::to_string(LipidLevel level){
@@ -267,7 +276,7 @@ void FattyAcid::compute_elements(){
             elements->at(ELEMENT_H) = (2 * num_carbon + 1 - 2 * num_double_bonds) - 1; // hydrogen
             
         else {
-            throw LipidException("Mass cannot be computed for fatty acyl chain with this bond type");
+            throw LipidException("Mass cannot be computed for fatty acyl chain with this bond type: " + BondTypeString.at(lipid_FA_bond_type));
         }
     }
     else {
