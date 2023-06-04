@@ -146,9 +146,11 @@ string Headgroup::get_lipid_string(LipidLevel level){
     
     string hgs = ((use_headgroup) ? headgroup : get_class_string(lipid_class));
     
+    /*
     if (level == CLASS){
         return hgs;
     }
+    */
     
     stringstream headgoup_string;
          
