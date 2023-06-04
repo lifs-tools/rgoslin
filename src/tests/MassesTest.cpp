@@ -39,6 +39,24 @@ SOFTWARE.
 using namespace std;
 using namespace goslin;
 
+
+void cpp_assert(string s1, string s2, string comment = ""){
+    if (s1 != s2){
+        cout << "assertion failed: " << s1 << " != " << s2 << " " << comment << endl;
+        assert(false);
+    }
+}
+
+void cpp_assert(double d1, double d2){
+    if (fabs(d1 - d2) > 1e-4){
+        cout << "assertion failed: " << d1 << " != " << d2 << endl;
+        assert(false);
+    }
+}
+
+
+
+
 int main(int argc, char** argv){
     
     LipidAdduct* lipid;
@@ -73,10 +91,10 @@ int main(int argc, char** argv){
                 assert (false);
             }
             
-            assert (lipid->get_lipid_string(CLASS) == lipid_class);
-            assert (compute_sum_formula(lipid->lipid->get_elements()) == lipid_formula);
-            assert (fabs(lipid->get_mass() - lipid_mass) < 0.001);
-            assert (lipid->adduct->get_charge() == lipid_charge);
+            cpp_assert (lipid->get_lipid_string(CLASS), lipid_class, " lipid name: " + lipid_name);
+            cpp_assert (compute_sum_formula(lipid->lipid->get_elements()), lipid_formula);
+            cpp_assert (lipid->get_mass(), lipid_mass);
+            cpp_assert (lipid->adduct->get_charge(), lipid_charge);
             
             delete lipid;
             
