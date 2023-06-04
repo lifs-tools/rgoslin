@@ -208,7 +208,7 @@ SEXP handle_lipid(LipidAdduct* lipidAdduct, std::string lipid_name, std::string 
                 adductString = lipidAdduct->adduct->get_lipid_string();
                 adductCharge = lipidAdduct->adduct->get_charge();
             }
-            lipidMapsMainClass = lipid->headgroup->get_class_name();
+            //lipidMapsMainClass = lipid->headgroup->get_class_name();
             headGroup = lipid->headgroup->headgroup;
             LipidClassMeta lcMeta = LipidClasses::get_instance().lipid_classes.at(lipid->headgroup->get_class(headGroup));
             headGroupSynonyms = "[" + join(lcMeta.synonyms, ", ") + "]";
