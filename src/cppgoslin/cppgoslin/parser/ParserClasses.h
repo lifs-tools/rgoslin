@@ -108,6 +108,7 @@ public:
     void init();
     int next(int pos = -1);
     void print_bitfield(uint64_t l);
+    uint64_t size();
     
 private:
     class iter : public std::iterator<std::output_iterator_tag, int>{

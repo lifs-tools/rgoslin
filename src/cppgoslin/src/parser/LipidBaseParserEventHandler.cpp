@@ -42,6 +42,8 @@ const map<string, vector<string> > LipidBaseParserEventHandler::glyco_table{{"ga
                {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
                {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
                {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
+               
+const map<string, int> LipidBaseParserEventHandler::fa_synonyms{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}, {"PGJ2", 20}};
 
 
 LipidBaseParserEventHandler::LipidBaseParserEventHandler() : BaseParserEventHandler<LipidAdduct*>() {
@@ -76,6 +78,223 @@ void LipidBaseParserEventHandler::set_lipid_level(LipidLevel _level){
 bool LipidBaseParserEventHandler::sp_regular_lcb(){
     return Headgroup::get_category(head_group) == SP && contains_val(LCB_STATES, current_fa->lipid_FA_bond_type) && !(contains_val(LipidBaseParserEventHandler::SP_EXCEPTION_CLASSES, head_group) && headgroup_decorators->size() == 0);
     
+}
+
+
+FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name){
+    
+    if (uncontains_val(fa_synonyms, mediator_name)) return 0;
+    
+    switch(LipidBaseParserEventHandler::fa_synonyms.at(mediator_name)){
+        case 0: // Palmitic acid
+            return new FattyAcid("FA", 16);
+            break;
+            
+        case 1: // Linoleic acid":
+            return new FattyAcid("FA", 18, new DoubleBonds(2));
+            break;
+            
+        case 2: // AA":
+            return new FattyAcid("FA", 20, new DoubleBonds(4));
+            break;
+            
+        case 3: // ALA":
+            return new FattyAcid("FA", 18, new DoubleBonds(3));
+            break;
+            
+        case 4: // EPA":
+            return new FattyAcid("FA", 20, new DoubleBonds(5));
+            break;
+            
+        case 5: // DHA":
+            return new FattyAcid("FA", 22, new DoubleBonds(6));
+            break;
+            
+        case 6: // LTB4
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 5;
+                f2->position = 12;
+                return new FattyAcid("FA", 20, new DoubleBonds({{6, "Z"}, {8, "E"}, {10, "E"}, {14, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+            }
+            break;
+            
+        case 7: // Resolvin D3
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 4;
+                f2->position = 11;
+                f3->position = 17;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+            }
+            break;
+            
+        case 8: // Maresin 1
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 4;
+                f2->position = 14;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+            }
+            break;
+            
+        case 9: // Resolvin D2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 4;
+                f2->position = 16;
+                f3->position = 17;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+            }
+            break;
+            
+        case 10: // Resolvin D5
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 7;
+                f2->position = 17;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+            }
+            break;
+            
+        case 11: // Resolvin D1
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 7;
+                f2->position = 8;
+                f3->position = 17;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+            }
+            break;
+            
+        case 12: // TXB1
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                f4->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 13: // TXB2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                f4->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 14: // TXB3
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                f4->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 15: // PGF2alpha
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 16: // PGD2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("oxo");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}, {"oxo", {f3}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 17: // PGE2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f3}}, {"oxy", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 18: // PGB2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 15;
+                f2->position = 9;
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 19: // 15d-PGJ2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
+                f1->position = 15;
+                f2->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 20: // PGJ2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
+                f1->position = 15;
+                f2->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+    }
+    
+    return 0;
 }
 
 

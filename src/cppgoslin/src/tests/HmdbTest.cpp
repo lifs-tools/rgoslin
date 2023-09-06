@@ -98,6 +98,31 @@ int main(int argc, char** argv){
     assert_true(l->get_sum_formula(), "C40H77N2O7P");
     delete l;
     
+    l = parser.parse("DG(a-21:0/20:5(5Z,8Z,10E,14Z,17Z)+=O(12S)/0:0)");
+    assert_true(l->get_lipid_string(FULL_STRUCTURE), "DG 20:0;Me/20:5(5Z,8Z,10E,14Z,17Z);12oxo/0:0");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "DG 20:0;Me/20:5(5,8,10,14,17);oxo/0:0");
+    assert_true(l->get_lipid_string(SN_POSITION), "DG 21:0/20:6;O/0:0");
+    assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "DG 21:0_20:6;O");
+    assert_true(l->get_lipid_string(SPECIES), "DG 41:6;O");
+    assert_true(l->get_sum_formula(), "C44H74O6");
+    delete l;
+    
+    l = parser.parse("PIP(16:2(9Z,12Z)/PGJ2)");
+    assert_true(l->get_lipid_string(SN_POSITION), "PIP 16:2/20:5;O2");
+    assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "PIP 16:2_20:5;O2");
+    assert_true(l->get_lipid_string(SPECIES), "PIP 36:7;O2");
+    assert_true(l->get_sum_formula(), "C45H74O18P2");
+    delete l;
+    
+    l = parser.parse("PC(14:0/20:5(7Z,9Z,11E,13E,17Z)-3OH(5,6,15))");
+    assert_true(l->get_lipid_string(FULL_STRUCTURE), "PC 14:0/20:5(7Z,9Z,11E,13E,17Z);5OH,6OH,15OH");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "PC 14:0/20:5(7,9,11,13,17);(OH)3");
+    assert_true(l->get_lipid_string(SN_POSITION), "PC 14:0/20:5;O3");
+    assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "PC 14:0_20:5;O3");
+    assert_true(l->get_lipid_string(SPECIES), "PC 34:5;O3");
+    assert_true(l->get_sum_formula(), "C42H74NO11P");
+    delete l;
+    
     
         
     // test several more lipid names
