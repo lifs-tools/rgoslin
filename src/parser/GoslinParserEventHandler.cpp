@@ -30,7 +30,7 @@ SOFTWARE.
    
 const map<string, int> GoslinParserEventHandler::mediator_FA{{"H", 17}, {"O", 18}, {"E", 20}, {"Do", 22}};
 const map<string, int> GoslinParserEventHandler::mediator_DB{{"M", 1}, {"D", 2}, {"Tr", 3}, {"T", 4}, {"P", 5}, {"H", 6}};
-const map<string, int> GoslinParserEventHandler::mediator_trivial{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}};
+
 
 GoslinParserEventHandler::GoslinParserEventHandler() : LipidBaseParserEventHandler() {    
     reg("lipid_pre_event", reset_lipid);
@@ -244,6 +244,8 @@ void GoslinParserEventHandler::set_trivial_mediator(TreeNode *node){
     head_group = "FA";
     string mediator_name = node->get_text();
      
+    current_fa = resolve_fa_synonym(mediator_name);
+    /*
     switch(GoslinParserEventHandler::mediator_trivial.at(mediator_name)){
         case 0: // Palmitic acid
             current_fa = new FattyAcid("FA", 16);
@@ -441,6 +443,7 @@ void GoslinParserEventHandler::set_trivial_mediator(TreeNode *node){
             }
             break;
     }
+    */
     
     fa_list->clear();
     fa_list->push_back(current_fa);
