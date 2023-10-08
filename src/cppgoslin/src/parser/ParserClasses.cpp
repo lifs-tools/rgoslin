@@ -207,7 +207,7 @@ bool Bitfield::iter::operator!=(const iter & rhs) const {
 
 
 
-uint64_t Bitfield::size() const {
+uint64_t Bitfield::size() {
     return num_size;
 }
 

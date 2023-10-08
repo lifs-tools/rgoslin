@@ -60,7 +60,6 @@ public:
     
     static const map<string, int> mediator_FA;
     static const map<string, int> mediator_DB;
-    static const map<string, int> mediator_trivial;
         
     GoslinParserEventHandler();
     ~GoslinParserEventHandler();

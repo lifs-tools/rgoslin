@@ -31,9 +31,7 @@ SOFTWARE.
 LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEventHandler() {
     reg("lipid_pre_event", reset_lipid);
     reg("lipid_post_event", build_lipid);
-    
     reg("mediator_pre_event", mediator_event);
-    
     reg("sgl_species_pre_event", set_species_level);
     reg("species_fa_pre_event", set_species_level);
     reg("tgl_species_pre_event", set_species_level);
@@ -46,10 +44,8 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("hg_dg_pre_event", set_molecular_subspecies_level);
     reg("fa_lpl_molecular_pre_event", set_molecular_subspecies_level);
     reg("hg_lbpa_pre_event", set_molecular_subspecies_level);
-
     reg("fa_no_hg_pre_event", pure_fa);
     reg("additional_modifier_pre_event", add_additional_modifier);
-    
     reg("hg_sgl_pre_event", set_head_group_name);
     reg("hg_gl_pre_event", set_head_group_name);
     reg("hg_cl_pre_event", set_head_group_name);
@@ -68,19 +64,15 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("special_cer_pre_event", set_head_group_name);
     reg("special_cer_hg_pre_event", set_head_group_name);
     reg("omega_linoleoyloxy_Cer_pre_event", set_omega_head_group_name);
-    
     reg("lcb_pre_event", new_lcb);
     reg("lcb_post_event", clean_lcb);
     reg("fa_pre_event", new_fa);
     reg("fa_post_event", append_fa);
-    
     reg("glyco_struct_pre_event", add_glyco);
-    
     reg("db_single_position_pre_event", set_isomeric_level);
     reg("db_single_position_post_event", add_db_position);
     reg("db_position_number_pre_event", add_db_position_number);
     reg("cistrans_pre_event", add_cistrans);
-    
     reg("ether_prefix_pre_event", add_ether);
     reg("ether_suffix_pre_event", add_ether);
     reg("hydroxyl_pre_event", add_hydroxyl);
@@ -88,7 +80,6 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("hydroxyl_lcb_pre_event", add_hydroxyl_lcb);
     reg("db_count_pre_event", add_double_bonds);
     reg("carbon_pre_event", add_carbon);
-    
     reg("structural_mod_pre_event", set_structural_subspecies_level);
     reg("single_mod_pre_event", set_mod);
     reg("mod_text_pre_event", set_mod_text);
@@ -96,17 +87,13 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("mod_num_pre_event", set_mod_num);
     reg("single_mod_post_event", add_functional_group);
     reg("special_cer_prefix_pre_event", add_ACer);
-    
-    
     reg("adduct_info_pre_event", new_adduct);
     reg("adduct_pre_event", add_adduct);
     reg("charge_pre_event", add_charge);
     reg("charge_sign_pre_event", add_charge_sign);
-    
     reg("isotope_pair_pre_event", new_adduct);
     reg("isotope_element_pre_event", set_heavy_element);
     reg("isotope_number_pre_event", set_heavy_number);
-    
     reg("sphinga_pre_event", new_sphinga);
     reg("sphinga_phospho_pre_event", add_phospho);
     reg("sphinga_suffix_pre_event", sphinga_db_set);
@@ -302,7 +289,7 @@ void LipidMapsParserEventHandler::add_db_position(TreeNode* node){
 
 
 void LipidMapsParserEventHandler::add_db_position_number(TreeNode* node){
-    db_position = atoi(node->get_text().c_str());
+    db_position = node->get_int();
 }
 
 
@@ -353,13 +340,13 @@ void LipidMapsParserEventHandler::set_mod_text(TreeNode* node){
 
 
 void LipidMapsParserEventHandler::set_mod_pos(TreeNode* node){
-    mod_pos = atoi(node->get_text().c_str());
+    mod_pos = node->get_int();
 }
 
 
 
 void LipidMapsParserEventHandler::set_mod_num(TreeNode* node){
-    mod_num = atoi(node->get_text().c_str());
+    mod_num = node->get_int();
 }   
     
  
@@ -486,7 +473,7 @@ void LipidMapsParserEventHandler::add_ether(TreeNode* node){
     
     
 void LipidMapsParserEventHandler::add_hydroxyl(TreeNode* node){
-    int num_h = atoi(node->get_text().c_str());
+    int num_h = node->get_int();
     
     if (sp_regular_lcb()) num_h -= 1;
     
@@ -610,7 +597,7 @@ void LipidMapsParserEventHandler::add_adduct(TreeNode *node) {
     
 
 void LipidMapsParserEventHandler::add_charge(TreeNode *node) {
-    adduct->charge = atoi(node->get_text().c_str());
+    adduct->charge = node->get_int();
 }
     
     

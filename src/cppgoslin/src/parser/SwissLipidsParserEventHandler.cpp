@@ -67,8 +67,6 @@ SwissLipidsParserEventHandler::SwissLipidsParserEventHandler() : LipidBaseParser
     reg("fa_lcb_suffix_type_pre_event", add_fa_lcb_suffix_type);
     reg("fa_lcb_suffix_number_pre_event", add_suffix_number);
     reg("pl_three_post_event", set_nape);
-    
-    
     reg("adduct_info_pre_event", new_adduct);
     reg("adduct_pre_event", add_adduct);
     reg("charge_pre_event", add_charge);
@@ -122,7 +120,7 @@ void SwissLipidsParserEventHandler::add_db_position(TreeNode* node){
 
 
 void SwissLipidsParserEventHandler::add_db_position_number(TreeNode* node){
-    db_position = atoi(node->get_text().c_str());
+    db_position = node->get_int();
 }
 
 
@@ -255,13 +253,13 @@ void SwissLipidsParserEventHandler::add_one_hydroxyl(TreeNode *node) {
     
 
 void SwissLipidsParserEventHandler::add_double_bonds(TreeNode *node) {
-    current_fa->double_bonds->num_double_bonds += atoi(node->get_text().c_str());
+    current_fa->double_bonds->num_double_bonds += node->get_int();
 }
 
 
 
 void SwissLipidsParserEventHandler::add_suffix_number(TreeNode *node){
-    suffix_number = atoi(node->get_text().c_str());
+    suffix_number = node->get_int();
 }
 
 
@@ -285,7 +283,7 @@ void SwissLipidsParserEventHandler::add_fa_lcb_suffix_type(TreeNode *node){
     
 
 void SwissLipidsParserEventHandler::add_carbon(TreeNode *node) {
-    current_fa->num_carbon = atoi(node->get_text().c_str());
+    current_fa->num_carbon = node->get_int();
 }
 
         
@@ -311,7 +309,7 @@ void SwissLipidsParserEventHandler::add_adduct(TreeNode *node) {
     
 
 void SwissLipidsParserEventHandler::add_charge(TreeNode *node) {
-    adduct->charge = atoi(node->get_text().c_str());
+    adduct->charge = node->get_int();
 }
     
     

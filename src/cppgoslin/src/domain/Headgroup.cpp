@@ -24,13 +24,52 @@ SOFTWARE.
 
 
 #include "cppgoslin/domain/Headgroup.h"
+
+const map<string, vector<string> > Headgroup::glyco_table{{"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
+               {"ga2", {"GalNAc", "Gal", "Glc"}},
+               {"gb3", {"Gal", "Gal", "Glc"}},
+               {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
+               {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
+               {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
+               {"gm3", {"NeuAc", "Gal", "Glc"}},
+               {"gm4", {"NeuAc", "Gal"}},
+               {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+               {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
+               
     
 Headgroup::Headgroup(string _headgroup, vector<HeadgroupDecorator*>* _decorators, bool _use_headgroup){
+    decorators = new vector<HeadgroupDecorator*>();
+    
+    string hg = to_lower(_headgroup);
+    if (contains_val(glyco_table, hg) && !_use_headgroup){
+    
+        for (auto carbohydrate : glyco_table.at(hg)){
+            FunctionalGroup* functional_group = 0;
+            try {
+                functional_group = KnownFunctionalGroups::get_functional_group(carbohydrate);
+            }
+            catch (const std::exception& e){
+                throw LipidParsingException("Carbohydrate '" + carbohydrate + "' unknown");
+            }
+            
+            functional_group->elements->at(ELEMENT_O) -= 1;
+            decorators->push_back((HeadgroupDecorator*)functional_group);
+        }
+        _headgroup = "Cer";
+    }
+    
+    
     headgroup = _headgroup;
     lipid_category = get_category(_headgroup);
     lipid_class = get_class(headgroup);
     use_headgroup = _use_headgroup;
-    decorators = new vector<HeadgroupDecorator*>();
     if (_decorators != 0){
         for (auto decorator : *_decorators) decorators->push_back(decorator);
     }
@@ -146,34 +185,39 @@ string Headgroup::get_lipid_string(LipidLevel level){
     
     string hgs = ((use_headgroup) ? headgroup : get_class_string(lipid_class));
     
-    /*
-    if (level == CLASS){
-        return hgs;
-    }
-    */
     
     stringstream headgoup_string;
          
     // adding prefixes to the headgroup
     if (!is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE | STRUCTURE_DEFINED)){
-        vector<HeadgroupDecorator*> decorators_tmp;
+        vector<HeadgroupDecorator*> decorators_sorted;
         for (auto hgd : *decorators){
-            if (!hgd->suffix) decorators_tmp.push_back(hgd->copy());
+            if (hgd->suffix) continue;
+            
+            HeadgroupDecorator* hgd_copy = hgd->copy();
+            hgd_copy->name = goslin::replace_all(hgd_copy->name, "Gal", "Hex");
+            hgd_copy->name = goslin::replace_all(hgd_copy->name, "Glc", "Hex");
+            hgd_copy->name = goslin::replace_all(hgd_copy->name, "S(3')", "S");
+            
+            decorators_sorted.push_back(hgd_copy);
         }
-        sort (decorators_tmp.begin(), decorators_tmp.end(), decorator_sorting);
         
-        for (int i = decorators_tmp.size() - 1; i > 0; --i){
-            HeadgroupDecorator* hge = decorators_tmp[i];
-            HeadgroupDecorator* hge_before = decorators_tmp[i - 1];
-            if (hge->name == hge_before->name){
-                hge_before->count += hge->count;
-                delete hge;
-                decorators_tmp.erase(decorators_tmp.begin() + i);
+        if (decorators_sorted.size() > 0){
+            sort (decorators_sorted.begin(), decorators_sorted.end(), decorator_sorting);
+            
+            for (int i = decorators_sorted.size() - 1; i > 0; --i){
+                HeadgroupDecorator* hge = decorators_sorted[i];
+                HeadgroupDecorator* hge_before = decorators_sorted[i - 1];
+                if (hge->name == hge_before->name){
+                    hge_before->count += hge->count;
+                    delete hge;
+                    decorators_sorted.erase(decorators_sorted.begin() + i);
+                }
             }
-        }
-        for (auto hge : decorators_tmp){
-            headgoup_string << hge->to_string(level);
-            delete hge;
+            for (auto hge : decorators_sorted){
+                headgoup_string << hge->to_string(level);
+                delete hge;
+            }
         }
     }
     else {

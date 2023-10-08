@@ -151,6 +151,14 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(), "FA 20:4;OH[M[2]H8]");
     assert_true(l->get_sum_formula(), "C20H24O3H'8");
     
+    l = parser.parse("NO2-OA");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "FA 18:1;NO2");
+    
+    l = parser.parse("7(R),14(S)-DiHDHA");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "FA 22:6;(OH)2");
+    
+    
+    
     // test several more lipid names
     vector<string> lipid_names;
     ifstream infile(test_file);

@@ -51,6 +51,8 @@ public:
     int db_position;
     string db_cistrans;
     GenericDictionary furan;
+    string func_type;
+    vector<FunctionalGroup*> update_functional_groups;
         
     HmdbParserEventHandler();
     ~HmdbParserEventHandler();
@@ -88,6 +90,10 @@ public:
     void add_adduct(TreeNode *node);
     void add_charge(TreeNode *node);
     void add_charge_sign(TreeNode *node);
+        
+    void register_suffix_type(TreeNode *node);
+    void register_suffix_pos(TreeNode *node);
+    void register_fa_synonym(TreeNode *node);
     
 };
 
