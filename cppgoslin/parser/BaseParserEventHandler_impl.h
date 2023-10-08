@@ -28,6 +28,8 @@ template <class T>
 BaseParserEventHandler<T>::BaseParserEventHandler(){
     registered_events = new map<string, function<void(TreeNode *)>>();
     debug = "";
+    error_message = "";
+    word_in_grammar = false;
 }
 
 template <class T> 

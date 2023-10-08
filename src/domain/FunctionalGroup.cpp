@@ -234,7 +234,7 @@ FunctionalGroup* KnownFunctionalGroups::get_functional_group(string fg_name){
 
 
 
-HeadgroupDecorator::HeadgroupDecorator(string _name, int _position, int _count, ElementTable* _elements, bool _suffix, LipidLevel _level) : FunctionalGroup(_name, _position, _count, 0, false, "", 0, _elements){
+HeadgroupDecorator::HeadgroupDecorator(string _name, int _position, int _count, ElementTable* _elements, bool _suffix, LipidLevel _level) : FunctionalGroup(_name, _position, _count, NULL, false, "", false, _elements){
     suffix = _suffix;
     lowest_visible_level = _level;
 }

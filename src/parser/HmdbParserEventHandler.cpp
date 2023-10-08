@@ -73,13 +73,14 @@ HmdbParserEventHandler::HmdbParserEventHandler() : LipidBaseParserEventHandler()
     reg("furan_fa_di_pre_event", furan_fa_di);
     reg("furan_first_number_pre_event", furan_fa_first_number);
     reg("furan_second_number_pre_event", furan_fa_second_number);
-    
-    
     reg("adduct_info_pre_event", new_adduct);
     reg("adduct_pre_event", add_adduct);
     reg("charge_pre_event", add_charge);
     reg("charge_sign_pre_event", add_charge_sign);
-    
+    reg("fa_lcb_suffix_types_pre_event", register_suffix_type);
+    reg("fa_lcb_suffix_position_pre_event", register_suffix_pos);
+    reg("fa_synonym_pre_event", register_fa_synonym);
+    debug = "";
 }
 
 
@@ -99,13 +100,43 @@ void HmdbParserEventHandler::reset_lipid(TreeNode *node) {
     adduct = 0;
     furan.remove_all();
     headgroup_decorators->clear();
+    func_type = "";
+    update_functional_groups.clear();
 }
 
 
-void HmdbParserEventHandler::set_isomeric_level(TreeNode* node){
+void HmdbParserEventHandler::HmdbParserEventHandler::register_suffix_type(TreeNode* node){
+        func_type = node->get_text();
+        if (func_type != "me" && func_type != "OH" && func_type != "O"){
+            throw LipidException("Unknown functional abbreviation: " + func_type);
+        }
+        if (func_type == "me") func_type = "Me";
+        else if (func_type == "O") func_type = "oxo";
+}
+    
+    
+    
+void HmdbParserEventHandler::register_suffix_pos(TreeNode* node){
+        int pos = node->get_int();
+        FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group(func_type);
+        functional_group->position = pos;
+        if (uncontains_val_p(current_fa->functional_groups, func_type)) current_fa->functional_groups->insert({func_type, vector<FunctionalGroup*>()});
+        current_fa->functional_groups->at(func_type).push_back(functional_group);
+}
+
+
+
+void HmdbParserEventHandler::register_fa_synonym(TreeNode* node){
+    current_fa = resolve_fa_synonym(node->get_text());
+}
+
+
+
+void HmdbParserEventHandler::HmdbParserEventHandler::set_isomeric_level(TreeNode* node){
     db_position = 0;
     db_cistrans = "";
 }
+
 
 
 void HmdbParserEventHandler::add_db_position(TreeNode* node){
@@ -116,14 +147,17 @@ void HmdbParserEventHandler::add_db_position(TreeNode* node){
 }
 
 
+
 void HmdbParserEventHandler::add_db_position_number(TreeNode* node){
-    db_position = atoi(node->get_text().c_str());
+    db_position = node->get_int();
 }
+
 
 
 void HmdbParserEventHandler::add_cistrans(TreeNode* node){
     db_cistrans = node->get_text();
 }
+
 
 
 void HmdbParserEventHandler::set_head_group_name(TreeNode *node) {
@@ -176,6 +210,14 @@ void HmdbParserEventHandler::clean_lcb(TreeNode *node) {
         
 
 void HmdbParserEventHandler::append_fa(TreeNode *node) {
+    if (!update_functional_groups.empty()){
+        for (auto fg : update_functional_groups){
+            fg->position += current_fa->num_carbon;
+        }
+        update_functional_groups.clear();
+    }
+    
+    
     if (current_fa->double_bonds->get_num() < 0){
         throw LipidException("Double bond count does not match with number of double bond positions");
     }
@@ -217,7 +259,8 @@ void HmdbParserEventHandler::add_ether(TreeNode *node) {
 
 void HmdbParserEventHandler::add_methyl(TreeNode *node) {
     FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("Me");
-    functional_group->position = current_fa->num_carbon - (node->get_text() == "i-" ? 1 : 2);
+    functional_group->position = -(node->get_text() == "i-" ? 1 : 2);
+    update_functional_groups.push_back(functional_group);
     current_fa->num_carbon -= 1;
     if (uncontains_val_p(current_fa->functional_groups, "Me")) current_fa->functional_groups->insert({"Me", vector<FunctionalGroup*>()});
     current_fa->functional_groups->at("Me").push_back(functional_group);
@@ -253,13 +296,13 @@ void HmdbParserEventHandler::add_one_hydroxyl(TreeNode *node) {
     
 
 void HmdbParserEventHandler::add_double_bonds(TreeNode *node) {
-    current_fa->double_bonds->num_double_bonds = atoi(node->get_text().c_str());
+    current_fa->double_bonds->num_double_bonds = node->get_int();
 }
     
     
 
 void HmdbParserEventHandler::add_carbon(TreeNode *node) {
-    current_fa->num_carbon += atoi(node->get_text().c_str());
+    current_fa->num_carbon += node->get_int();
 }
     
 
@@ -298,8 +341,7 @@ void HmdbParserEventHandler::furan_fa_post(TreeNode *node) {
     
     vector<Element> *bridge_chain = new vector<Element>{ELEMENT_O};
     Cycle *cycle = new Cycle(end - start + 1 + bridge_chain->size(), start, end, cyclo_db, cyclo_fg, bridge_chain);
-    current_fa->functional_groups->insert({"cy", vector<FunctionalGroup*>()});
-    current_fa->functional_groups->at("cy").push_back(cycle);
+    current_fa->functional_groups->insert({"cy", {cycle}});
 }
 
 
@@ -317,13 +359,13 @@ void HmdbParserEventHandler::furan_fa_di(TreeNode *node) {
 
 
 void HmdbParserEventHandler::furan_fa_first_number(TreeNode *node) {
-    furan.set_int("len_first", atoi(node->get_text().c_str()));
+    furan.set_int("len_first", node->get_int());
 }
 
 
 
 void HmdbParserEventHandler::furan_fa_second_number(TreeNode *node) {
-    furan.set_int("len_second", atoi(node->get_text().c_str()));
+    furan.set_int("len_second", node->get_int());
     
 }
     
@@ -352,7 +394,7 @@ void HmdbParserEventHandler::add_adduct(TreeNode *node) {
     
 
 void HmdbParserEventHandler::add_charge(TreeNode *node) {
-    adduct->charge = atoi(node->get_text().c_str());
+    adduct->charge = node->get_int();
 }
     
     

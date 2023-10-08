@@ -78,9 +78,9 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("carbohydrate_number_pre_event", set_carbohydrate_number);
 
     // set head group headgroup_decorators
-    reg("carbohydrate_pre_event", set_carbohydrate);
-    reg("carbohydrate_sulfo_pre_event", set_carbohydrate);
-    reg("carbohydrate_structural_pre_event", set_carbohydrate_structural);
+    reg("carbohydrate_sn_pre_event", set_carbohydrate);
+    reg("carbohydrate_iso_pre_event", set_carbohydrate);
+    reg("carbohydrate_sn_position_pre_event", set_carbohydrate_sn_position);
     reg("carbohydrate_isomeric_pre_event", set_carbohydrate_isomeric);
     
     // fatty acyl events
@@ -280,8 +280,8 @@ void ShorthandParserEventHandler::set_carbohydrate(TreeNode *node){
 
 
 
-void ShorthandParserEventHandler::set_carbohydrate_structural(TreeNode *node){
-    set_lipid_level(STRUCTURE_DEFINED);
+void ShorthandParserEventHandler::set_carbohydrate_sn_position(TreeNode *node){
+    set_lipid_level(SN_POSITION);
     tmp.set_int("func_group_head", 1);
 }
 
@@ -309,9 +309,6 @@ void ShorthandParserEventHandler::set_pl_hg_triple(TreeNode *node){
         set_molecular_level(node);
         set_headgroup_name(node);
 }
-
-
-
 
 
 
@@ -400,7 +397,7 @@ void ShorthandParserEventHandler::add_fatty_acyl_chain(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_double_bond_position(TreeNode *node){
-    tmp.get_dictionary(FA_I)->set_int("db_position", atoi(node->get_text().c_str()));
+    tmp.get_dictionary(FA_I)->set_int("db_position", node->get_int());
 }
 
 
@@ -480,7 +477,7 @@ void ShorthandParserEventHandler::add_cycle(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_fatty_linkage_number(TreeNode *node){
-    tmp.get_dictionary(FA_I)->set_int("linkage_pos", atoi(node->get_text().c_str()));
+    tmp.get_dictionary(FA_I)->set_int("linkage_pos", node->get_int());
 }
 
 
@@ -603,25 +600,26 @@ void ShorthandParserEventHandler::add_alkyl_linkage(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_cycle_start(TreeNode *node){
-    ((Cycle*)current_fas.back())->start = atoi(node->get_text().c_str());
+    ((Cycle*)current_fas.back())->start = node->get_int();
+    ((Cycle*)current_fas.back())->position = node->get_int();
 }
 
 
 
 void ShorthandParserEventHandler::set_cycle_end(TreeNode *node){
-    ((Cycle*)current_fas.back())->end = atoi(node->get_text().c_str());
+    ((Cycle*)current_fas.back())->end = node->get_int();
 }
 
 
 
 void ShorthandParserEventHandler::set_cycle_number(TreeNode *node){
-    ((Cycle*)current_fas.back())->cycle = atoi(node->get_text().c_str());
+    ((Cycle*)current_fas.back())->cycle = node->get_int();
 }
 
 
 
 void ShorthandParserEventHandler::set_cycle_db_count(TreeNode *node){
-    ((Cycle*)current_fas.back())->double_bonds->num_double_bonds = atoi(node->get_text().c_str());
+    ((Cycle*)current_fas.back())->double_bonds->num_double_bonds = node->get_int();
 }
 
 
@@ -641,7 +639,7 @@ void ShorthandParserEventHandler::check_cycle_db_positions(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_cycle_db_position(TreeNode *node){
-    int pos = atoi(node->get_text().c_str());
+    int pos = node->get_int();
     ((Cycle*)current_fas.back())->double_bonds->double_bond_positions.insert({pos, ""});
     tmp.get_dictionary(FA_I)->set_int("last_db_pos", pos);
 }
@@ -656,7 +654,7 @@ void ShorthandParserEventHandler::set_cycle_db_position_cistrans(TreeNode *node)
 
 
 void ShorthandParserEventHandler::set_functional_group_position(TreeNode *node){
-    tmp.get_dictionary(FA_I)->set_int("fg_pos", atoi(node->get_text().c_str()));
+    tmp.get_dictionary(FA_I)->set_int("fg_pos", node->get_int());
 }
 
 
@@ -668,7 +666,7 @@ void ShorthandParserEventHandler::set_functional_group_name(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_functional_group_count(TreeNode *node){
-    tmp.get_dictionary(FA_I)->set_int("fg_cnt", atoi(node->get_text().c_str()));
+    tmp.get_dictionary(FA_I)->set_int("fg_cnt", node->get_int());
 }
 
 
@@ -763,13 +761,13 @@ void ShorthandParserEventHandler::set_molecular_level(TreeNode *node){
 
 
 void ShorthandParserEventHandler::set_carbon(TreeNode *node){
-    ((FattyAcid*)current_fas.back())->num_carbon = atoi(node->get_text().c_str());
+    ((FattyAcid*)current_fas.back())->num_carbon = node->get_int();
 }
 
 
 
 void ShorthandParserEventHandler::set_double_bond_count(TreeNode *node){
-    int db_cnt = atoi(node->get_text().c_str());
+    int db_cnt = node->get_int();
     tmp.get_dictionary(FA_I)->set_int("db_count", db_cnt);
     ((FattyAcid*)current_fas.back())->double_bonds->num_double_bonds = db_cnt;
 }
@@ -789,7 +787,7 @@ void ShorthandParserEventHandler::add_adduct(TreeNode *node){
 
 
 void ShorthandParserEventHandler::add_charge(TreeNode *node){
-    adduct->charge = atoi(node->get_text().c_str());
+    adduct->charge = node->get_int();
 }
 
 

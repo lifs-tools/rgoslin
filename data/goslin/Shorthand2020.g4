@@ -104,7 +104,7 @@ stereo_direction : 'R' | 'S';
 molecular_func_group : molecular_func_group_name | molecular_func_group_name func_group_count;
 func_group_ext_name : round_open_bracket func_group_name round_close_bracket | func_group_name;
 func_group_ext_count_name : round_open_bracket func_group_name round_close_bracket | molecular_func_group_name;
-func_group_name : 'Et' | 'Me' | 'Ac' | 'NO2' | 'My' | 'Ep' | 'OO' | 'dMe' | 'OMe' | 'oxy' | 'NH2' | 'OOH' | 'SH' | 'OH' | 'oxo' | 'CN' | 'Ph' | 'Su' | 'COOH' | 'G' | 'T' | 'COG' | 'COT' | carbohydrate | 'H' | 'Cys' | 'Phe' | 'SGlu' | 'SCys' | 'BOO' | 'MMAs' | 'SMe' | 'NH' | 'SCG' | special_elements;
+func_group_name : 'Et' | 'Me' | 'Ac' | 'NO2' | 'My' | 'Ep' | 'OO' | 'dMe' | 'OMe' | 'oxy' | 'NH2' | 'OOH' | 'SH' | 'OH' | 'oxo' | 'CN' | 'Ph' | 'Su' | 'COOH' | 'G' | 'T' | 'COG' | 'COT' | carbohydrate_sn | carbohydrate_iso | 'H' | 'Cys' | 'Phe' | 'SGlu' | 'SCys' | 'BOO' | 'MMAs' | 'SMe' | 'NH' | 'SCG' | special_elements;
 molecular_func_group_name : elements | special_elements;
 elements : 'O' | 'N' | 'P' | 'S' | 'As';
 special_elements: 'Br' | 'Cl' | 'F' | 'I';
@@ -192,10 +192,13 @@ hg_lpim_number : number;
 pl_hg_fa : med;
 pl_hg_alk : fatty_acyl_chain;
 
-carbohydrate_group : carbohydrate | carbohydrate carbohydrate_number | carbohydrate_sulfo;
+carbohydrates : carbohydrate_type | carbohydrate_type carbohydrates;
+carbohydrate_type : carbohydrate_sn_position | carbohydrate_isomeric;
+carbohydrate_sn_position : carbohydrate_iso | carbohydrate_iso carbohydrate_number | carbohydrate_iso carbohydrate_number carbohydrate_separator | carbohydrate_sn | carbohydrate_sn carbohydrate_number | carbohydrate_sn carbohydrate_number carbohydrate_separator | carbohydrate_sn carbohydrate_separator;
+carbohydrate_isomeric : carbohydrate_iso carbohydrate_separator;
 carbohydrate_number : number;
-carbohydrate : 'Hex' | 'Gal' | 'Glc' | 'Man' | 'Neu' | 'HexNAc' | 'GalNAc' | 'GlcNAc' | 'NeuAc' | 'NeuGc' | 'Kdn' | 'GlcA' | 'Xyl' | 'Fuc' | 'NeuAc2' | 'HexA' | 'OGlcNAc' | 'OGlc';
-carbohydrate_sulfo : 'SHex' | 'SHex2' | 'S' ROB '3' APOSTROPH RCB 'Hex' | 'SGal' | 'SGal2' | 'S' ROB '3' APOSTROPH RCB 'Gal2';
+carbohydrate_sn : 'Hex' | 'SHex' | 'SGal' | 'HexNAc' | 'HexA';
+carbohydrate_iso : 'Gal' | 'Glc' | 'GalNAc' | 'GlcNAc' | 'S' ROB '3' APOSTROPH RCB 'Hex' | 'S' ROB '3' APOSTROPH RCB 'Gal' | 'Man' | 'Neu' | 'NeuGc' | 'Kdn' | 'GlcA' | 'Xyl' | 'Fuc' | 'OGlcNAc' | 'OGlc' | 'NeuAc';
 
 
 sl : sl_species | sl_subspecies;
@@ -205,12 +208,8 @@ sl_double : sl_hg_double headgroup_separator lcb sorted_fa_separator fatty_acyl_
 sl_hydroxyl : ROB sl_hydroxyl_number RCB;
 sl_hydroxyl_number : number;
 sl_hg_single : 'SPB' | 'SPBP' | 'LIPC' | 'LSM';
-sl_hg_double : acer_hg | sl_hg_double_name | carbohydrate_structural sl_hg_glyco | carbohydrate_isomeric carbohydrate_separator sl_hg_glyco;
-carbohydrate_structural : carbohydrates;
-carbohydrates : carbohydrate_group | carbohydrate_group carbohydrates;
-carbohydrate_isomeric : carbohydrates_isomeric;
+sl_hg_double : acer_hg | sl_hg_double_name | carbohydrates sl_hg_glyco;
 sl_hg_glyco : 'Cer' | 'IPC';
-carbohydrates_isomeric : carbohydrate | carbohydrate carbohydrate_separator carbohydrates_isomeric;
 sl_hg_double_name : 'SM' | sl_hg_glyco | 'CerP' | acer_hg | 'SL' | 'LacCer' | 'SHexCer' | 'PI-Cer' | 'EPC' | 'PE-Cer' | 'GIPC' | 'MIPC' | 'M(IP)2C' | glyco_sphingo_lipid | 'S' ROB '3' APOSTROPH RCB 'HexCer' | 'S' ROB '3' APOSTROPH RCB 'GalCer';
 acer_hg : acer_hg_pure ROB med RCB;
 acer_species : acer_hg_pure | acer_hg_pure '(FA)';

@@ -99,13 +99,13 @@ string LipidAdduct::get_class_name(){
 
 
 LipidLevel LipidAdduct::get_lipid_level(){
-    return lipid->get_lipid_level();
+    return (lipid) ? lipid->get_lipid_level() : NO_LEVEL;
 }
 
 
     
 string LipidAdduct::get_extended_class(){
-    return lipid ? lipid->get_extended_class() : "";
+    return (lipid) ? lipid->get_extended_class() : "";
 }
 
 
