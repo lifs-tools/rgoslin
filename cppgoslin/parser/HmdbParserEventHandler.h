@@ -52,6 +52,7 @@ public:
     string db_cistrans;
     GenericDictionary furan;
     string func_type;
+    vector<FunctionalGroup*> update_functional_groups;
         
     HmdbParserEventHandler();
     ~HmdbParserEventHandler();

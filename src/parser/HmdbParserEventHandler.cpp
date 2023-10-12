@@ -73,16 +73,14 @@ HmdbParserEventHandler::HmdbParserEventHandler() : LipidBaseParserEventHandler()
     reg("furan_fa_di_pre_event", furan_fa_di);
     reg("furan_first_number_pre_event", furan_fa_first_number);
     reg("furan_second_number_pre_event", furan_fa_second_number);
-    
     reg("adduct_info_pre_event", new_adduct);
     reg("adduct_pre_event", add_adduct);
     reg("charge_pre_event", add_charge);
     reg("charge_sign_pre_event", add_charge_sign);
-        
     reg("fa_lcb_suffix_types_pre_event", register_suffix_type);
     reg("fa_lcb_suffix_position_pre_event", register_suffix_pos);
     reg("fa_synonym_pre_event", register_fa_synonym);
-    
+    debug = "";
 }
 
 
@@ -103,6 +101,7 @@ void HmdbParserEventHandler::reset_lipid(TreeNode *node) {
     furan.remove_all();
     headgroup_decorators->clear();
     func_type = "";
+    update_functional_groups.clear();
 }
 
 
@@ -128,208 +127,7 @@ void HmdbParserEventHandler::register_suffix_pos(TreeNode* node){
 
 
 void HmdbParserEventHandler::register_fa_synonym(TreeNode* node){
-    string mediator_name = node->get_text();
-     
-    current_fa = resolve_fa_synonym(mediator_name);
-    /*
-    switch(GoslinParserEventHandler::mediator_trivial.at(mediator_name)){
-        case 0: // Palmitic acid
-            current_fa = new FattyAcid("FA", 16);
-            break;
-            
-        case 1: // Linoleic acid":
-            current_fa = new FattyAcid("FA", 18, new DoubleBonds(2));
-            break;
-            
-        case 2: // AA":
-            current_fa = new FattyAcid("FA", 20, new DoubleBonds(4));
-            break;
-            
-        case 3: // ALA":
-            current_fa = new FattyAcid("FA", 18, new DoubleBonds(3));
-            break;
-            
-        case 4: // EPA":
-            current_fa = new FattyAcid("FA", 20, new DoubleBonds(5));
-            break;
-            
-        case 5: // DHA":
-            current_fa = new FattyAcid("FA", 22, new DoubleBonds(6));
-            break;
-            
-        case 6: // LTB4
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 5;
-                f2->position = 12;
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds({{6, "Z"}, {8, "E"}, {10, "E"}, {14, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
-            }
-            break;
-            
-        case 7: // Resolvin D3
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 4;
-                f2->position = 11;
-                f3->position = 17;
-                current_fa = new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
-            }
-            break;
-            
-        case 8: // Maresin 1
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 4;
-                f2->position = 14;
-                current_fa = new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
-            }
-            break;
-            
-        case 9: // Resolvin D2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 4;
-                f2->position = 16;
-                f3->position = 17;
-                current_fa = new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
-            }
-            break;
-            
-        case 10: // Resolvin D5
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 7;
-                f2->position = 17;
-                current_fa = new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
-            }
-            break;
-            
-        case 11: // Resolvin D1
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 7;
-                f2->position = 8;
-                f3->position = 17;
-                current_fa = new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
-            }
-            break;
-            
-        case 12: // TXB1
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                f4->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 13: // TXB2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                f4->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 14: // TXB3
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f4 = KnownFunctionalGroups::get_functional_group("oxy");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                f4->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 15: // PGF2alpha
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 16: // PGD2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("oxo");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}, {"oxo", {f3}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 17: // PGE2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
-                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 15;
-                f2->position = 9;
-                f3->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f3}}, {"oxy", {f2}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 18: // PGB2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
-                f1->position = 15;
-                f2->position = 9;
-                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-            
-        case 19: // 15d-PGJ2
-            {
-                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
-                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
-                f1->position = 15;
-                f2->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
-                current_fa = new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
-            }
-            break;
-    }
-    */
+    current_fa = resolve_fa_synonym(node->get_text());
 }
 
 
@@ -351,7 +149,7 @@ void HmdbParserEventHandler::add_db_position(TreeNode* node){
 
 
 void HmdbParserEventHandler::add_db_position_number(TreeNode* node){
-    db_position = atoi(node->get_text().c_str());
+    db_position = node->get_int();
 }
 
 
@@ -412,6 +210,14 @@ void HmdbParserEventHandler::clean_lcb(TreeNode *node) {
         
 
 void HmdbParserEventHandler::append_fa(TreeNode *node) {
+    if (!update_functional_groups.empty()){
+        for (auto fg : update_functional_groups){
+            fg->position += current_fa->num_carbon;
+        }
+        update_functional_groups.clear();
+    }
+    
+    
     if (current_fa->double_bonds->get_num() < 0){
         throw LipidException("Double bond count does not match with number of double bond positions");
     }
@@ -453,7 +259,8 @@ void HmdbParserEventHandler::add_ether(TreeNode *node) {
 
 void HmdbParserEventHandler::add_methyl(TreeNode *node) {
     FunctionalGroup* functional_group = KnownFunctionalGroups::get_functional_group("Me");
-    functional_group->position = current_fa->num_carbon - (node->get_text() == "i-" ? 1 : 2);
+    functional_group->position = -(node->get_text() == "i-" ? 1 : 2);
+    update_functional_groups.push_back(functional_group);
     current_fa->num_carbon -= 1;
     if (uncontains_val_p(current_fa->functional_groups, "Me")) current_fa->functional_groups->insert({"Me", vector<FunctionalGroup*>()});
     current_fa->functional_groups->at("Me").push_back(functional_group);
@@ -489,13 +296,13 @@ void HmdbParserEventHandler::add_one_hydroxyl(TreeNode *node) {
     
 
 void HmdbParserEventHandler::add_double_bonds(TreeNode *node) {
-    current_fa->double_bonds->num_double_bonds = atoi(node->get_text().c_str());
+    current_fa->double_bonds->num_double_bonds = node->get_int();
 }
     
     
 
 void HmdbParserEventHandler::add_carbon(TreeNode *node) {
-    current_fa->num_carbon += atoi(node->get_text().c_str());
+    current_fa->num_carbon += node->get_int();
 }
     
 
@@ -534,8 +341,7 @@ void HmdbParserEventHandler::furan_fa_post(TreeNode *node) {
     
     vector<Element> *bridge_chain = new vector<Element>{ELEMENT_O};
     Cycle *cycle = new Cycle(end - start + 1 + bridge_chain->size(), start, end, cyclo_db, cyclo_fg, bridge_chain);
-    current_fa->functional_groups->insert({"cy", vector<FunctionalGroup*>()});
-    current_fa->functional_groups->at("cy").push_back(cycle);
+    current_fa->functional_groups->insert({"cy", {cycle}});
 }
 
 
@@ -553,13 +359,13 @@ void HmdbParserEventHandler::furan_fa_di(TreeNode *node) {
 
 
 void HmdbParserEventHandler::furan_fa_first_number(TreeNode *node) {
-    furan.set_int("len_first", atoi(node->get_text().c_str()));
+    furan.set_int("len_first", node->get_int());
 }
 
 
 
 void HmdbParserEventHandler::furan_fa_second_number(TreeNode *node) {
-    furan.set_int("len_second", atoi(node->get_text().c_str()));
+    furan.set_int("len_second", node->get_int());
     
 }
     
@@ -588,7 +394,7 @@ void HmdbParserEventHandler::add_adduct(TreeNode *node) {
     
 
 void HmdbParserEventHandler::add_charge(TreeNode *node) {
-    adduct->charge = atoi(node->get_text().c_str());
+    adduct->charge = node->get_int();
 }
     
     

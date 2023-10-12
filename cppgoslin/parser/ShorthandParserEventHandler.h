@@ -64,7 +64,7 @@ public:
     void add_cycle_element(TreeNode *node);
     void set_headgroup_name(TreeNode *node);
     void set_carbohydrate(TreeNode *node);
-    void set_carbohydrate_structural(TreeNode *node);
+    void set_carbohydrate_sn_position(TreeNode *node);
     void set_carbohydrate_isomeric(TreeNode *node);
     void suffix_decorator_molecular(TreeNode *node);
     void suffix_decorator_species(TreeNode *node);

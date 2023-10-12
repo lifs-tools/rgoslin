@@ -46,6 +46,7 @@ public:
     vector<HeadgroupDecorator*>* decorators;
     bool sp_exception;
     const set<string> exception_headgroups {"Cer", "SPB"};
+    static const map<string, vector<string> > glyco_table;
     
     Headgroup(string _headgroup, vector<HeadgroupDecorator*>* _decorators = 0, bool _use_headgroup = false);
     Headgroup(Headgroup *h);

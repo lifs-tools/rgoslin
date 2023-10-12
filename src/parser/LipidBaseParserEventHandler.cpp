@@ -24,27 +24,8 @@ SOFTWARE.
 
 
 #include "cppgoslin/parser/LipidBaseParserEventHandler.h"
-
-const map<string, vector<string> > LipidBaseParserEventHandler::glyco_table{{"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
-               {"ga2", {"GalNAc", "Gal", "Glc"}},
-               {"gb3", {"Gal", "Gal", "Glc"}},
-               {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
-               {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
-               {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
-               {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
-               {"gm3", {"NeuAc", "Gal", "Glc"}},
-               {"gm4", {"NeuAc", "Gal"}},
-               {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
                
-const map<string, int> LipidBaseParserEventHandler::fa_synonyms{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}, {"PGJ2", 20}};
-
+const map<string, int> LipidBaseParserEventHandler::fa_synonyms{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}, {"PGJ2", 20}, {"Arachidonic acid", 21}, {"LA", 22}, {"Mar1", 23}, {"RvD3", 24}, {"PGF1alpha", 25}, {"PDX", 26}, {"Oleic acid", 27}, {"OA", 28}, {"DGLA", 29}, {"iPF2alpha-VI", 30}};
 
 LipidBaseParserEventHandler::LipidBaseParserEventHandler() : BaseParserEventHandler<LipidAdduct*>() {
     fa_list = new vector<FattyAcid*>();
@@ -54,7 +35,6 @@ LipidBaseParserEventHandler::LipidBaseParserEventHandler() : BaseParserEventHand
     current_fa = NULL;
     adduct = NULL;
     headgroup_decorators = new vector<HeadgroupDecorator*>();
-    adduct = NULL;
     use_head_group = false;
 }
 
@@ -80,6 +60,31 @@ bool LipidBaseParserEventHandler::sp_regular_lcb(){
     
 }
 
+bool LipidBaseParserEventHandler::check_full_structure(FunctionalGroup *obj){
+    bool full = true;
+    
+    auto* is_fa = dynamic_cast<FattyAcid*>(obj);
+    if (is_fa && ((FattyAcid*)obj)->num_carbon == 0) return true;
+    if (is_fa && obj->double_bonds->num_double_bonds > 0 && obj->double_bonds->double_bond_positions.empty()) return false;
+    if (is_fa && !obj->double_bonds->double_bond_positions.empty()){
+        int sum = 0;
+        for (auto &kv : obj->double_bonds->double_bond_positions) sum += kv.second == "E" || kv.second == "Z" || (kv.second == "" && kv.first == ((FattyAcid*)obj)->num_carbon - 1);
+        full &= sum == obj->double_bonds->double_bond_positions.size();
+        
+    }
+    
+    for (auto &kv : *(obj->functional_groups)){
+        for (auto fg : kv.second){
+            if (fg->name == "X") continue;
+            if (fg->position < 0){
+                return false;
+            }
+            full &= check_full_structure(fg);
+        }
+    }
+    return full;
+}
+
 
 FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name){
     
@@ -90,11 +95,13 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
             return new FattyAcid("FA", 16);
             break;
             
-        case 1: // Linoleic acid":
+        case 1: // Linoleic acid
+        case 22: //LA
             return new FattyAcid("FA", 18, new DoubleBonds(2));
             break;
             
         case 2: // AA":
+        case 21: // Arachidonic acid
             return new FattyAcid("FA", 20, new DoubleBonds(4));
             break;
             
@@ -121,6 +128,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
             break;
             
         case 7: // Resolvin D3
+        case 24: // RvD3
             {
                 FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
@@ -133,6 +141,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
             break;
             
         case 8: // Maresin 1
+        case 23: // Mar1
             {
                 FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
@@ -292,6 +301,53 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
+            
+            
+            
+        case 25: // PGF1alpha
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
+        case 26: // PDX
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 10;
+                f2->position = 17;
+                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+            }
+            break;
+            
+        case 27: // Oleic acid
+        case 28: // OA
+            return new FattyAcid("FA", 18, new DoubleBonds(1));
+            break;
+            
+        case 29: // DGLA
+            return new FattyAcid("FA", 20, new DoubleBonds(3));
+            break;
+            
+        case 30: // iPF2alpha-VI
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 5;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
+                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+            }
+            break;
     }
     
     return 0;
@@ -300,26 +356,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
 
 
 Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
-    
-    string hg = to_lower(head_group);
-    if (contains_val(glyco_table, hg)){
-    
-        for (auto carbohydrate : glyco_table.at(hg)){
-            FunctionalGroup* functional_group = 0;
-            try {
-                functional_group = KnownFunctionalGroups::get_functional_group(carbohydrate);
-            }
-            catch (const std::exception& e){
-                throw LipidParsingException("Carbohydrate '" + carbohydrate + "' unknown");
-            }
-            
-            functional_group->elements->at(ELEMENT_O) -= 1;
-            headgroup_decorators->push_back((HeadgroupDecorator*)functional_group);
-        }
-        head_group = "Cer";
-    }
-    
-    
+
     Headgroup *headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
     
     if (use_head_group) return headgroup;
@@ -350,6 +387,16 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
         delete headgroup;
         headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
         poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
+    }
+    
+    // check if all functional groups have a position to be full structure
+    if (is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE)){
+        for (auto fa : *fa_list){
+            if (!check_full_structure(fa)){
+                set_lipid_level(STRUCTURE_DEFINED);
+                break;
+            }
+        }
     }
     
     
