@@ -79,7 +79,7 @@ void SumFormulaParserEventHandler::single_element_group_pre_event(TreeNode *node
 
 
 void SumFormulaParserEventHandler::count_pre_event(TreeNode *node){
-    count = atoi(node->get_text().c_str());
+    count = node->get_int();
 }
 
 

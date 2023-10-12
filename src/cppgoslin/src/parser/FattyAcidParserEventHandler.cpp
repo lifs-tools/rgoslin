@@ -158,6 +158,7 @@ void FattyAcidParserEventHandler::set_lipid_level(LipidLevel _level){
 
 
 void FattyAcidParserEventHandler::reset_lipid(TreeNode *node) {
+    BaseParserEventHandler<LipidAdduct*>::content = 0;
     level = FULL_STRUCTURE;
     headgroup = "";
     fatty_acyl_stack.clear();

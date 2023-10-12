@@ -99,7 +99,7 @@ int main(int argc, char** argv){
     delete l;
     
     l = parser.parse("DG(a-21:0/20:5(5Z,8Z,10E,14Z,17Z)+=O(12S)/0:0)");
-    assert_true(l->get_lipid_string(FULL_STRUCTURE), "DG 20:0;Me/20:5(5Z,8Z,10E,14Z,17Z);12oxo/0:0");
+    assert_true(l->get_lipid_string(FULL_STRUCTURE), "DG 20:0;18Me/20:5(5Z,8Z,10E,14Z,17Z);12oxo/0:0");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "DG 20:0;Me/20:5(5,8,10,14,17);oxo/0:0");
     assert_true(l->get_lipid_string(SN_POSITION), "DG 21:0/20:6;O/0:0");
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "DG 21:0_20:6;O");

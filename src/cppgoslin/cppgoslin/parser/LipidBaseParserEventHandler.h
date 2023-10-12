@@ -58,7 +58,6 @@ public:
     bool use_head_group;
     static const set<string> SP_EXCEPTION_CLASSES;
     Adduct* adduct;
-    static const map<string, vector<string> > glyco_table;
     static const map<string, int> fa_synonyms;
         
     LipidBaseParserEventHandler();
@@ -68,6 +67,7 @@ public:
     Headgroup* prepare_headgroup_and_checks();
     LipidSpecies *assemble_lipid(Headgroup *headgroup);
     FattyAcid* resolve_fa_synonym(string mediator_name);
+    bool check_full_structure(FunctionalGroup *obj);
 };
 
 

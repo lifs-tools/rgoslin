@@ -89,35 +89,33 @@ int main(int argc, char** argv){
     assertEqual(l->get_sum_formula(), "C42H83NO3");
     delete l;
     
-    
-    
     l = parser.parse("Gal-Cer(1) 18:1(5Z);3OH/24:0");
     assertEqual(l->get_lipid_string(), "Gal-Cer(1) 18:1(5Z);3OH/24:0");
     assertEqual(l->get_lipid_string(STRUCTURE_DEFINED), "Gal-Cer 18:1(5);OH/24:0");
-    assertEqual(l->get_lipid_string(SN_POSITION), "GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(MOLECULAR_SPECIES), "GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(SPECIES), "GalCer 42:1;O2");
+    assertEqual(l->get_lipid_string(SN_POSITION), "HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(MOLECULAR_SPECIES), "HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(SPECIES), "HexCer 42:1;O2");
     assertEqual(l->get_sum_formula(), "C48H93NO8");
     delete l;
     
     l = parser.parse("Gal-Cer 18:1(5);OH/24:0");
     assertEqual(l->get_lipid_string(), "Gal-Cer 18:1(5);OH/24:0");
-    assertEqual(l->get_lipid_string(SN_POSITION), "GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(MOLECULAR_SPECIES), "GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(SPECIES), "GalCer 42:1;O2");
+    assertEqual(l->get_lipid_string(SN_POSITION), "HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(MOLECULAR_SPECIES), "HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(SPECIES), "HexCer 42:1;O2");
     assertEqual(l->get_sum_formula(), "C48H93NO8");
     delete l;
     
     
-    l = parser.parse("GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(), "GalCer 18:1;O2/24:0");
-    assertEqual(l->get_lipid_string(SPECIES), "GalCer 42:1;O2");
+    l = parser.parse("HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(), "HexCer 18:1;O2/24:0");
+    assertEqual(l->get_lipid_string(SPECIES), "HexCer 42:1;O2");
     assertEqual(l->get_sum_formula(), "C48H93NO8");
     delete l;
     
     
-    l = parser.parse("GalCer 42:1;O2");
-    assertEqual(l->get_lipid_string(), "GalCer 42:1;O2");
+    l = parser.parse("HexCer 42:1;O2");
+    assertEqual(l->get_lipid_string(), "HexCer 42:1;O2");
     assertEqual(l->get_sum_formula(), "C48H93NO8");
     delete l;
     
@@ -201,6 +199,31 @@ int main(int argc, char** argv){
     assertEqual(l->get_sum_formula(), "C36H71N2O6P");
     delete l;
     
+    l = parser.parse("SPBP 18:1;O2");
+    assertEqual(l->get_lipid_string(), "SPBP 18:1;O2");
+    assertEqual(l->get_sum_formula(), "C18H38NO5P");
+    delete l;
+        
+    l = parser.parse("LSM 18:1;O2");
+    assertEqual(l->get_lipid_string(), "LSM 18:1;O2");
+    delete l;
+    
+    l = parser.parse("LSM(1) 18:1(5Z);3OH");
+    assertEqual(l->get_lipid_string(), "LSM(1) 18:1(5Z);3OH");
+    delete l;
+    
+    l = parser.parse("LHexCer 18:1;O2");
+    assertEqual(l->get_lipid_string(), "LHexCer 18:1;O2");
+    delete l;
+    
+    l = parser.parse("LHexCer 18:1;O2/0:0");
+    assertEqual(l->get_lipid_string(), "LHexCer 18:1;O2");
+    delete l;
+    
+    l = parser.parse("LHexCer(1) 18:1(5E);3OH/0:0");
+    assertEqual(l->get_lipid_string(), "LHexCer(1) 18:1(5E);3OH");
+    delete l;
+    
     
     // test several more lipid names
     vector<string> data;
@@ -211,7 +234,6 @@ int main(int argc, char** argv){
     string line;
     while (getline(infile, line)) data.push_back(line);
     infile.close();
-    
     
     try {
         l = parser.parse("SM 21:1(3Z);2O/12:0");
@@ -224,6 +246,8 @@ int main(int argc, char** argv){
     
     for (auto &row : data){
         vector<string>* results = split_string(row, ',', '"', true);
+        
+        //cout << results->at(0) << endl;
         for (int i = 0; i < (int)results->size(); ++i) results->at(i) = strip(results->at(i), '"');
         string lipid_name = results->at(0);
         
