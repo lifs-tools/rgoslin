@@ -115,7 +115,6 @@ public:
     void set_hydro_pre_num(TreeNode *node);
     void new_sphinga_pure(TreeNode *node);
     
-    
 };
 
 

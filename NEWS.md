@@ -1,18 +1,49 @@
-# rgoslin 1.3.0 
+# rgoslin 1.5.0
 
 Please note that this Bioconductor version is based on Goslin version 2.0.0.
 See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
 
-## Changes in 1.3.1
+## BioConductor 3.18 - Changes in 1.5.0
 
-## BioConductor 3.17 - Changes in 1.3.0
+### Improvements
 
+- Better handling of mediators
+- Translating gangliosides into new nomenclature structure
+- Updated HMDB grammar for parsing mediators in lipid names: e.g., PA(P-16:0/LTE4)
+- Parsing of adducts with heavy labeled isotopes now possible
+
+### Bug Fixes
+
+- Minor bug fixes
+
+# rgoslin 1.4.0 
+
+Please note that this Bioconductor version is based on Goslin version 2.0.0.
+See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
+
+## BioConductor 3.17 - Changes in 1.4.0
+
+### Improvements
+
+- Improved handling of Glycosphingolipids and carbohydrates
+- Improved headgroup normalization for Glycosphingolipids.
+- Added PMeOH.
+- Added TG-EST (estolide) Estolides [GL0305].
+- Added more sterol variants.
+
+### Bug Fixes
+
+- Fixed classification of SB1a as Sulfoglycosphingolipids (sulfatides) [SP0602].
+- Fixed classification of SHex2Cer as Sulfoglycosphingolipids (sulfatides) [SP0602].
+- Fixed classification of SMGDG as Glycosylalkylacylglycerols [GL0502], added synonym seminolipid.
+- Fixed classification of SQDG Glycosyldiacylglycerols [GL0501].
+- Fixed classification of sterols.
 
 ## BioConductor 3.16 - Changes in 1.2.0
 
-## BioConductor 3.15 - Changes in 1.1.0
+- No noteworthy changes.
 
-## BioConductor 3.14 - Changes in 1.0.0
+## BioConductor 3.15 - Changes in 1.0.0
 
 ### Improvements
 

@@ -1,5 +1,6 @@
 test_that("lipid name validation works", {
   expect_equal(rgoslin::isValidLipidName("PC(32:0)"), TRUE)
+  expect_equal(rgoslin::isValidLipidName("GM1 18:1;O2/16:0"), TRUE)
 })
 
 test_that("lipid name parsing works", {
