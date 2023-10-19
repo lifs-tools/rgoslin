@@ -69,7 +69,7 @@ bool LipidBaseParserEventHandler::check_full_structure(FunctionalGroup *obj){
     if (is_fa && !obj->double_bonds->double_bond_positions.empty()){
         int sum = 0;
         for (auto &kv : obj->double_bonds->double_bond_positions) sum += kv.second == "E" || kv.second == "Z" || (kv.second == "" && kv.first == ((FattyAcid*)obj)->num_carbon - 1);
-        full &= sum == obj->double_bonds->double_bond_positions.size();
+        full &= sum == (int)obj->double_bonds->double_bond_positions.size();
         
     }
     
