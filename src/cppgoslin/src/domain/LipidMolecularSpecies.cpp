@@ -41,7 +41,7 @@ LipidMolecularSpecies::LipidMolecularSpecies (Headgroup* _headgroup, vector<Fatt
     for (int i = (int)_fa->size(); i < info->total_fa; ++i){
         FattyAcid *fatty_acid = new FattyAcid("FA" + std::to_string(i + 1));
         fatty_acid->position = -1;
-        fatty_acid->unresolved_hidden_fa = (1 < _fa->size() && _fa->size() < info->poss_fa);
+        fatty_acid->unresolved_hidden_fa = (1 < (int)_fa->size() && (int)_fa->size() < info->poss_fa);
         info->add(fatty_acid);
         fa.insert({fatty_acid->name, fatty_acid});
         fa_list.push_back(fatty_acid);
