@@ -33,6 +33,7 @@ LipidSpeciesInfo::LipidSpeciesInfo (LipidClass _lipid_class) : FattyAcid("info")
     extended_class = ESTER;
     ClassMap &lipid_classes = LipidClasses::get_instance().lipid_classes;
     total_fa = contains_val(lipid_classes, lipid_class) ? lipid_classes.at(lipid_class).max_num_fa : 0;
+    poss_fa = contains_val(lipid_classes, lipid_class) ? lipid_classes.at(lipid_class).possible_num_fa : 0;
 }
 
 
