@@ -3,7 +3,6 @@
 #include <cppgoslin.h>
 #include <typeinfo>
 
-
 using namespace Rcpp;
 using namespace goslin;
 
