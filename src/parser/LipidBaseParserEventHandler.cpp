@@ -355,7 +355,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
 
 
 
-Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
+Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(bool allow_class_shift){
 
     Headgroup *headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
     
@@ -370,23 +370,25 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(){
     // make lyso
     bool can_be_lyso = contains_val(LipidClasses::get_instance().lipid_classes, Headgroup::get_class("L" + head_group)) ? contains_val(LipidClasses::get_instance().lipid_classes.at(Headgroup::get_class("L" + head_group)).special_cases, "Lyso") : 0;
     
-    
-    if ((true_fa + 1 == poss_fa || true_fa + 2 == poss_fa) && level != SPECIES && headgroup->lipid_category == GP && can_be_lyso){
-        if (true_fa + 1 == poss_fa) head_group = "L" + head_group;
-        else head_group = "DL" + head_group;
-        headgroup->decorators->clear();
-        delete headgroup;
-        headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
-        poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
-    }
-    
-    else if ((true_fa + 1 == poss_fa || true_fa + 2 == poss_fa) && level != SPECIES && headgroup->lipid_category == GL && head_group == "TG"){
-        if (true_fa + 1 == poss_fa) head_group = "DG";
-        else head_group = "MG";
-        headgroup->decorators->clear();
-        delete headgroup;
-        headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
-        poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
+    if (allow_class_shift){
+        if ((true_fa + 1 == poss_fa || true_fa + 2 == poss_fa) && level != SPECIES && headgroup->lipid_category == GP && can_be_lyso){
+            if (true_fa + 1 == poss_fa) head_group = "L" + head_group;
+            else head_group = "DL" + head_group;
+            headgroup->decorators->clear();
+            delete headgroup;
+            headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
+            poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
+        }
+        
+        else if ((true_fa + 1 == poss_fa || true_fa + 2 == poss_fa) && level != SPECIES && headgroup->lipid_category == GL && head_group == "TG"){
+            if (true_fa + 1 == poss_fa) head_group = "DG";
+            else head_group = "MG";
+            cout << head_group << endl;
+            headgroup->decorators->clear();
+            delete headgroup;
+            headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
+            poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
+        }
     }
     
     // check if all functional groups have a position to be full structure

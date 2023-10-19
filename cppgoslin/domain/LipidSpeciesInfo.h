@@ -41,6 +41,7 @@ public:
     LipidLevel level;
     int num_ethers;
     int num_specified_fa;
+    int poss_fa;
     int total_fa;
     LipidFaBondType extended_class;
     LipidClass lipid_class;

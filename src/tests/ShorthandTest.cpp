@@ -224,6 +224,10 @@ int main(int argc, char** argv){
     assertEqual(l->get_lipid_string(), "LHexCer(1) 18:1(5E);3OH");
     delete l;
     
+    l = parser.parse("TG 42:2_18:0");
+    assertEqual(l->get_lipid_string(), "TG 42:2_18:0");
+    delete l;
+    
     
     // test several more lipid names
     vector<string> data;

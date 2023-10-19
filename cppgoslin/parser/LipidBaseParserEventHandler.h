@@ -64,7 +64,7 @@ public:
     ~LipidBaseParserEventHandler();
     void set_lipid_level(LipidLevel _level);
     bool sp_regular_lcb();
-    Headgroup* prepare_headgroup_and_checks();
+    Headgroup* prepare_headgroup_and_checks(bool allow_class_shift = true);
     LipidSpecies *assemble_lipid(Headgroup *headgroup);
     FattyAcid* resolve_fa_synonym(string mediator_name);
     bool check_full_structure(FunctionalGroup *obj);

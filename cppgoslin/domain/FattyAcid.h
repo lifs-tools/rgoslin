@@ -48,6 +48,7 @@ public:
     void compute_elements();
     FattyAcid* copy();
     int get_double_bonds();
+    bool unresolved_hidden_fa;
     void set_type(LipidFaBondType _lipid_FA_bond_type);
     ElementTable* get_functional_group_elements();
     static string get_prefix(LipidFaBondType _lipid_FA_bond_type);

@@ -114,8 +114,14 @@ string LipidSpecies::get_extended_class(){
     string class_name = info->level >= STRUCTURE_DEFINED ? headgroup->get_lipid_string(STRUCTURE_DEFINED) : headgroup->get_lipid_string(SPECIES);
     
     if (class_name == "UNDEFINED") return class_name;
-    if (special_case && (info->extended_class == ETHER_PLASMANYL || info->extended_class == ETHER_UNSPECIFIED || info->extended_class == ETHER_PLASMENYL)){
-        return class_name + "-O";
+    
+    if (special_case){
+        if(info->extended_class == ETHER_PLASMANYL || info->extended_class == ETHER_UNSPECIFIED){
+            return class_name + " O";
+        }
+        else if (info->extended_class == ETHER_PLASMENYL){
+            return class_name + " P";
+        }
     }
     
     return class_name;
