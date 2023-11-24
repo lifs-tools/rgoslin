@@ -193,7 +193,7 @@ void GoslinParserEventHandler::add_mediator_function(TreeNode *node){
         if (mediator_function_positions.size() > 0) functional_group->position = mediator_function_positions[0];
     }
         
-    else if (mediator_function == "Oxo"){
+    else if (mediator_function == "Oxo" || mediator_function == "oxo" || mediator_function == "OXO"){
         functional_group = KnownFunctionalGroups::get_functional_group("oxo");
         fg = "oxo";
         if (mediator_function_positions.size() > 0) functional_group->position = mediator_function_positions[0];
