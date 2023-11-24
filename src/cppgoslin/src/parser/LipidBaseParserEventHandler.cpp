@@ -383,7 +383,6 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(bool allow_
         else if ((true_fa + 1 == poss_fa || true_fa + 2 == poss_fa) && level != SPECIES && headgroup->lipid_category == GL && head_group == "TG"){
             if (true_fa + 1 == poss_fa) head_group = "DG";
             else head_group = "MG";
-            cout << head_group << endl;
             headgroup->decorators->clear();
             delete headgroup;
             headgroup = new Headgroup(head_group, headgroup_decorators, use_head_group);
@@ -444,7 +443,6 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(bool allow_
     
         
 LipidSpecies* LipidBaseParserEventHandler::assemble_lipid(Headgroup *headgroup){
-    
     for (auto fa : *fa_list){
         if (fa->stereo_information_missing()){
             set_lipid_level(FULL_STRUCTURE);

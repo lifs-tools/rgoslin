@@ -84,6 +84,11 @@ int main(int argc, char** argv){
     assertEqual(l->get_sum_formula(), "C42H83NO3");
     delete l;
     
+    l = parser.parse("cLPA 18:0");
+    assertEqual(l->get_lipid_string(), "CPA 18:0");
+    assertEqual(l->get_sum_formula(), "C21H41O6P");
+    delete l;
+    
     l = parser.parse("Cer 42:1;O2");
     assertEqual(l->get_lipid_string(), "Cer 42:1;O2");
     assertEqual(l->get_sum_formula(), "C42H83NO3");
