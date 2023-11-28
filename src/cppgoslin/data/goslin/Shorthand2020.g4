@@ -160,8 +160,10 @@ gl_hg_tg_est : 'TG-EST' | 'TG EST' | 'TAG EST' | 'TAG-EST';
 
 
 
-pl : pl_species | pl_subspecies | pl_molecular_species;
+pl : pl_species | pl_subspecies | pl_molecular_species | pl_cpa;
 pl_species : pl_hg headgroup_separator fatty_acyl_chain;
+pl_cpa : pl_cpa_head headgroup_separator fatty_acyl_chain;
+pl_cpa_head : 'CPA' | 'cLPA' | 'CLPA';
 pl_subspecies : pl_single | pl_double | pl_quadro;
 pl_molecular_species : pl_hg_quadro headgroup_separator fa2_unsorted | pl_hg_quadro headgroup_separator fa3_unsorted;
 pl_single : pl_hg_single headgroup_separator fatty_acyl_chain;
@@ -169,7 +171,7 @@ pl_full : pl_hg_single headgroup_separator fatty_acyl_chain2;
 pl_double : pl_full | pl_hg_double_all headgroup_separator fatty_acyl_chain2;
 pl_quadro : pl_hg_quadro headgroup_separator fatty_acyl_chain4;
 pl_hg : pl_hg_double_all | pl_hg_quadro;
-pl_hg_single : 'LPA' | 'LPC' | 'LPE' | 'LPG' | 'LPI' | 'LPS' | hg_lpim | 'CPA' | 'LCDPDAG' | 'LDMPE' | 'LMMPE' | 'LPIMIP' | 'LPIN' | 'PE-isoLG';
+pl_hg_single : 'LPA' | 'LPC' | 'LPE' | 'LPG' | 'LPI' | 'LPS' | hg_lpim | 'LCDPDAG' | 'LDMPE' | 'LMMPE' | 'LPIMIP' | 'LPIN' | 'PE-isoLG';
 pl_hg_double_all : pl_hg_double_fa | pl_hg_double | hg_pip;
 pl_hg_double_fa : pl_hg_double_fa_hg ROB pl_hg_fa RCB | pl_hg_double_fa_hg ROB pl_hg_alk RCB;
 pl_hg_double_fa_hg : 'PS-N' | 'PE-N';
@@ -203,11 +205,12 @@ carbohydrate_iso : 'Gal' | 'Glc' | 'GalNAc' | 'GlcNAc' | 'S' ROB '3' APOSTROPH R
 
 sl : sl_species | sl_subspecies;
 sl_species : sl_hg_double headgroup_separator lcb | acer_species headgroup_separator lcb;
-sl_subspecies : sl_hg_single headgroup_separator lcb | sl_hg_single sl_hydroxyl headgroup_separator lcb | sl_double;
+sl_subspecies : sl_single | sl_double;
+sl_single : sl_hg_single headgroup_separator lcb | sl_hg_single sl_hydroxyl headgroup_separator lcb | sl_hg_single headgroup_separator lcb '/0:0' | sl_hg_single sl_hydroxyl headgroup_separator lcb '/0:0';
 sl_double : sl_hg_double headgroup_separator lcb sorted_fa_separator fatty_acyl_chain | sl_hg_double sl_hydroxyl headgroup_separator lcb sorted_fa_separator fatty_acyl_chain;
 sl_hydroxyl : ROB sl_hydroxyl_number RCB;
 sl_hydroxyl_number : number;
-sl_hg_single : 'SPB' | 'SPBP' | 'LIPC' | 'LSM';
+sl_hg_single : 'SPB' | 'SPBP' | 'LIPC' | 'LSM' | 'LHexCer' | 'LHex2Cer' | 'LHex3Cer';
 sl_hg_double : acer_hg | sl_hg_double_name | carbohydrates sl_hg_glyco;
 sl_hg_glyco : 'Cer' | 'IPC';
 sl_hg_double_name : 'SM' | sl_hg_glyco | 'CerP' | acer_hg | 'SL' | 'LacCer' | 'SHexCer' | 'PI-Cer' | 'EPC' | 'PE-Cer' | 'GIPC' | 'MIPC' | 'M(IP)2C' | glyco_sphingo_lipid | 'S' ROB '3' APOSTROPH RCB 'HexCer' | 'S' ROB '3' APOSTROPH RCB 'GalCer';
@@ -253,9 +256,9 @@ SOB: '[';
 SCB: ']';
 
 APOSTROPH : '\'' | '′';
-sorted_fa_separator : SLASH;
+sorted_fa_separator : SLASH | BACKSLASH | SPACE SLASH SPACE | SPACE BACKSLASH SPACE;
 adduct_separator : SPACE;
-unsorted_fa_separator : UNDERSCORE;
+unsorted_fa_separator : UNDERSCORE | SPACE UNDERSCORE SPACE;
 plasmalogen_separator : DASH;
 headgroup_separator : SPACE;
 carbon_db_separator : COLON;

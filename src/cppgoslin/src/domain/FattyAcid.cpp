@@ -31,6 +31,7 @@ FattyAcid::FattyAcid(string _name, int _num_carbon, DoubleBonds* _double_bonds, 
     
     num_carbon = _num_carbon;
     lipid_FA_bond_type = _lipid_FA_bond_type;
+    unresolved_hidden_fa = false;
     
     if (lipid_FA_bond_type == LCB_REGULAR){
         functional_groups->insert({"[X]", vector<FunctionalGroup*>()});
@@ -247,6 +248,12 @@ ElementTable* FattyAcid::get_functional_group_elements(){
 
 void FattyAcid::compute_elements(){
     for (auto &kv : *elements) elements->at(kv.first) = 0;
+    
+    if (unresolved_hidden_fa){
+        elements->at(ELEMENT_O) += 1;
+        elements->at(ELEMENT_H) -= 1;
+        return;
+    }
     
     int num_double_bonds = double_bonds->num_double_bonds;
     if (lipid_FA_bond_type == ETHER_PLASMENYL) num_double_bonds += 1;

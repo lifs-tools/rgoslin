@@ -63,6 +63,7 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("gl_hg_triple_pre_event", set_headgroup_name);
     reg("pl_hg_single_pre_event", set_headgroup_name);
     reg("pl_hg_double_pre_event", set_headgroup_name);
+    reg("pl_cpa_head_pre_event", set_headgroup_name);
     reg("pl_hg_quadro_pre_event", set_headgroup_name);
     reg("sl_hg_single_pre_event", set_headgroup_name);
     reg("sl_hg_glyco_pre_event", set_headgroup_name);
@@ -200,7 +201,7 @@ void ShorthandParserEventHandler::set_glyco_sphingo_lipid(TreeNode *node){
 
 void ShorthandParserEventHandler::build_lipid(TreeNode *node) {
     if (acer_species) fa_list->at(0)->num_carbon -= 2;
-    Headgroup *headgroup = prepare_headgroup_and_checks();
+    Headgroup *headgroup = prepare_headgroup_and_checks(false);
     
     // add count numbers for fatty acyl chains
     int fa_it = !fa_list->empty() && (fa_list->front()->lipid_FA_bond_type == LCB_REGULAR || fa_list->front()->lipid_FA_bond_type == LCB_EXCEPTION);

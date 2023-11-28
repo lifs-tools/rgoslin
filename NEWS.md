@@ -1,4 +1,4 @@
-# rgosing 1.5.0
+# rgoslin 1.5.0
 
 Please note that this Bioconductor version is based on Goslin version 2.0.0.
 See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
@@ -7,12 +7,14 @@ See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C+
 
 ### Improvements
 
-- 
-- 
+- Better handling of mediators
+- Translating gangliosides into new nomenclature structure
+- Updated HMDB grammar for parsing mediators in lipid names: e.g., PA(P-16:0/LTE4)
+- Parsing of adducts with heavy labeled isotopes now possible
 
 ### Bug Fixes
 
-- 
+- Minor bug fixes
 
 # rgoslin 1.4.0 
 

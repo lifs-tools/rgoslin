@@ -69,6 +69,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "Cer 18:1;O2/24:0");
     assert_true(l->get_lipid_string(SPECIES), "Cer 42:1;O2");
     assert_true(l->get_sum_formula(), "C42H83NO3");
+    delete l;
     
     l = parser.parse("HexCer 18:1(5Z);2/24:0");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "HexCer 18:1(5);OH/24:0");
@@ -76,6 +77,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "HexCer 18:1;O2/24:0");
     assert_true(l->get_lipid_string(SPECIES), "HexCer 42:1;O2");
     assert_true(l->get_sum_formula(), "C48H93NO8");
+    delete l;
     
     l = parser.parse("LSM 17:1(4E);2");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "LSM 17:1(4);OH");
@@ -83,6 +85,14 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "LSM 17:1;O2");
     assert_true(l->get_lipid_string(SPECIES), "LSM 17:1;O2");
     assert_true(l->get_sum_formula(), "C22H47N2O5P");
+    delete l;
+    
+    
+    
+    l = parser.parse("13-oxoODE");
+    assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "FA 18:3;O");
+    assert_true(l->get_sum_formula(), "C18H30O3");
+    delete l;
     
     l = parser.parse("LCB 18:1(4E);2");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "SPB 18:1(4);(OH)2");
@@ -90,6 +100,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "SPB 18:1;O2");
     assert_true(l->get_lipid_string(SPECIES), "SPB 18:1;O2");
     assert_true(l->get_sum_formula(), "C18H37NO2");
+    delete l;
 
     l = parser.parse("EPC 14:1(4E);2/20:1(11Z)");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "EPC 14:1(4);OH/20:1(11)");
@@ -97,6 +108,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "EPC 14:1;O2/20:1");
     assert_true(l->get_lipid_string(SPECIES), "EPC 34:2;O2");
     assert_true(l->get_sum_formula(), "C36H71N2O6P");
+    delete l;
     
     l = parser.parse("MIPC 18:0;3/24:0");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "MIPC 18:0;(OH)2/24:0");
@@ -104,6 +116,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "MIPC 18:0;O3/24:0");
     assert_true(l->get_lipid_string(SPECIES), "MIPC 42:0;O3");
     assert_true(l->get_sum_formula(), "C54H106NO17P");
+    delete l;
     
     l = parser.parse("EPC 16:2(4E,6E);2/22:1(13Z);1");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "EPC 16:2(4,6);OH/22:1(13);OH");
@@ -111,6 +124,7 @@ int main(int argc, char** argv){
     assert_true(l->get_lipid_string(MOLECULAR_SPECIES), "EPC 16:2;O2/22:1;O");
     assert_true(l->get_lipid_string(SPECIES), "EPC 38:3;O3");
     assert_true(l->get_sum_formula(), "C40H77N2O7P");
+    delete l;
 
     l = parser.parse("BMP 18:1-18:1");
     assert_true(l->get_lipid_string(), "BMP 18:1_18:1");
@@ -129,6 +143,7 @@ int main(int argc, char** argv){
     assert_true(l->lipid->fa_list.at(3)->position, -1);
     assert_true(l->lipid->fa_list.at(3)->num_carbon, 0);
     assert_true(l->lipid->fa_list.at(3)->double_bonds->num_double_bonds, 0);
+    delete l;
 
     l = parser.parse("TAG 18:1/0:0/16:0");
     assert_true(l->get_lipid_string(), "DG 18:1/0:0/16:0");
@@ -146,10 +161,22 @@ int main(int argc, char** argv){
     assert_true(l->lipid->fa_list.at(2)->position, 3);
     assert_true(l->lipid->fa_list.at(2)->num_carbon, 16);
     assert_true(l->lipid->fa_list.at(2)->double_bonds->num_double_bonds, 0);
+    delete l;
     
     l = parser.parse("15S-HETE-d8");
     assert_true(l->get_lipid_string(), "FA 20:4;OH[M[2]H8]");
     assert_true(l->get_sum_formula(), "C20H24O3H'8");
+    delete l;
+    
+    l = parser.parse("NO2-OA");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "FA 18:1;NO2");
+    delete l;
+    
+    l = parser.parse("7(R),14(S)-DiHDHA");
+    assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "FA 22:6;(OH)2");
+    delete l;
+    
+    
     
     l = parser.parse("NO2-OA");
     assert_true(l->get_lipid_string(STRUCTURE_DEFINED), "FA 18:1;NO2");
