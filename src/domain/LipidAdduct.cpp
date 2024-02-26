@@ -25,7 +25,6 @@ SOFTWARE.
 
 #include "cppgoslin/domain/LipidAdduct.h"
 
-
 LipidAdduct::LipidAdduct(){
     lipid = NULL;
     adduct = NULL;
