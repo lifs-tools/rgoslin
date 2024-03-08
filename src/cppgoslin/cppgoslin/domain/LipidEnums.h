@@ -120,6 +120,23 @@ class LipidClasses {
 };
 
 
+class TrivialMediators {
+    public:
+        static TrivialMediators& get_instance()
+        {
+            static TrivialMediators instance;
+            return instance;
+        }
+    private:
+        TrivialMediators();
+        
+    public:
+        map<string, vector<int>> trivial_mediators;
+        TrivialMediators(TrivialMediators const&) = delete;
+        void operator=(TrivialMediators const&) = delete;
+};
+
+
 
 static map<LipidClass, string> ClassString;
 static map<string, LipidClass> StringClass;

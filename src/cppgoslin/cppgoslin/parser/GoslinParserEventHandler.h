@@ -57,6 +57,9 @@ public:
     bool mediator_suffix;
     Element heavy_element;
     int heavy_element_number;
+    bool trivial_mediator;
+    string prostaglandin_type;
+    string prostaglandin_number;
     
     static const map<string, int> mediator_FA;
     static const map<string, int> mediator_DB;
@@ -106,6 +109,11 @@ public:
     void set_heavy_element(TreeNode *node);
     void set_heavy_number(TreeNode *node);
     void add_heavy_component(TreeNode *node);
+    
+    void set_prostaglandin_type(TreeNode *node);
+    void set_prostaglandin_number(TreeNode *node);
+    void add_prostaglandin(TreeNode *node);
+    void clean_mediator(FattyAcid *fa);
 };
 
 

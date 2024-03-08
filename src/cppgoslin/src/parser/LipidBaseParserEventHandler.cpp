@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include "cppgoslin/parser/LipidBaseParserEventHandler.h"
                
-const map<string, int> LipidBaseParserEventHandler::fa_synonyms{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}, {"PGJ2", 20}, {"Arachidonic acid", 21}, {"LA", 22}, {"Mar1", 23}, {"RvD3", 24}, {"PGF1alpha", 25}, {"PDX", 26}, {"Oleic acid", 27}, {"OA", 28}, {"DGLA", 29}, {"iPF2alpha-VI", 30}};
+const map<string, int> LipidBaseParserEventHandler::fa_synonyms{{"Palmitic acid", 0}, {"Linoleic acid", 1}, {"AA", 2}, {"Arachidonic acid", 2}, {"ARA", 2}, {"ALA", 3}, {"EPA", 4}, {"DHA", 5}, {"LTB4", 6}, {"Resolvin D3", 7}, {"Maresin 1", 8},  {"Resolvin D2", 9}, {"Resolvin D5", 10}, {"Resolvin D1", 11}, {"TXB1", 12}, {"TXB2", 13}, {"TXB3", 14}, {"PGF2alpha", 15}, {"PGD2", 16}, {"PGE2", 17}, {"PGB2", 18}, {"15d-PGJ2", 19}, {"PGJ2", 20}, {"LA", 1}, {"Mar1", 23}, {"RvD3", 24}, {"PGF1alpha", 25}, {"PDX", 26}, {"Oleic acid", 27}, {"OA", 28}, {"DGLA", 29}, {"iPF2alpha-VI", 30}, {"Resolvin E1", 31}, {"Resolvin E2", 32}, {"PGE-M", 33}, {"PGEM", 33}};
 
 LipidBaseParserEventHandler::LipidBaseParserEventHandler() : BaseParserEventHandler<LipidAdduct*>() {
     fa_list = new vector<FattyAcid*>();
@@ -88,33 +88,33 @@ bool LipidBaseParserEventHandler::check_full_structure(FunctionalGroup *obj){
 
 FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name){
     
-    if (uncontains_val(fa_synonyms, mediator_name)) return 0;
+    if (uncontains_val(fa_synonyms, mediator_name)){
+        throw UnsupportedLipidException(mediator_name);
+    }
     
     switch(LipidBaseParserEventHandler::fa_synonyms.at(mediator_name)){
         case 0: // Palmitic acid
             return new FattyAcid("FA", 16);
             break;
             
-        case 1: // Linoleic acid
-        case 22: //LA
-            return new FattyAcid("FA", 18, new DoubleBonds(2));
+        case 1: // Linoleic acid, LA
+            return new FattyAcid("FA", 18, new DoubleBonds({{9, "Z"}, {12, "Z"}}));
             break;
             
-        case 2: // AA":
-        case 21: // Arachidonic acid
-            return new FattyAcid("FA", 20, new DoubleBonds(4));
+        case 2: // AA, Arachidonic acid, ARA
+            return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {8, "Z"}, {11, "Z"}, {14, "Z"}}));
             break;
             
         case 3: // ALA":
-            return new FattyAcid("FA", 18, new DoubleBonds(3));
+            return new FattyAcid("FA", 18, new DoubleBonds({{9, "Z"}, {12, "Z"}, {15, "Z"}}));
             break;
             
         case 4: // EPA":
-            return new FattyAcid("FA", 20, new DoubleBonds(5));
+            return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {8, "Z"}, {11, "Z"}, {14, "Z"}, {17, "Z"}}));
             break;
             
         case 5: // DHA":
-            return new FattyAcid("FA", 22, new DoubleBonds(6));
+            return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {7, "Z"}, {10, "Z"}, {13, "Z"}, {16, "Z"}, {19, "Z"}}));
             break;
             
         case 6: // LTB4
@@ -136,7 +136,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f1->position = 4;
                 f2->position = 11;
                 f3->position = 17;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{5, "E"}, {7, "E"}, {9, "E"}, {13, "Z"}, {15, "E"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
             }
             break;
             
@@ -147,7 +147,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
                 f1->position = 4;
                 f2->position = 14;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {8, "E"}, {10, "E"}, {12, "Z"}, {16, "Z"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
             }
             break;
             
@@ -159,7 +159,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f1->position = 4;
                 f2->position = 16;
                 f3->position = 17;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {8, "E"}, {10, "Z"}, {12, "E"}, {14, "E"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
             }
             break;
             
@@ -169,7 +169,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
                 f1->position = 7;
                 f2->position = 17;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {8, "E"}, {10, "Z"}, {13, "Z"}, {15, "E"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
             }
             break;
             
@@ -181,7 +181,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f1->position = 7;
                 f2->position = 8;
                 f3->position = 17;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {9, "E"}, {11, "E"}, {13, "Z"}, {15, "E"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
             }
             break;
             
@@ -196,7 +196,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f3->position = 11;
                 f4->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -211,7 +211,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f3->position = 11;
                 f4->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -226,7 +226,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f3->position = 11;
                 f4->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}, {"oxy", {f4}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}, {17, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -239,7 +239,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f2->position = 9;
                 f3->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -252,7 +252,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f2->position = 9;
                 f3->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}, {"oxo", {f3}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -265,7 +265,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f2->position = 9;
                 f3->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f3}}, {"oxy", {f2}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -275,8 +275,8 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
                 f1->position = 15;
                 f2->position = 9;
-                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds({{8, ""}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -286,8 +286,8 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
                 f1->position = 15;
                 f2->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(3), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds({{9, ""}}), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {12, "E"}, {14, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -297,8 +297,8 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
                 f1->position = 15;
                 f2->position = 11;
-                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(2), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                Cycle* cy = new Cycle(5, 8, 12, new DoubleBonds({{9, ""}}), new map<string, vector<FunctionalGroup*>>{{"oxo", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}, {13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -313,7 +313,7 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f2->position = 9;
                 f3->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{13, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
             
@@ -323,17 +323,17 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
                 f1->position = 10;
                 f2->position = 17;
-                return new FattyAcid("FA", 22, new DoubleBonds(6), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+                return new FattyAcid("FA", 22, new DoubleBonds({{4, "Z"}, {7, "Z"}, {11, "E"}, {13, "Z"}, {15, "E"}, {19, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
             }
             break;
             
         case 27: // Oleic acid
         case 28: // OA
-            return new FattyAcid("FA", 18, new DoubleBonds(1));
+            return new FattyAcid("FA", 18, new DoubleBonds({{9, "Z"}}));
             break;
             
         case 29: // DGLA
-            return new FattyAcid("FA", 20, new DoubleBonds(3));
+            return new FattyAcid("FA", 20, new DoubleBonds({{8, "Z"}, {11, "Z"}, {14, "Z"}}));
             break;
             
         case 30: // iPF2alpha-VI
@@ -345,12 +345,48 @@ FattyAcid* LipidBaseParserEventHandler::resolve_fa_synonym(string mediator_name)
                 f2->position = 9;
                 f3->position = 11;
                 Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f2, f3}}});
-                return new FattyAcid("FA", 20, new DoubleBonds(1), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{6, "E"}, {14, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1}}, {"cy", {cy}}});
             }
             break;
+            
+        case 31: // Resolvin E1
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 5;
+                f2->position = 13;
+                f3->position = 18;
+                return new FattyAcid("FA", 20, new DoubleBonds({{6, "Z"}, {8, "E"}, {10, "E"}, {14, "Z"}, {16, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2, f3}}});
+            }
+            break;
+            
+        case 32: // Resolvin E2
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("OH");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 5;
+                f2->position = 18;
+                return new FattyAcid("FA", 20, new DoubleBonds({{6, "E"}, {8, "Z"}, {11, "Z"}, {14, "Z"}, {16, "E"}}), new map<string, vector<FunctionalGroup*>>{{"OH", {f1, f2}}});
+            }
+            break;
+            
+        case 33: // PGE-M, PGEM
+            {
+                FunctionalGroup *f1 = KnownFunctionalGroups::get_functional_group("oxo");
+                FunctionalGroup *f2 = KnownFunctionalGroups::get_functional_group("oxo");
+                FunctionalGroup *f3 = KnownFunctionalGroups::get_functional_group("OH");
+                f1->position = 15;
+                f2->position = 9;
+                f3->position = 11;
+                Cycle* cy = new Cycle(5, 8, 12, 0, new map<string, vector<FunctionalGroup*>>{{"OH", {f3}}, {"oxy", {f2}}});
+                return new FattyAcid("FA", 20, new DoubleBonds({{5, "Z"}}), new map<string, vector<FunctionalGroup*>>{{"oxo", {f1}}, {"cy", {cy}}});
+            }
+            break;
+            
     }
     
-    return 0;
+    throw UnsupportedLipidException(mediator_name);
 }
 
 
@@ -389,7 +425,6 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(bool allow_
             poss_fa = contains_val(LipidClasses::get_instance().lipid_classes, headgroup->lipid_class) ? LipidClasses::get_instance().lipid_classes.at(headgroup->lipid_class).possible_num_fa : 0;
         }
     }
-    
     // check if all functional groups have a position to be full structure
     if (is_level(level, COMPLETE_STRUCTURE | FULL_STRUCTURE)){
         for (auto fa : *fa_list){
@@ -399,7 +434,6 @@ Headgroup* LipidBaseParserEventHandler::prepare_headgroup_and_checks(bool allow_
             }
         }
     }
-    
     
     if (level == SPECIES){
         if (true_fa == 0 && poss_fa != 0){

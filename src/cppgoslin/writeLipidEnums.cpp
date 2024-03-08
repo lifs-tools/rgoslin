@@ -47,7 +47,13 @@ void writeLipidEnum(string ofFileName){
     
     ifstream functional_file("data/goslin/functional-groups.csv");
     if (!functional_file.good()){
-        cout << "Error: file 'data/goslin/lipid-list.csv' not found." << endl;
+        cout << "Error: file 'data/goslin/functional-groups' not found." << endl;
+        exit(-1);
+    }
+    
+    ifstream tm_file("data/goslin/trivial_mediators.csv");
+    if (!tm_file.good()){
+        cout << "Error: file 'data/goslin/trivial_mediators.csv' not found." << endl;
         exit(-1);
     }
     
@@ -141,6 +147,22 @@ void writeLipidEnum(string ofFileName){
         }
         functional_data_set.insert(fd_name);
     }
+    
+    
+    
+    
+    map<string, string> trivial_mediators;
+    while (getline(tm_file, line)){
+        vector<string> *tokens = split_string(line, '\t', '"', true);
+        
+        if (tokens->size() == 2){
+            trivial_mediators.insert({to_lower(tokens->at(0)), tokens->at(1)});
+        }
+        delete tokens;
+    }
+    
+    
+    
         
     
     
@@ -184,6 +206,30 @@ void writeLipidEnum(string ofFileName){
     offile << endl;
     offile << "using namespace std;" << endl;
     offile << "using namespace goslin;" << endl;
+    offile << endl;
+    offile << endl;
+    
+    
+    
+    
+    
+    
+    
+    offile << "TrivialMediators::TrivialMediators(){" << endl;
+    offile << "    trivial_mediators = {";
+    int tm_i = 0;
+    for (auto &kv : trivial_mediators){
+        if (tm_i++ > 0) offile << ", ";
+        offile << "{\"" + kv.first + "\", {" + kv.second + "}}"; 
+    }
+    offile << "    };" << endl;
+    offile << "}" << endl;
+    
+    
+    
+    
+    
+    
     offile << endl;
     offile << endl;
     offile << "LipidClasses::LipidClasses(){" << endl;
