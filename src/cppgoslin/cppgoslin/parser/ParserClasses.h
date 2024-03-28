@@ -28,6 +28,7 @@ SOFTWARE.
 
 
 #include "cppgoslin/domain/StringFunctions.h"
+#include <cstdint>
 #include <string>
 #include <set>
 #include <map>
