@@ -26,6 +26,7 @@ SOFTWARE.
 #ifndef STRINGFUNCTIONS_H
 #define STRINGFUNCTIONS_H
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <fstream>
