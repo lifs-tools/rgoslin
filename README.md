@@ -1,5 +1,4 @@
 # R implementation for parsing of lipid shorthand nomenclature names, version 2.0
-[![R-CMD-check](https://github.com/lifs-tools/rgoslin/actions/workflows/check-cran.yaml/badge.svg)](https://github.com/lifs-tools/rgoslin/actions/workflows/check-cran.yaml)
 [![R-CMD-check-bioc](https://github.com/lifs-tools/rgoslin/actions/workflows/check-bioc.yaml/badge.svg)](https://github.com/lifs-tools/rgoslin/actions/workflows/check-bioc.yaml)
 [![codecov (master)](https://codecov.io/gh/lifs-tools/rgoslin/branch/master/graph/badge.svg)](https://codecov.io/gh/lifs-tools/rgoslin)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6451276.svg)](https://doi.org/10.5281/zenodo.6451276)
