@@ -1,9 +1,26 @@
-# rgoslin 1.5.0
+# rgoslin 1.8.0
+
+Please note that this Bioconductor version is based on Goslin version 2.2.0.
+See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
+
+### Improvements
+
+- Added more trivial mediators
+- Added prostglandins
+- Added oxylipins
+- Updated functional groups
+
+### Bug Fixes
+
+- Fixed oxo handling
+- Updated lipid class output for plasmanyl / plasmenyl to allow distinction
+
+# rgoslin 1.6.0
 
 Please note that this Bioconductor version is based on Goslin version 2.0.0.
 See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C++ repository](https://github.com/lifs-tools/cppgoslin) for more details.
 
-## BioConductor 3.18 - Changes in 1.5.0
+## BioConductor 3.18 - Changes in 1.6.0
 
 ### Improvements
 
@@ -15,6 +32,7 @@ See the [Goslin repository](https://github.com/lifs-tools/goslin) and [Goslin C+
 ### Bug Fixes
 
 - Minor bug fixes
+- Removed wrong Lyso classification for SPB, SPBP, LHexCer, LSM
 
 # rgoslin 1.4.0 
 
