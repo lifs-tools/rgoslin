@@ -173,7 +173,7 @@ For pulling and pushing, you have to change into the root directory of the host 
 
 ### Pulling
 ~~~~
-git subtree pull --prefix=<PREFIX> https://github.com/lifs-tools/cppgoslin.git master
+git subtree pull --prefix=<PREFIX> https://github.com/lifs-tools/cppgoslin.git master --squash
 ~~~~
 
 ### Pushing
@@ -186,7 +186,7 @@ Alternatively, you can create shortcuts/aliases in your repository's `.git/confi
 ~~~~
 [alias]
     # the acronym stands for "subtree pull"
-    cppgoslin-pull = "!f() { git subtree pull --prefix <PREFIX> git@github.com:lifs-tools/cppgoslin.git master; }; f"
+    cppgoslin-pull = "!f() { git subtree pull --prefix <PREFIX> git@github.com:lifs-tools/cppgoslin.git master --squash; }; f"
     # the acronym stands for "subtree push"
     cppgoslin-push = "!f() { git subtree push --prefix <PREFIX> git@github.com:lifs-tools/cppgoslin.git master; }; f"
 ~~~~
