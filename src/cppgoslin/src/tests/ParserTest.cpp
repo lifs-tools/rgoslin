@@ -31,6 +31,7 @@ SOFTWARE.
 #include <cassert>
 #include <fstream>
 #include <math.h>
+#include <cstdint>
 
 using namespace std;
 using namespace goslin;
