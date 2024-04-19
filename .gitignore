@@ -1,16 +1,32 @@
-*.Rproj
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-*.Rproj
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
 *.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
 *.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
 *.a
-inst/doc
-docs/
-src/cppgoslin/cppgoslin/domain/ClassesEnum.h
-src/cppgoslin/cppgoslin/parser/KnownGrammars.h
-src/cppgoslin/src/domain/LipidClasses.cpp
-src/cppgoslin/writeGrammarsHeader
-src/cppgoslin/writeLipidEnums
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
