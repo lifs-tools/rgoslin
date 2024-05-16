@@ -68,6 +68,8 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("lcb_post_event", clean_lcb);
     reg("fa_pre_event", new_fa);
     reg("fa_post_event", append_fa);
+    reg("c_type_pre_event", c_type);
+    reg("c_type_post_event", append_fa);
     reg("glyco_struct_pre_event", add_glyco);
     reg("db_single_position_pre_event", set_isomeric_level);
     reg("db_single_position_post_event", add_db_position);
@@ -95,6 +97,7 @@ LipidMapsParserEventHandler::LipidMapsParserEventHandler() : LipidBaseParserEven
     reg("isotope_element_pre_event", set_heavy_element);
     reg("isotope_number_pre_event", set_heavy_number);
     reg("sphinga_pre_event", new_sphinga);
+    reg("hg_lsl_pure_pre_event", new_sph);
     reg("sphinga_phospho_pre_event", add_phospho);
     reg("sphinga_suffix_pre_event", sphinga_db_set);
     reg("sphinga_lcb_len_pre_event", add_carbon_pre_len);
@@ -172,41 +175,70 @@ void LipidMapsParserEventHandler::add_additional_modifier(TreeNode* node){
 
 
 void LipidMapsParserEventHandler::add_carbon_pre_len(TreeNode* node){
-        lcb_carbon_pre_set = node->get_int();
+    lcb_carbon_pre_set = node->get_int();
 }
 
 void LipidMapsParserEventHandler::sphinga_db_set(TreeNode* node){
-        sphinga_suffix = node->get_text();
-        
-        if (sphinga_suffix == "anine") lcb_db_pre_set = 0;
-        else if (sphinga_suffix == "osine") lcb_db_pre_set = 1;
-        else if (sphinga_suffix == "adienine") lcb_db_pre_set = 2;
+    sphinga_suffix = node->get_text();
+    
+    if (sphinga_suffix == "anine") lcb_db_pre_set = 0;
+    else if (sphinga_suffix == "osine") lcb_db_pre_set = 1;
+    else if (sphinga_suffix == "adienine") lcb_db_pre_set = 2;
 }
-        
-        
-        
-        
+    
+    
+    
+    
 void LipidMapsParserEventHandler::new_sphinga(TreeNode* node){
-        head_group = "SPB";
+    head_group = "SPB";
 }
-        
-        
-        
-void LipidMapsParserEventHandler::new_sphinga_pure(TreeNode* node){
+
+
+void LipidMapsParserEventHandler::c_type(TreeNode* node){
+    if (head_group == "Cer"){
+        new_sphinga_pure(node);
+    }
+    else {
         sphinga_pure = true;
         lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
-        lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
-        lcb_hydro_pre_set[0]->position = 1;
-        lcb_hydro_pre_set[1]->position = 3;
+        lcb_hydro_pre_set[0]->position = 3;
         new_lcb(node);
+    }
+    clean_lcb(node);
+    new_fa(node);
 }
-        
-        
-        
-void LipidMapsParserEventHandler::set_hydro_pre_num(TreeNode* node){
+    
+    
+void LipidMapsParserEventHandler::new_sph(TreeNode* node){
+    if (to_lower(head_group) == "sph"){
+        new_sphinga_pure(node);
+    }
+    else {
+        sphinga_pure = true;
         lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
-        lcb_hydro_pre_set.back()->position = 4;
-        sphinga_prefix = node->get_text();
+        lcb_hydro_pre_set[0]->position = 3;
+        new_lcb(node);
+    }
+    clean_lcb(node);
+}
+    
+    
+    
+void LipidMapsParserEventHandler::new_sphinga_pure(TreeNode* node){
+    sphinga_pure = true;
+    lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
+    lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
+    lcb_hydro_pre_set[0]->position = 1;
+    lcb_hydro_pre_set[1]->position = 3;
+    new_lcb(node);
+}
+    
+    
+    
+void LipidMapsParserEventHandler::set_hydro_pre_num(TreeNode* node){
+    lcb_hydro_pre_set.push_back(KnownFunctionalGroups::get_functional_group("OH"));
+    lcb_hydro_pre_set.back()->position = 4;
+    sphinga_prefix = node->get_text();
 }
         
         

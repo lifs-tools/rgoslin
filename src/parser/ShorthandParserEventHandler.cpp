@@ -147,6 +147,7 @@ ShorthandParserEventHandler::ShorthandParserEventHandler() : LipidBaseParserEven
     reg("acer_species_post_event", set_acer_species);
     
     reg("sterol_definition_post_event", set_sterol_definition);
+    reg("sterol_ester_definition_post_event", set_sterol_definition);
     reg("adduct_heavy_element_pre_event", set_heavy_element);
     reg("adduct_heavy_number_pre_event", set_heavy_number);
     reg("adduct_heavy_component_post_event", add_heavy_component);
@@ -180,7 +181,6 @@ void ShorthandParserEventHandler::reset_lipid(TreeNode *node) {
 
 void ShorthandParserEventHandler::set_sterol_definition(TreeNode *node){
     head_group += " " + node->get_text();
-    fa_list->erase(fa_list->begin());
 }
 
 

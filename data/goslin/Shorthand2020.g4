@@ -25,7 +25,6 @@
 /* This is a BNF / ANTLR4 grammar for lipid subspecies identifiers following
  * Liebisch et al. Volume 61, Issue 12, December 2020, Pages 1539-1555.
  */
-
 grammar Shorthand2020;
 
 
@@ -219,11 +218,11 @@ acer_species : acer_hg_pure | acer_hg_pure '(FA)';
 acer_hg_pure : 'ACer';
 glyco_sphingo_lipid : 'GA1' | 'Ga1' | 'GA2' | 'Ga2' |
  'GB3' | 'Gb3' | 'GB4' | 'Gb4' |
- 'GD1' | 'Gd1' | 'GD2' | 'Gd2' | 'GD3' | 'Gd3' |
+ 'GD0a' | 'Gd0a' | 'GD1' | 'Gd1' | 'GD2' | 'Gd2' | 'GD3' | 'Gd3' | 'GD1a' | 'Gd1a' | 'GD1b' | 'Gd1b' | 'GD1a-AC' | 'Gd1a-AC' |
  'GM1' | 'Gm1' | 'GM2' | 'Gm2' | 'GM3' | 'Gm3' | 'GM4' | 'Gm4' |
  'GP1' | 'Gp1' |
- 'GQ1' | 'Gq1' |
- 'GT1' | 'Gt1' | 'GT2' | 'Gt2' | 'GT3' | 'Gt3';
+ 'GQ1' | 'Gq1' | 'GQ1b' | 'Gq1b' | 'GQ1-AC' | 'Gq1-AC' | 
+ 'GT1' | 'Gt1' | 'GT1b' | 'Gt1b' | 'GT2' | 'Gt2' | 'GT3' | 'Gt3' | 'GT1b-AC' | 'Gt1b-AC' | 'GT3-AC' | 'Gt3-AC';
 /*
 acer_hg : acer_hg_pure | acer_med '-' acer_hg_pure;
 acer_med : med;
@@ -234,11 +233,11 @@ acer_med : med;
 /* sterol lipids */
 sterol : st | st_ester;
 st : st_hg headgroup_separator sterol_definition;
-st_ester : st_hg_ester headgroup_separator sterol_definition sorted_fa_separator fatty_acyl_chain | st_hg_ester headgroup_separator fatty_acyl_chain;
-sterol_definition : fatty_acyl_chain;
-st_hg : 'ST' | 'BA' | 'FC' | 'SG' | 'ASG';
+st_ester : st_hg_ester headgroup_separator sterol_ester_definition sorted_fa_separator fatty_acyl_chain | st_hg_ester headgroup_separator fatty_acyl_chain;
+sterol_definition : '27:1;O' | '27:2;O' | '28:2;O' | '28:3;O' | '29:2;O' | '30:2;O' | '28:1;O' | '29:1;O' | '27:0;O;S' | '27:1;O;S' | '28:1;O;S' | '28:2;O;S' | '29:1;O;S' | '27:1;O;Hex' | '28:1;O;Hex' | '28:2;O;Hex';
+sterol_ester_definition : '27:1' | '27:2' | '28:1' | '28:2' | '28:3' | '29:1' | '29:2' | '30:2';
+st_hg : 'ST'; // | 'BA' | 'FC' | 'SG' | 'ASG';
 st_hg_ester : 'SE' | 'CE';
-
 
 
 /* separators */

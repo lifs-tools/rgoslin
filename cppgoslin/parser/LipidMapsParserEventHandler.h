@@ -114,6 +114,8 @@ public:
     void add_carbon_pre_len(TreeNode *node);
     void set_hydro_pre_num(TreeNode *node);
     void new_sphinga_pure(TreeNode *node);
+    void c_type(TreeNode *node);
+    void new_sph(TreeNode *node);
     
     
 };
