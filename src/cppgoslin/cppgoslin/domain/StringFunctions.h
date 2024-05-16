@@ -35,6 +35,7 @@ SOFTWARE.
 #include "cppgoslin/domain/Element.h"
 #include <algorithm>
 #include <cctype>
+#include <cstdint>
 
 
 #define contains_val(X, Y) ((X).find(Y) != (X).end())

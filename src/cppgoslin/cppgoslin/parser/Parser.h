@@ -33,7 +33,7 @@ SOFTWARE.
 #include "cppgoslin/parser/ParserClasses.h"
 #include "cppgoslin/domain/Element.h"
 #include "cppgoslin/parser/KnownGrammars.h"
-#include <string>
+#include <cstdint>
 #include <set>
 #include <map>
 #include <vector>

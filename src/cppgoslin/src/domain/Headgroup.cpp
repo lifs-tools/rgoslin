@@ -25,23 +25,33 @@ SOFTWARE.
 
 #include "cppgoslin/domain/Headgroup.h"
 
-const map<string, vector<string> > Headgroup::glyco_table{{"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
-               {"ga2", {"GalNAc", "Gal", "Glc"}},
-               {"gb3", {"Gal", "Gal", "Glc"}},
-               {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
-               {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
-               {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
-               {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
-               {"gm3", {"NeuAc", "Gal", "Glc"}},
-               {"gm4", {"NeuAc", "Gal"}},
-               {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
-               {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}};
+const map<string, vector<string> > Headgroup::glyco_table{
+    {"ga1", {"Gal", "GalNAc", "Gal", "Glc"}},
+    {"ga2", {"GalNAc", "Gal", "Glc"}},
+    {"gb3", {"Gal", "Gal", "Glc"}},
+    {"gb4", {"GalNAc", "Gal", "Gal", "Glc"}},
+    {"gd1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gd1a", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc"}},
+    {"gd2", {"GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gd3", {"NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gm1", {"Gal", "GalNAc", "NeuAc", "Gal", "Glc"}},
+    {"gm2", {"GalNAc", "NeuAc", "Gal", "Glc"}},
+    {"gm3", {"NeuAc", "Gal", "Glc"}},
+    {"gm4", {"NeuAc", "Gal"}},
+    {"gp1", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gq1", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt1", {"Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt2", {"GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt3", {"NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gd0a", {"HexNAc", "Hex", "NeuAc", "HexNAc", "Hex", "NeuAc", "Hex"}},
+    {"gd1b", {"Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gq1b", {"NeuAc", "NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt1b", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gd1a-ac", {"Hex", "Hex", "Hex", "HexNAc", "NeuAc", "NeuAc", "NeuAc"}},
+    {"gq1-ac", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt1b-ac", {"NeuAc", "Gal", "GalNAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}},
+    {"gt3-ac", {"NeuAc", "NeuAc", "NeuAc", "NeuAc", "NeuAc", "Gal", "Glc"}}
+};
                
     
 Headgroup::Headgroup(string _headgroup, vector<HeadgroupDecorator*>* _decorators, bool _use_headgroup){
